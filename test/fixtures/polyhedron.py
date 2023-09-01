@@ -7,6 +7,7 @@ from model import Vertex, Face, FaceLocation, Polyhedron
 
 @fixture
 def polyhedron_cutout():
+    # For an idea on the modelled shape: please refer to cutout_* files in the pictures folder
     def _fixture(
         left=Decimal(0),
         right=Decimal(1200),
@@ -78,6 +79,7 @@ def polyhedron_cutout():
 
 @fixture
 def polyhedron_cutout_sloped():
+    # For an idea on the modelled shape: please refer to cutout_sloped_* files in the pictures folder
     def _fixture(
         left=Decimal(0),
         right=Decimal(1200),
