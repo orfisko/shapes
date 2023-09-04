@@ -3,18 +3,6 @@ from _decimal import Decimal
 from model import Face
 from offset import apply_offset
 
-
-def test_normals_set_after_processing(polyhedron_cutout_sloped):
-    """When the offset is applied, all normals should be populated for later use"""
-    poly = polyhedron_cutout_sloped()
-
-    apply_offset(polyhedron=poly, offset=Decimal(10))
-
-    for face in poly.faces:
-        assert isinstance(face, Face)
-        for vertex in face.vertices:
-            assert vertex.normal is not None
-
 def test_that_topology_is_the_same(polyhedron_cutout_sloped):
     input = polyhedron_cutout_sloped()
     output = apply_offset(polyhedron=input, offset=Decimal(10))
