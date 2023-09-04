@@ -131,9 +131,9 @@ def polyhedron_cutout_sloped():
         assert {vertex.y for vertex in BOTTOM.vertices} == {bottom}
         LEFT = Face(vertices=[A, B, L, F], index=3)
         assert {vertex.x for vertex in LEFT.vertices} == {left}
-        FRONT = Face(vertices=[A, B, C, D, E], index=4)
+        FRONT = Face(vertices=[E, D, C, B, A], index=4)
         assert {vertex.z for vertex in FRONT.vertices} == {front}
-        BACK = Face(vertices=[F, G, H, I, J, K, L], index=5)
+        BACK = Face(vertices=[L, K, J, I, H, G, F], index=5)
         assert {vertex.z for vertex in BACK.vertices} == {back}
 
         RIGHT_ANGLED = Face(vertices=[E, G, H, D], index=6)
