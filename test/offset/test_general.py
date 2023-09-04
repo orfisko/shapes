@@ -15,12 +15,24 @@ def test_normals_set_after_processing(polyhedron_cutout_sloped):
         for vertex in face.vertices:
             assert vertex.normal is not None
 
-
-def test_number_of_faces(polyhedron_cutout_sloped):
-    poly = polyhedron_cutout_sloped()
-
-    offset_poly = apply_offset(polyhedron=poly, offset=Decimal(10))
-
-    assert len(offset_poly.faces) == len(
-        poly.faces
-    ), f"Expected {len(poly.faces)} faces, got {len(offset_poly.faces)}"
+def test_that_topology_is_the_same(polyhedron_cutout_sloped):
+    input = polyhedron_cutout_sloped()
+    output = apply_offset(polyhedron=input, offset=Decimal(10))
+    assert len(output.faces) == len(input.faces), f"Expected {len(input.faces)} faces, got {len(output.faces)}"
+    for face_index in range(len(input.faces)):
+        input_face = input.faces[face_index]
+        output_face = output.faces[face_index]
+        assert len(output_face.vertices) == len(input_face.vertices), f"Face #{face_index} got {len(output_face.vertices)} instead of {len(input_face.vertices)}"
+    for face1_index in range(len(input.faces)):
+        input_face1 = input.faces[face1_index]
+        output_face1 = output.faces[face1_index]
+        vertex_count1 = len(input_face1.vertices)
+        for face2_index in range(len(input.faces)):
+            input_face2 = input.faces[face2_index]
+            output_face2 = output.faces[face2_index]
+            vertex_count2 = len(input_face2.vertices)
+            for vertex1_index in range(vertex_count1):
+                for vertex2_index in range(vertex_count2):
+                    same_in_input = (input_face1.vertices[vertex1_index] is input_face2.vertices[vertex2_index])
+                    same_in_output = (output_face1.vertices[vertex1_index] is output_face2.vertices[vertex2_index])
+                    assert same_in_output == same_in_input, f"Vertex #{vertex1_index} of face #{face1_index} is the same as vertex #{vertex2_index} of face #{face2_index} in the input but not in the output"
