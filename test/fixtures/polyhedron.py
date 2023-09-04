@@ -107,7 +107,7 @@ def polyhedron_cutout_sloped():
         I = Vertex(x=right, y=cutout_y, z=back)
         J = Vertex(x=cutout_x, y=cutout_y, z=back)
         K = Vertex(x=cutout_x, y=bottom, z=back)
-        L = Vertex(x=left, y=cutout_y, z=back)
+        L = Vertex(x=left, y=bottom, z=back)
 
         # Left Face - No additional vertices needed
         # Right Face - 1 additional vertex
@@ -128,7 +128,7 @@ def polyhedron_cutout_sloped():
         RIGHT = Face(vertices=[C, D, H, I, M, N], index=1)
         assert {vertex.x for vertex in RIGHT.vertices} == {right}
         BOTTOM = Face(vertices=[B, C, N, O, K, L], index=2)
-        assert {vertex.y for vertex in TOP.vertices} == {top}
+        assert {vertex.y for vertex in BOTTOM.vertices} == {bottom}
         LEFT = Face(vertices=[A, B, L, F], index=3)
         assert {vertex.x for vertex in LEFT.vertices} == {left}
         FRONT = Face(vertices=[A, B, C, D, E], index=4)

@@ -23,6 +23,7 @@ class Vertex:
 
     def __add__(self, other):
         return Vertex(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
+
     def vector(self):
         return Vector3d(self.x, self.y, self.z)
 
