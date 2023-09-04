@@ -1,6 +1,5 @@
 def export_to_obj(polyhedron, path):
     with open(path, "w") as file:
-        file.write("o " + polyhedron.name + "\n")
         file = open(path, "a")
         vertex_indices = {}
         next_index = 1
@@ -16,9 +15,9 @@ def export_to_obj(polyhedron, path):
                         + str(vertex.z)
                         + "\n"
                     )
-                vertex_indices[id(vertex)] = next_index
-                next_index += 1
-                file.write("f")
-        for vertex in face.vertices:
-            file.write(" " + str(vertex_indices[id(vertex)]))
-        file.write("\n")
+                    vertex_indices[id(vertex)] = next_index
+                    next_index += 1
+            file.write("f")
+            for vertex in face.vertices:
+                file.write(" " + str(vertex_indices[id(vertex)]))
+            file.write("\n")
