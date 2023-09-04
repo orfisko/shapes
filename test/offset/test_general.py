@@ -2,6 +2,8 @@ from _decimal import Decimal
 
 from model import Face
 from offset import apply_offset
+from geometry import *
+import math
 
 def test_that_topology_is_the_same(polyhedron_cutout_sloped):
     input = polyhedron_cutout_sloped()
@@ -41,3 +43,29 @@ def test_that_input_and_output_do_not_reference_same_objects(polyhedron_cutout_s
             for vertex1 in face1.vertices:
                 for vertex2 in face2.vertices:
                     assert vertex1 is not vertex2, "The output shares a vertex object with the input"
+
+def makeVector(vertex):
+    return Vector3d(vertex.x, vertex.y, vertex.z)
+
+def calculate_face_normal(face):
+    return calculate_contour_normal([makeVector(v) for v in face.vertices])
+
+def calculate_signed_distance_to_plane(point, planePoint, planeNormal):
+    return (point - planePoint).dotProduct(planeNormal)
+
+def test_that_the_offset_has_been_done(polyhedron_cutout_sloped):
+    offset_distance = Decimal(10)
+    input = polyhedron_cutout_sloped()
+    output = apply_offset(polyhedron=input, offset=offset_distance)
+    for face_index in range(len(input.faces)):
+        input_face = input.faces[face_index]
+        output_face = output.faces[face_index]
+        input_normal=calculate_face_normal(input_face)
+        output_normal=calculate_face_normal(output_face)
+        assert (output_normal-input_normal).length()<0.001, f"Face #{face_index} has a different normal after offset"
+        for vertex in output.faces[face_index].vertices:
+            distance_to_plane=calculate_signed_distance_to_plane(
+                makeVector(vertex),
+                makeVector(input_face.vertices[0]),
+                input_normal)
+            assert math.fabs(distance_to_plane-float(offset_distance))<0.001, f"Vertex on face #{face_index} does not have the correct distance to the original plane"
