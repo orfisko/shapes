@@ -1,8 +1,17 @@
 from _decimal import Decimal
 from typing import Optional
 
-from model import Polyhedron
+from model import Polyhedron, Vertex, Face
 
+def deep_copy(polyhedron:Polyhedron) -> Polyhedron:
+    vertex_copies = {}
+    for face in polyhedron.faces:
+        for vertex in face.vertices:
+            if not (id(vertex) in vertex_copies):
+                vertex_copies[id(vertex)] = Vertex(vertex.x, vertex.y, vertex.z)
+    return Polyhedron(faces=[
+        Face(vertices=[vertex_copies[id(v)] for v in face.vertices],index=face.index)
+        for face in polyhedron.faces])
 
 def apply_offset(
     polyhedron: Polyhedron,
@@ -47,4 +56,4 @@ def apply_offset(
 
     # Return the polyhedron with an equal number of faces and the vertices in the same order as when they were sent in
 
-    return polyhedron
+    return deep_copy(polyhedron)
