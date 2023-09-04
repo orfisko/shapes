@@ -47,7 +47,7 @@ def polyhedron_cutout():
         assert {vertex.y for vertex in TOP.vertices} == {top}
         RIGHT = Face(vertices=[L, D, C, K], index=1)
         assert {vertex.x for vertex in RIGHT.vertices} == {right}
-        BOTTOM = Face(vertices=[B, C, K, J, G, F], index=2)
+        BOTTOM = Face(vertices=[F, G, J, K, C, B], index=2)
         assert {vertex.y for vertex in BOTTOM.vertices} == {bottom}
         LEFT = Face(vertices=[A, E, F, B], index=3)
         assert {vertex.x for vertex in LEFT.vertices} == {left}
@@ -56,9 +56,9 @@ def polyhedron_cutout():
         BACK = Face(vertices=[E, H, G, F], index=5)
         assert {vertex.z for vertex in BACK.vertices} == {back}
 
-        RIGHT_CUTOUT = Face(vertices=[G, J, I, H], index=6)
+        RIGHT_CUTOUT = Face(vertices=[G, H, I, J], index=6)
         assert {vertex.x for vertex in RIGHT_CUTOUT.vertices} == {cutout_x}
-        FRONT_CUTOUT = Face(vertices=[I, J, K, L], index=7)
+        FRONT_CUTOUT = Face(vertices=[K, J, I, L], index=7)
         assert {vertex.z for vertex in FRONT_CUTOUT.vertices} == {cutout_z}
 
         return Polyhedron(
