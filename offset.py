@@ -2,6 +2,7 @@ from _decimal import Decimal
 from typing import Optional
 
 from model import Polyhedron, Vertex, Face
+from geometry import *
 
 def deep_copy(polyhedron:Polyhedron) -> Polyhedron:
     vertex_copies = {}
@@ -12,6 +13,11 @@ def deep_copy(polyhedron:Polyhedron) -> Polyhedron:
     return Polyhedron(faces=[
         Face(vertices=[vertex_copies[id(v)] for v in face.vertices],index=face.index)
         for face in polyhedron.faces])
+
+def compute_face_plane(face:Face):
+    return Plane3d(
+        origin=face.vertices[0].vector(),
+        normal=calculate_contour_normal([v.vector() for v in face.vertices]))
 
 def apply_offset(
     polyhedron: Polyhedron,
@@ -46,14 +52,29 @@ def apply_offset(
         }
     )
 
-    # Calculate normalized normals for each vertex given the supplied faces and store it in the Vertex object for later use
-    # In the model a Normal class is available to store these values
+    result = deep_copy(polyhedron)
 
-    # Depending on whether or not the face should be offset, correct the normal. For Vertex A, I would expect a normal
-    # to appear here wherby the shift in Z is being put to 0 in case the front face does not need to be offset
+    vertex_to_face_indices = {}
+    vertices = []
+    for face_index in range(len(result.faces)):
+        for vertex in result.faces[face_index].vertices:
+            if not(id(vertex) in vertex_to_face_indices):
+                vertex_to_face_indices[id(vertex)] = []
+                vertices.append(vertex)
+            vertex_to_face_indices[id(vertex)].append(face_index)
 
-    # Apply the normal on the vertex
-
-    # Return the polyhedron with an equal number of faces and the vertices in the same order as when they were sent in
-
-    return deep_copy(polyhedron)
+    for vertex in vertices:
+        adjacent_face_indices = vertex_to_face_indices[id(vertex)]
+        if len(adjacent_face_indices)!=3:
+            raise ValueError("Some polyhedron vertex does not have exactly 3 adjacent faces")
+        planes = []
+        for face_index in adjacent_face_indices:
+            plane = compute_face_plane(polyhedron.faces[face_index])
+            face_offset = float(offset_map[polyhedron.faces[face_index].index])
+            plane.origin += plane.normal.normalized()*face_offset
+            planes.append(plane)
+        new_position = compute_three_planes_intersection(planes[0], planes[1], planes[2])
+        vertex.x = new_position.x
+        vertex.y = new_position.y
+        vertex.z = new_position.z
+    return result
