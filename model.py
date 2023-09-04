@@ -50,11 +50,6 @@ class Face:
 
 
 @dataclass(**default_config)
-class FaceOffset:
-    offset: Optional[Decimal]
-
-
-@dataclass(**default_config)
 class Polyhedron:
     faces: List[Face]
 
@@ -65,7 +60,7 @@ class Polyhedron:
 
 
 @dataclass(**default_config)
-class SliceCoordinate:
+class SliceInterval:
     x0: Decimal = None
     x1: Decimal = None
     y0: Decimal = None
@@ -84,3 +79,10 @@ class SliceCoordinate:
         if slice.z0 > slice.z1:
             raise ValueError("z0 should be smaller than z1")
         return slice
+
+
+@dataclass
+class Slice:
+    x: Decimal = None
+    y: Decimal = None
+    z: Decimal = None

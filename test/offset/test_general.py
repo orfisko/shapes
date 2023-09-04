@@ -1,6 +1,6 @@
 from _decimal import Decimal
 
-from main import apply_offset
+from offset import apply_offset
 from model import Face
 
 
