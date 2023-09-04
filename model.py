@@ -1,28 +1,15 @@
 from __future__ import annotations
 
 from _decimal import Decimal
-from enum import Enum
 from typing import Optional, List
 
-from pydantic import confloat, ConfigDict, model_validator
+from pydantic import confloat, ConfigDict, model_validator, conint
 from pydantic.dataclasses import dataclass
-
 
 default_config = dict(
     slots=True,
     config=ConfigDict(validate_assignment=True, arbitrary_types_allowed=True),
 )
-
-
-class FaceLocation(Enum):
-    """Facelocation indicates the viewport from which the face is visible. In threejs only one side of the face is rendered"""
-
-    BACK = "BACK"
-    FRONT = "FRONT"
-    LEFT = "LEFT"
-    RIGHT = "RIGHT"
-    TOP = "TOP"
-    BOTTOM = "BOTTOM"
 
 
 @dataclass(**default_config)
@@ -46,7 +33,7 @@ class Normal:
 @dataclass(**default_config)
 class Face:
     vertices: List[Vertex]
-    faceLocation: FaceLocation = None
+    index: conint(ge=0) = 0
 
 
 @dataclass(**default_config)
@@ -72,12 +59,13 @@ class SliceInterval:
     @classmethod
     def check_order(cls, slice):
         # This might make the logic easier to implement? For me it is not a problem to have this enforced
-        if slice.x0 > slice.x1:
+        if all([slice.x0, slice.x1]) and slice.x0 > slice.x1:
             raise ValueError("x0 should be smaller than x1")
-        if slice.y0 > slice.y1:
+        if all([slice.y0, slice.y1]) and slice.y0 > slice.y1:
             raise ValueError("y0 should be smaller than y1")
-        if slice.z0 > slice.z1:
+        if all([slice.z0, slice.z1]) and slice.z0 > slice.z1:
             raise ValueError("z0 should be smaller than z1")
+
         return slice
 
 

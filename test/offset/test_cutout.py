@@ -1,7 +1,6 @@
 from _decimal import Decimal
 
 from offset import apply_offset
-from model import FaceLocation
 
 
 def test_offset_all_faces(polyhedron_cutout):
@@ -39,7 +38,7 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout):
     new_poly = apply_offset(
         poly,
         offset=Decimal(18),
-        offset_map={FaceLocation.BACK: Decimal(0), FaceLocation.FRONT: Decimal(0)},
+        offset_map={5: Decimal(0), 4: Decimal(0)},
     )
 
     # Collect distinct values for z in the front
@@ -47,7 +46,7 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout):
         vertex.z
         for poly in (poly, new_poly)
         for face in poly.faces
-        if face.faceLocation == FaceLocation.FRONT
+        if face.index == 4
         for vertex in face.vertices
     }
     # In case the front face is not offset, the z coordinate should remain unchanged
@@ -60,7 +59,7 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout):
         vertex.z
         for poly in (poly, new_poly)
         for face in poly.faces
-        if face.faceLocation == FaceLocation.FRONT
+        if face.index == 4
         for vertex in face.vertices
     }
     # In case the back face is not offset, the z coordinate should remain unchanged

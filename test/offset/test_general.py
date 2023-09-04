@@ -1,7 +1,7 @@
 from _decimal import Decimal
 
-from offset import apply_offset
 from model import Face
+from offset import apply_offset
 
 
 def test_normals_set_after_processing(polyhedron_cutout_sloped):

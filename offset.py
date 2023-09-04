@@ -1,21 +1,21 @@
 from _decimal import Decimal
 from typing import Optional
 
-from model import Polyhedron, FaceLocation
+from model import Polyhedron
 
 
 def apply_offset(
     polyhedron: Polyhedron,
     offset: Optional[Decimal] = None,
-    offset_map: Optional[dict[FaceLocation, Decimal]] = None,
+    offset_map: Optional[dict[int, Decimal]] = None,
 ) -> Polyhedron:
     """
     Generates a new polyhedron with the offset applied to the vertices. The offset is applied to all faces unless
-    an offset_map is supplied. The offset_map is a dictionary with the FaceLocation as key and the offset as value.
+    an offset_map is supplied. The offset_map is a dictionary with the face index as key and the offset as value.
     Args:
         polyhedron: the polyhedron for which the offset needs to be applied
         offset: global offset for all faces
-        offset_map: a dictionary with the FaceLocation as key and the offset as value
+        offset_map: offset to apply on the face with the specified index as key
 
     Returns:
         a new polyhedron with the offset applied
@@ -24,13 +24,17 @@ def apply_offset(
         raise ValueError("Either offset or offset_map needs to be supplied")
     if offset_map is None:
         offset_map = dict()
-    if offset is None and len(offset_map) != len(FaceLocation):
+    if offset is None and len(offset_map) != len(polyhedron.faces):
         raise ValueError(
-            "When offset is not supplied, the offset_map needs to contain an offset for each FaceLocation"
+            "When offset is not supplied, the offset_map needs to contain an offset for each face"
         )
     # Fill the offset_map with the offset if it is not supplied.
     offset_map.update(
-        {loc: offset for loc in FaceLocation if loc not in offset_map.keys()}
+        {
+            loc: offset
+            for loc in range(0, len(polyhedron.faces))
+            if loc not in offset_map.keys()
+        }
     )
 
     # Calculate normalized normals for each vertex given the supplied faces and store it in the Vertex object for later use

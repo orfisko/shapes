@@ -2,7 +2,7 @@ from _decimal import Decimal
 
 from _pytest.fixtures import fixture
 
-from model import Vertex, Face, FaceLocation, Polyhedron
+from model import Vertex, Face, Polyhedron
 
 
 @fixture
@@ -43,22 +43,22 @@ def polyhedron_cutout():
 
         # Faces definition - counterclockwise -> threejs only renders one side of the face
         # 8 faces
-        FRONT = Face(vertices=[A, B, C, D], faceLocation=FaceLocation.FRONT)
-        assert {vertex.z for vertex in FRONT.vertices} == {front}
-        BACK = Face(vertices=[E, H, G, F], faceLocation=FaceLocation.BACK)
-        assert {vertex.z for vertex in BACK.vertices} == {back}
-        LEFT = Face(vertices=[A, E, F, B], faceLocation=FaceLocation.LEFT)
-        assert {vertex.x for vertex in LEFT.vertices} == {left}
-        RIGHT = Face(vertices=[L, D, C, K], faceLocation=FaceLocation.RIGHT)
-        assert {vertex.x for vertex in RIGHT.vertices} == {right}
-        TOP = Face(vertices=[H, E, A, D, L, I], faceLocation=FaceLocation.TOP)
+        TOP = Face(vertices=[H, E, A, D, L, I], index=0)
         assert {vertex.y for vertex in TOP.vertices} == {top}
-        BOTTOM = Face(vertices=[B, C, K, J, G, F], faceLocation=FaceLocation.BOTTOM)
+        RIGHT = Face(vertices=[L, D, C, K], index=1)
+        assert {vertex.x for vertex in RIGHT.vertices} == {right}
+        BOTTOM = Face(vertices=[B, C, K, J, G, F], index=2)
         assert {vertex.y for vertex in BOTTOM.vertices} == {bottom}
+        LEFT = Face(vertices=[A, E, F, B], index=3)
+        assert {vertex.x for vertex in LEFT.vertices} == {left}
+        FRONT = Face(vertices=[A, B, C, D], index=4)
+        assert {vertex.z for vertex in FRONT.vertices} == {front}
+        BACK = Face(vertices=[E, H, G, F], index=5)
+        assert {vertex.z for vertex in BACK.vertices} == {back}
 
-        RIGHT_CUTOUT = Face(vertices=[G, J, I, H], faceLocation=FaceLocation.RIGHT)
+        RIGHT_CUTOUT = Face(vertices=[G, J, I, H], index=6)
         assert {vertex.x for vertex in RIGHT_CUTOUT.vertices} == {cutout_x}
-        FRONT_CUTOUT = Face(vertices=[I, J, K, L], faceLocation=FaceLocation.BACK)
+        FRONT_CUTOUT = Face(vertices=[I, J, K, L], index=7)
         assert {vertex.z for vertex in FRONT_CUTOUT.vertices} == {cutout_z}
 
         return Polyhedron(
@@ -123,23 +123,23 @@ def polyhedron_cutout_sloped():
 
         # Faces definition - counterclockwise -> threejs only renders one side of the face
         # 10 faces
-        FRONT = Face(vertices=[A, B, C, D, E], faceLocation=FaceLocation.FRONT)
-        assert {vertex.z for vertex in FRONT.vertices} == {front}
-        BACK = Face(vertices=[F, G, H, I, J, K, L], faceLocation=FaceLocation.BACK)
-        assert {vertex.z for vertex in BACK.vertices} == {back}
-        LEFT = Face(vertices=[A, B, L, F], faceLocation=FaceLocation.LEFT)
-        assert {vertex.x for vertex in LEFT.vertices} == {left}
-        RIGHT = Face(vertices=[C, D, H, I, M, N], faceLocation=FaceLocation.RIGHT)
+        TOP = Face(vertices=[F, G, E, A], index=0)
+        assert {vertex.y for vertex in TOP.vertices} == {top}
+        RIGHT = Face(vertices=[C, D, H, I, M, N], index=1)
         assert {vertex.x for vertex in RIGHT.vertices} == {right}
-        TOP = Face(vertices=[F, G, E, A], faceLocation=FaceLocation.TOP)
+        BOTTOM = Face(vertices=[B, C, N, O, K, L], index=2)
         assert {vertex.y for vertex in TOP.vertices} == {top}
-        BOTTOM = Face(vertices=[B, C, N, O, K, L], faceLocation=FaceLocation.BOTTOM)
-        assert {vertex.y for vertex in TOP.vertices} == {top}
+        LEFT = Face(vertices=[A, B, L, F], index=3)
+        assert {vertex.x for vertex in LEFT.vertices} == {left}
+        FRONT = Face(vertices=[A, B, C, D, E], index=4)
+        assert {vertex.z for vertex in FRONT.vertices} == {front}
+        BACK = Face(vertices=[F, G, H, I, J, K, L], index=5)
+        assert {vertex.z for vertex in BACK.vertices} == {back}
 
-        RIGHT_ANGLED = Face(vertices=[E, G, H, D], faceLocation=FaceLocation.RIGHT)
-        RIGHT_CUTOUT = Face(vertices=[J, K, O, P], faceLocation=FaceLocation.RIGHT)
-        TOP_CUTOUT = Face(vertices=[J, P, M, I], faceLocation=FaceLocation.BOTTOM)
-        FRONT_CUTOUT = Face(vertices=[P, O, N, M], faceLocation=FaceLocation.BACK)
+        RIGHT_ANGLED = Face(vertices=[E, G, H, D], index=6)
+        RIGHT_CUTOUT = Face(vertices=[J, K, O, P], index=7)
+        TOP_CUTOUT = Face(vertices=[J, P, M, I], index=8)
+        FRONT_CUTOUT = Face(vertices=[P, O, N, M], index=9)
 
         return Polyhedron(
             faces=[
