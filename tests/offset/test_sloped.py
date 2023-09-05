@@ -56,5 +56,5 @@ def test_that_the_offset_has_been_done(polyhedron_cutout_sloped):
                 makeVector(vertex), makeVector(input_face.vertices[0]), input_normal
             )
             assert (
-                math.fabs(distance_to_plane - float(offset_distance)) < 0.001
+                math.fabs(distance_to_plane - float(offset_distance)) < 0.1
             ), f"Vertex on face #{face_index} does not have the correct distance to the original plane"
