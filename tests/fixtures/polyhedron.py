@@ -12,7 +12,7 @@ def polyhedron_cutout_fixture(
     bottom=Decimal(0),
     back=Decimal(-600),
     front=Decimal(0),
-    cutout_z=Decimal(300),
+    cutout_z=Decimal(-300),
     cutout_x=Decimal(500),
 ) -> Polyhedron:
     # Front Face vertices
@@ -136,12 +136,12 @@ def polyhedron_cutout_slope_fixture(
     return Polyhedron(
         faces=[
             TOP,
-            RIGHT_ANGLED,
             RIGHT,
             BOTTOM,
             LEFT,
             FRONT,
             BACK,
+            RIGHT_ANGLED,
             RIGHT_CUTOUT,
             TOP_CUTOUT,
             FRONT_CUTOUT,

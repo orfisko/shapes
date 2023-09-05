@@ -7,14 +7,14 @@ def test_offset_all_faces(polyhedron_cutout):
     poly = polyhedron_cutout()
     offset_poly = apply_offset(polyhedron=poly, offset=Decimal(18))
 
-    left = Decimal(0 + 18)
-    right = Decimal(1200 - 18)
-    top = Decimal(2500 - 18)
-    bottom = Decimal(0 + 18)
-    back = Decimal(600 - 18)
+    left = Decimal(0 - 18)
+    right = Decimal(1200 + 18)
+    top = Decimal(2500 + 18)
+    bottom = Decimal(0 - 18)
+    back = Decimal(-600 - 18)
     front = Decimal(0 + 18)
-    cutout_z = Decimal(300 - 18)
-    cutout_x = Decimal(500 - 18)
+    cutout_z = Decimal(-300 - 18)
+    cutout_x = Decimal(500 + 18)
 
     check_poly = polyhedron_cutout(
         left=left,
@@ -74,6 +74,6 @@ def test_partly_offset(polyhedron_cutout):
         offset_map={0: Decimal(20), 1: Decimal(-25)},
     )
 
-    check_poly = polyhedron_cutout(top=2500 + 20, right=1200 + 25)
+    check_poly = polyhedron_cutout(top=2500 + 20, right=1200 - 25)
 
     assert offset_poly == check_poly
