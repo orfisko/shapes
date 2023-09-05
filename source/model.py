@@ -1,12 +1,11 @@
 from __future__ import annotations
 
+import math
 from _decimal import Decimal
 from typing import Optional, List
 
-from pydantic import confloat, ConfigDict, model_validator, conint
+from pydantic import confloat, ConfigDict, model_validator
 from pydantic.dataclasses import dataclass
-
-from source.geometry import Vector3d
 
 default_config = dict(
     slots=True,
@@ -24,8 +23,13 @@ class Vertex:
     def __add__(self, other):
         return Vertex(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
 
-    def vector(self):
-        return Vector3d(self.x, self.y, self.z)
+    def vector(self) -> Vector3d:
+        return Vector3d(float(self.x), float(self.y), float(self.z))
+
+    def __eq__(self, other):
+        if not isinstance(other, Vertex):
+            return False
+        return self.x == other.x and self.y == other.y and self.z == other.z
 
 
 @dataclass(**default_config)
@@ -78,3 +82,53 @@ class Slice:
     x: Decimal = None
     y: Decimal = None
     z: Decimal = None
+
+
+@dataclass(**default_config)
+class Vector3d:
+    x: float
+    y: float
+    z: float
+
+    def __add__(self, other):
+        return Vector3d(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
+
+    def __sub__(self, other):
+        return Vector3d(x=self.x - other.x, y=self.y - other.y, z=self.z - other.z)
+
+    def __mul__(self, other):
+        return Vector3d(x=self.x * other, y=self.y * other, z=self.z * other)
+
+    def __truediv__(self, other):
+        return self * (1 / other)
+
+    def dotProduct(self, other):
+        return self.x * other.x + self.y * other.y + self.z * other.z
+
+    def crossProduct(self, other):
+        return Vector3d(
+            self.y * other.z - self.z * other.y,
+            self.z * other.x - self.x * other.z,
+            self.x * other.y - self.y * other.x,
+        )
+
+    def squaredLength(self):
+        return self.dotProduct(self)
+
+    def length(self):
+        return math.sqrt(self.squaredLength())
+
+    def normalized(self):
+        return self / self.length()
+
+
+@dataclass(**default_config)
+class Plane3d:
+    origin: Vector3d
+    normal: Vector3d
+
+
+@dataclass(**default_config)
+class Line3d:
+    origin: Vector3d
+    direction: Vector3d

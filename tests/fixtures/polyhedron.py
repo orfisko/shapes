@@ -2,7 +2,7 @@ from _decimal import Decimal
 
 from _pytest.fixtures import fixture
 
-from model import Vertex, Face, Polyhedron
+from source.model import Vertex, Face, Polyhedron
 
 
 def polyhedron_cutout_fixture(

@@ -71,9 +71,9 @@ def test_partly_offset(polyhedron_cutout):
     # Offset top and right face
     offset_poly = apply_offset(
         polyhedron=poly,
-        offset_map={0: Decimal(20), 1: Decimal(-25)},
+        offset_map={0: Decimal(20), 1: Decimal(25)},
     )
 
-    check_poly = polyhedron_cutout(top=2500 + 20, right=1200 - 25)
+    check_poly = polyhedron_cutout(top=2500 + 20, right=1200 + 25)
 
     assert offset_poly == check_poly
