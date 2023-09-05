@@ -2,8 +2,8 @@ from _decimal import Decimal
 from collections import defaultdict
 from typing import Optional, DefaultDict, List
 
-from model import Polyhedron, Vertex, Face
-from geometry import *
+from source.model import Polyhedron, Vertex, Face
+from source.geometry import *
 
 
 def deep_copy(polyhedron: Polyhedron) -> Polyhedron:

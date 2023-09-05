@@ -6,7 +6,7 @@ from typing import Optional, List
 from pydantic import confloat, ConfigDict, model_validator, conint
 from pydantic.dataclasses import dataclass
 
-from geometry import Vector3d
+from source.geometry import Vector3d
 
 default_config = dict(
     slots=True,
