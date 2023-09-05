@@ -14,9 +14,7 @@ def deep_copy(polyhedron: Polyhedron) -> Polyhedron:
                 vertex_copies[id(vertex)] = Vertex(vertex.x, vertex.y, vertex.z)
     return Polyhedron(
         faces=[
-            Face(
-                vertices=[vertex_copies[id(v)] for v in face.vertices], index=face.index
-            )
+            Face(vertices=[vertex_copies[id(v)] for v in face.vertices])
             for face in polyhedron.faces
         ]
     )
@@ -39,8 +37,9 @@ def apply_offset(
     an offset_map is supplied. The offset_map is a dictionary with the face index as key and the offset as value.
     Args:
         polyhedron: the polyhedron for which the offset needs to be applied
-        offset: global offset for all faces
-        offset_map: offset to apply on the face with the specified index as key
+        offset: global offset for all faces, defaults to 0 if offset_map is supplied
+        offset_map: offset to apply on the face with the specified index as key. Missing values are filled with the
+            offset value
 
     Returns:
         a new polyhedron with the offset applied
@@ -49,10 +48,8 @@ def apply_offset(
         raise ValueError("Either offset or offset_map needs to be supplied")
     if offset_map is None:
         offset_map = dict()
-    if offset is None and len(offset_map) != len(polyhedron.faces):
-        raise ValueError(
-            "When offset is not supplied, the offset_map needs to contain an offset for each face"
-        )
+    if offset is None:
+        offset = Decimal(0)
     # Fill the offset_map with the offset if it is not supplied.
     offset_map.update(
         {
@@ -82,13 +79,13 @@ def apply_offset(
         planes = []
         for face_index in adjacent_face_indices:
             plane = compute_face_plane(polyhedron.faces[face_index])
-            face_offset = float(offset_map[polyhedron.faces[face_index].index])
+            face_offset = float(offset_map[face_index])
             plane.origin += plane.normal.normalized() * face_offset
             planes.append(plane)
         new_position = compute_three_planes_intersection(
             planes[0], planes[1], planes[2]
         )
-        vertex.x = new_position.x
-        vertex.y = new_position.y
-        vertex.z = new_position.z
+        vertex.x = Decimal(round(new_position.x, 1))
+        vertex.y = Decimal(round(new_position.y, 1))
+        vertex.z = Decimal(round(new_position.z, 1))
     return offset_poly

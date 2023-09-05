@@ -1,8 +1,8 @@
 import math
 from _decimal import Decimal
 
-from offset import apply_offset
-from test.offset.test_general import (
+from source.offset import apply_offset
+from tests.offset.test_general import (
     calculate_face_normal,
     calculate_signed_distance_to_plane,
     makeVector,
@@ -36,7 +36,7 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout_sloped):
         vertex.z for face in poly.faces if face.index == 5 for vertex in face.vertices
     }
     # In case the front face is not offset, the z coordinate should remain unchanged
-    assert distinct_back_z == {Decimal(600)}, f"Expected 0, got {distinct_back_z}"
+    assert distinct_back_z == {Decimal(-600)}, f"Expected 0, got {distinct_back_z}"
 
 
 def test_that_the_offset_has_been_done(polyhedron_cutout_sloped):

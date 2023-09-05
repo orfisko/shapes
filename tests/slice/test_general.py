@@ -1,7 +1,7 @@
 from _decimal import Decimal
 
-from model import SliceInterval
-from slice import apply_slice_interval
+from source.model import SliceInterval
+from source.slice import apply_slice_interval
 
 
 def test_change_rotation(polyhedron_cutout):

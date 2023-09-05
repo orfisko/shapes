@@ -38,7 +38,6 @@ class Normal:
 @dataclass(**default_config)
 class Face:
     vertices: List[Vertex]
-    index: conint(ge=0) = 0
 
 
 @dataclass(**default_config)

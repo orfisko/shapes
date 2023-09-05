@@ -1,7 +1,7 @@
 from _decimal import Decimal
 
-from offset import apply_offset
-from geometry import *
+from source.offset import apply_offset
+from source.geometry import *
 
 
 def test_that_topology_is_the_same(polyhedron_cutout_sloped):
