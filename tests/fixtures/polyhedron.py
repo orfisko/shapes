@@ -136,12 +136,12 @@ def polyhedron_cutout_slope_fixture(
     return Polyhedron(
         faces=[
             TOP,
-            RIGHT_ANGLED,
             RIGHT,
             BOTTOM,
             LEFT,
             FRONT,
             BACK,
+            RIGHT_ANGLED,
             RIGHT_CUTOUT,
             TOP_CUTOUT,
             FRONT_CUTOUT,
