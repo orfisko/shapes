@@ -26,14 +26,14 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout_sloped):
 
     # Collect distinct values in a set
     distinct_front_z = {
-        vertex.z for face in poly.faces if face.index == 4 for vertex in face.vertices
+        vertex.z for face_index in range(len(poly.faces)) if face_index == 4 for vertex in poly.faces[face_index].vertices
     }
     # In case the front face is not offset, the z coordinate should remain unchanged
     assert distinct_front_z == {Decimal(0)}, f"Expected 0, got {distinct_front_z}"
 
     # Collect distinct values in a set
     distinct_back_z = {
-        vertex.z for face in poly.faces if face.index == 5 for vertex in face.vertices
+        vertex.z for face_index in range(len(poly.faces)) if face_index == 5 for vertex in poly.faces[face_index].vertices
     }
     # In case the front face is not offset, the z coordinate should remain unchanged
     assert distinct_back_z == {Decimal(-600)}, f"Expected 0, got {distinct_back_z}"
