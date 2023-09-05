@@ -1,20 +1,20 @@
 from _decimal import Decimal
 
-from offset import apply_offset
+from source.offset import apply_offset
 
 
 def test_offset_all_faces(polyhedron_cutout):
     poly = polyhedron_cutout()
     offset_poly = apply_offset(polyhedron=poly, offset=Decimal(18))
 
-    left = Decimal(0 + 18)
-    right = Decimal(1200 - 18)
-    top = Decimal(2500 - 18)
-    bottom = Decimal(0 + 18)
-    back = Decimal(600 - 18)
+    left = Decimal(0 - 18)
+    right = Decimal(1200 + 18)
+    top = Decimal(2500 + 18)
+    bottom = Decimal(0 - 18)
+    back = Decimal(-600 - 18)
     front = Decimal(0 + 18)
-    cutout_z = Decimal(300 - 18)
-    cutout_x = Decimal(500 - 18)
+    cutout_z = Decimal(-300 - 18)
+    cutout_x = Decimal(500 + 18)
 
     check_poly = polyhedron_cutout(
         left=left,
@@ -27,8 +27,6 @@ def test_offset_all_faces(polyhedron_cutout):
         cutout_x=cutout_x,
     )
 
-    # Note that dataclasses have a __eq__ method built in that checks all fields specified in the class
-    # In pycharm it's very easy to compare these side by side
     assert offset_poly == check_poly
 
 
@@ -45,8 +43,8 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout):
     front_z = {
         vertex.z
         for poly in (poly, new_poly)
-        for face in poly.faces
-        if face.index == 4
+        for idx, face in enumerate(poly.faces)
+        if idx == 4
         for vertex in face.vertices
     }
     # In case the front face is not offset, the z coordinate should remain unchanged
@@ -58,11 +56,24 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout):
     back_z = {
         vertex.z
         for poly in (poly, new_poly)
-        for face in poly.faces
-        if face.index == 4
+        for idx, face in enumerate(poly.faces)
+        if idx == 4
         for vertex in face.vertices
     }
     # In case the back face is not offset, the z coordinate should remain unchanged
     assert (
         len(back_z) == 1
     ), f"Distinct z coordinates for back are note the same, got these values {back_z}"
+
+
+def test_partly_offset(polyhedron_cutout):
+    poly = polyhedron_cutout()
+    # Offset top and right face
+    offset_poly = apply_offset(
+        polyhedron=poly,
+        offset_map={0: Decimal(20), 1: Decimal(-25)},
+    )
+
+    check_poly = polyhedron_cutout(top=2500 + 20, right=1200 - 25)
+
+    assert offset_poly == check_poly

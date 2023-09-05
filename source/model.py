@@ -6,6 +6,8 @@ from typing import Optional, List
 from pydantic import confloat, ConfigDict, model_validator, conint
 from pydantic.dataclasses import dataclass
 
+from source.geometry import Vector3d
+
 default_config = dict(
     slots=True,
     config=ConfigDict(validate_assignment=True, arbitrary_types_allowed=True),
@@ -22,6 +24,9 @@ class Vertex:
     def __add__(self, other):
         return Vertex(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
 
+    def vector(self):
+        return Vector3d(self.x, self.y, self.z)
+
 
 @dataclass(**default_config)
 class Normal:
@@ -33,7 +38,6 @@ class Normal:
 @dataclass(**default_config)
 class Face:
     vertices: List[Vertex]
-    index: conint(ge=0) = 0
 
 
 @dataclass(**default_config)

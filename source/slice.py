@@ -1,7 +1,7 @@
 from _decimal import Decimal
 from typing import List, Set
 
-from model import Polyhedron, SliceInterval, Slice, Vertex
+from source.model import Polyhedron, SliceInterval, Slice, Vertex
 
 
 def apply_slice(polyhedron: Polyhedron, slice: Slice) -> List[Vertex]:
