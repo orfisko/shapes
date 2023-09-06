@@ -1,12 +1,11 @@
 from _decimal import Decimal
 
-from source.offset import apply_offset
 from source.geometry import *
 
 
 def test_that_topology_is_the_same(polyhedron_cutout_sloped):
     input = polyhedron_cutout_sloped()
-    output = apply_offset(polyhedron=input, offset=Decimal(10))
+    output = input.apply_offset(offset=Decimal(10))
     assert len(output.faces) == len(
         input.faces
     ), f"Expected {len(input.faces)} faces, got {len(output.faces)}"
@@ -45,7 +44,7 @@ def test_that_the_input_has_not_been_changed(polyhedron_cutout_sloped):
         [[vertex.x, vertex.y, vertex.z] for vertex in face.vertices]
         for face in input.faces
     ]
-    output = apply_offset(polyhedron=input, offset=Decimal(10))
+    output = input.apply_offset(offset=Decimal(10))
     after = [
         [[vertex.x, vertex.y, vertex.z] for vertex in face.vertices]
         for face in input.faces
@@ -55,7 +54,7 @@ def test_that_the_input_has_not_been_changed(polyhedron_cutout_sloped):
 
 def test_that_input_and_output_do_not_reference_same_objects(polyhedron_cutout_sloped):
     input = polyhedron_cutout_sloped()
-    output = apply_offset(polyhedron=input, offset=Decimal(10))
+    output = input.apply_offset(offset=Decimal(10))
     for face1 in input.faces:
         for face2 in output.faces:
             assert face1 is not face2, "The output shares a face object with the input"

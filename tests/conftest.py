@@ -1,1 +1,1 @@
-from fixtures.polyhedron import polyhedron_cutout_sloped, polyhedron_cutout
+from tests.fixtures.polyhedron import polyhedron_cutout_sloped, polyhedron_cutout
