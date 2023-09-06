@@ -10,7 +10,7 @@ default_config = dict(
 )
 
 
-def calculate_contour_normal(points):
+def calculate_contour_normal(points: list[Vector3d]):
     sum = Vector3d(0, 0, 0)
     for index in range(len(points)):
         next = (index + 1) % len(points)
