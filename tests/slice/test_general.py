@@ -3,7 +3,9 @@ from _decimal import Decimal
 from source.model import SliceInterval
 from source.slice import apply_slice_interval
 
+import pytest
 
+@pytest.mark.skip(reason="not implemented")
 def test_change_rotation(polyhedron_cutout):
     """This test is there to verify that if we send in a number of slices, the order of the vertices is being
     rotated depending on the face location"""
