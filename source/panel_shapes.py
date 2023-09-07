@@ -23,11 +23,6 @@ def make_plate(
             inner_face_contour[next_index]]))
     result.faces.append(Face(vertices=inner_face_contour[::-1]))
     return result
-def compute_face_plane(face: Face):
-    return Plane3d(
-        origin=face.vertices[0].vector(),
-        normal=calculate_contour_normal([v.vector() for v in face.vertices]),
-    )
 def make_vertex(position: Vector3d)->Vertex:
     return Vertex(position.x,position.y,position.z)
 def generate_panel_shapes(
@@ -57,14 +52,14 @@ def generate_panel_shapes(
             planes=[]
             for c in range(3):
                 surface=outer_polyhedron if priorities[c]>current_priority else inner_polyhedron
-                planes.append(compute_face_plane(surface.faces[adjacent_face_indices[c]]))
+                planes.append(surface.faces[adjacent_face_indices[c]].compute_plane())
             inner[vertex_index]=make_vertex(
                 compute_three_planes_intersection(planes[0],planes[1],planes[2]))
             #outer
             planes=[]
             for c in range(3):
                 surface=inner_polyhedron if priorities[c]<current_priority else outer_polyhedron
-                planes.append(compute_face_plane(surface.faces[adjacent_face_indices[c]]))
+                planes.append(surface.faces[adjacent_face_indices[c]].compute_plane())
             outer[vertex_index]=make_vertex(
                 compute_three_planes_intersection(planes[0],planes[1],planes[2]))
             print(outer[vertex_index])
