@@ -41,6 +41,34 @@ def are_faces_different(face1: Face, face2: Face, tolerance: float) -> bool:
     return math.fabs(distance)>tolerance
 
 
+def put_value_at_start(list,value):
+    index = list.index(value)
+    if index != 0:
+        list[0], list[index] = list[index], list[0]
+    return list
+
+
+def find_common_edge_direction(face1: Face, face2: Face)->Vector3d:
+    for edge_index in range(len(face1.vertices)):
+        edge_start = face1.vertices[edge_index]
+        edge_finish = face1.vertices[(edge_index+1)%len(face1.vertices)]
+        if not(edge_start in face2.vertices):
+            continue
+        if not(edge_finish in face2.vertices):
+            continue;
+        return edge_finish.vector() - edge_start.vector()
+    raise ValueError(
+        "find_common_edge_direction: the given faces are not adjacent"
+    )
+
+
+def is_angle_internal(face1: Face, face2: Face)->bool:
+    normal1=face1.compute_plane().normal
+    normal2=face2.compute_plane().normal
+    edge = find_common_edge_direction(face1, face2)
+    return normal1.crossProduct(normal2).dotProduct(edge)>0
+
+
 def generate_panel_shapes(
     outer_polyhedron: Polyhedron, inner_polyhedron: Polyhedron, prioritizer
 ) -> dict[int, Polyhedron]:
@@ -70,28 +98,31 @@ def generate_panel_shapes(
         inner = inner_polyhedron.faces[face_index].vertices[:]
         for vertex_index in range(len(outer)):
             adjacent_face_indices = vertex_id_to_face_indices[id(outer[vertex_index])]
+            put_value_at_start(adjacent_face_indices,face_index)
             priorities = prioritizer(adjacent_face_indices)
             current_priority = priorities[adjacent_face_indices.index(face_index)]
             # inner
-            planes = []
-            for c in range(3):
-                surface = (
-                    outer_polyhedron
-                    if priorities[c] > current_priority
-                    else inner_polyhedron
-                )
+            planes=[inner_polyhedron.faces[face_index].compute_plane()]
+            for c in range(1,3):
+                surface=inner_polyhedron
+                invertor=1
+                if is_angle_internal(outer_polyhedron.faces[face_index],outer_polyhedron.faces[adjacent_face_indices[c]]):
+                    invertor=-1
+                if priorities[c]*invertor>current_priority*invertor:
+                    surface=outer_polyhedron
                 planes.append(surface.faces[adjacent_face_indices[c]].compute_plane())
             inner[vertex_index] = make_vertex(
                 compute_three_planes_intersection(planes[0], planes[1], planes[2])
             )
             # outer
-            planes = []
-            for c in range(3):
-                surface = (
-                    inner_polyhedron
-                    if priorities[c] < current_priority
-                    else outer_polyhedron
-                )
+            planes=[outer_polyhedron.faces[face_index].compute_plane()]
+            for c in range(1,3):
+                surface=outer_polyhedron
+                invertor=1
+                if is_angle_internal(outer_polyhedron.faces[face_index],outer_polyhedron.faces[adjacent_face_indices[c]]):
+                    invertor=-1
+                if priorities[c]*invertor<current_priority*invertor:
+                    surface=inner_polyhedron
                 planes.append(surface.faces[adjacent_face_indices[c]].compute_plane())
             outer[vertex_index] = make_vertex(
                 compute_three_planes_intersection(planes[0], planes[1], planes[2])
