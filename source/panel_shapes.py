@@ -4,6 +4,7 @@ from typing import DefaultDict, List
 from source.geometry import *
 from source.model import Vertex, Face, Polyhedron
 
+import math
 
 def make_plate(
     outer_face_contour: List[Vertex], inner_face_contour: List[Vertex]
@@ -34,9 +35,15 @@ def make_vertex(position: Vector3d) -> Vertex:
     return Vertex(position.x, position.y, position.z)
 
 
+def are_faces_different(face1: Face, face2: Face, tolerance: float) -> bool:
+    plane1 = face1.compute_plane()
+    distance = (face2.vertices[0].vector() - plane1.origin).dotProduct(plane1.normal.normalized())
+    return math.fabs(distance)>tolerance
+
+
 def generate_panel_shapes(
     outer_polyhedron: Polyhedron, inner_polyhedron: Polyhedron, prioritizer
-) -> [Polyhedron]:
+) -> dict[int, Polyhedron]:
     """
     Generates panel shapes using inner and outer polyhedrons. They should have
     faces/vertices in the same order and of the same number.
@@ -45,14 +52,20 @@ def generate_panel_shapes(
         inner_polyhedron:
         prioritizer: priotization function to decide which panel takes precedence over the other.
     Returns:
-         a list of generated panels in the same order as faces in the polyhedrons.
+         Dictionary[face_index, panel], only for faces with some offset
     """
     vertex_id_to_face_indices: DefaultDict[int, List[int]] = defaultdict(list)
     for face_index in range(len(outer_polyhedron.faces)):
         for vertex in outer_polyhedron.faces[face_index].vertices:
             vertex_id_to_face_indices[id(vertex)].append(face_index)
-    panels = []
+    face_has_offset=[
+        are_faces_different(outer_polyhedron.faces[index], inner_polyhedron.faces[index], 0.01)
+        for index in range(len(inner_polyhedron.faces))
+    ]
+    panels = {}
     for face_index in range(len(inner_polyhedron.faces)):
+        if not face_has_offset[face_index]:
+            continue
         outer = outer_polyhedron.faces[face_index].vertices[:]
         inner = inner_polyhedron.faces[face_index].vertices[:]
         for vertex_index in range(len(outer)):
@@ -83,6 +96,5 @@ def generate_panel_shapes(
             outer[vertex_index] = make_vertex(
                 compute_three_planes_intersection(planes[0], planes[1], planes[2])
             )
-            print(outer[vertex_index])
-        panels.append(make_plate(outer, inner))
+        panels[face_index]=make_plate(outer, inner)
     return panels
