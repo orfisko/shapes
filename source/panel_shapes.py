@@ -35,7 +35,7 @@ def make_vertex(position: Vector3d) -> Vertex:
 
 
 def generate_panel_shapes(
-    outer_polyhedron: Polyhedron, inner_polyhedron: Polyhedron, prioritizer, **kwargs
+    outer_polyhedron: Polyhedron, inner_polyhedron: Polyhedron, prioritizer
 ) -> [Polyhedron]:
     """
     Generates panel shapes using inner and outer polyhedrons. They should have
@@ -44,7 +44,6 @@ def generate_panel_shapes(
         outer_polyhedron:
         inner_polyhedron:
         prioritizer: priotization function to decide which panel takes precedence over the other.
-        **kwargs: contextual information being passed to the prioritizer function
     Returns:
          a list of generated panels in the same order as faces in the polyhedrons.
     """
@@ -58,7 +57,7 @@ def generate_panel_shapes(
         inner = inner_polyhedron.faces[face_index].vertices[:]
         for vertex_index in range(len(outer)):
             adjacent_face_indices = vertex_id_to_face_indices[id(outer[vertex_index])]
-            priorities = prioritizer(outer_polyhedron, adjacent_face_indices, **kwargs)
+            priorities = prioritizer(adjacent_face_indices)
             current_priority = priorities[adjacent_face_indices.index(face_index)]
             # inner
             planes = []

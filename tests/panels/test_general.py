@@ -39,7 +39,9 @@ def prioritize(outer, face_indices):
 def test_panel_generation(polyhedron_cutout_sloped):
     outer = polyhedron_cutout_sloped()
     inner = outer.apply_offset(offset=Decimal(-10))
-    panels = generate_panel_shapes(outer, inner, prioritize)
+    def local_prioritize(face_indices):
+        return prioritize(outer, face_indices)
+    panels = generate_panel_shapes(outer, inner, local_prioritize)
     export_to_obj(outer, "outer.obj")
     export_to_obj(inner, "inner.obj")
     for panel_index in range(len(panels)):
@@ -52,7 +54,9 @@ def test_panel_generation_offsetmap(polyhedron_cutout_sloped):
         offset_map={0: Decimal(-50), 1: Decimal(-20), 2: Decimal(-25)}
     )
 
-    panels = generate_panel_shapes(outer, inner, prioritize)
+    def local_prioritize(face_indices):
+        return prioritize(outer, face_indices)
+    panels = generate_panel_shapes(outer, inner, local_prioritize)
     assert len(panels) == 3
     export_to_obj(outer, "outer.obj")
     export_to_obj(inner, "inner.obj")
