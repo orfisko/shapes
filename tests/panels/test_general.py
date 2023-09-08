@@ -5,6 +5,7 @@ from source.geometry import *
 from source.utils import *
 
 import math
+import pytest
 
 
 def prioritize(outer, face_indices, super_important_face_indices):
@@ -41,6 +42,7 @@ def prioritize(outer, face_indices, super_important_face_indices):
     return priorities
 
 
+@pytest.mark.skip(reason="only for visual inspection")
 def test_panel_generation(polyhedron_cutout_sloped):
     outer = polyhedron_cutout_sloped()
     inner = outer.apply_offset(offset=Decimal(-10))
