@@ -76,3 +76,19 @@ def test_cut_check_for_concave_corners(polyhedron_cutout_sloped):
     except ValueError:
         exception = True
     assert exception, "face cut caused by priorities on a concave corner has not been detected"
+
+
+def test_that_panels_are_betwee_inner_and_outer(polyhedron_cutout_sloped):
+    outer = polyhedron_cutout_sloped()
+    inner = outer.apply_offset(offset=Decimal(-10))
+    def local_prioritize(face_indices):
+        return prioritize(outer, face_indices, [7,8,9])
+    panels = generate_panel_shapes(outer, inner, local_prioritize)
+    for face_index, panel in panels.items():
+        outer_plane = outer.faces[face_index].compute_plane()
+        inner_plane = inner.faces[face_index].compute_plane()
+        for panel_face in panel.faces:
+            for vertex in panel_face.vertices:
+                position = vertex.vector()
+                assert (position-outer_plane.origin).dotProduct(outer_plane.normal) <= 0.01, f"panel #{face_index} is in front of the corresponding outer face"
+                assert (position-inner_plane.origin).dotProduct(inner_plane.normal) >= -0.01, f"panel #{face_index} is behind the corresponding inner face"
