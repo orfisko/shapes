@@ -19,16 +19,16 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout_sloped):
 
     new_poly = poly.apply_offset(
         offset=Decimal(18),
-        offset_map={5: Decimal(0), 4: Decimal(0)},
+        offset_map={6: Decimal(0), 5: Decimal(0)},
     )
 
     # Collect distinct values in a set
-    distinct_front_z = {vertex.z for vertex in poly.faces[4].vertices}
+    distinct_front_z = {vertex.z for vertex in poly.faces[5].vertices}
     # In case the front face is not offset, the z coordinate should remain unchanged
     assert distinct_front_z == {Decimal(0)}, f"Expected 0, got {distinct_front_z}"
 
     # Collect distinct values in a set
-    distinct_back_z = {vertex.z for vertex in poly.faces[5].vertices}
+    distinct_back_z = {vertex.z for vertex in poly.faces[6].vertices}
     # In case the front face is not offset, the z coordinate should remain unchanged
     assert distinct_back_z == {Decimal(-600)}, f"Expected 0, got {distinct_back_z}"
 
