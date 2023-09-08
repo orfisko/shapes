@@ -53,6 +53,7 @@ def test_panel_generation_offsetmap(polyhedron_cutout_sloped):
     )
 
     panels = generate_panel_shapes(outer, inner, prioritize)
+    assert len(panels) == 3
     export_to_obj(outer, "outer.obj")
     export_to_obj(inner, "inner.obj")
     for panel_index in range(len(panels)):
