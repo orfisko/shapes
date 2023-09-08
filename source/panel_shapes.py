@@ -63,10 +63,19 @@ def find_common_edge_direction(face1: Face, face2: Face)->Vector3d:
 
 
 def is_angle_internal(face1: Face, face2: Face)->bool:
-    normal1=face1.compute_plane().normal
-    normal2=face2.compute_plane().normal
+    normal1 = face1.compute_plane().normal
+    normal2 = face2.compute_plane().normal
     edge = find_common_edge_direction(face1, face2)
     return normal1.crossProduct(normal2).dotProduct(edge)>0
+
+
+def is_face_corner_concave(face: Face, corner_index: int)->bool:
+    normal = face.compute_plane().normal
+    previous_index = (corner_index-1) % len(face.vertices)
+    next_index = (corner_index+1) % len(face.vertices)
+    previous_vector = face.vertices[corner_index].vector() - face.vertices[previous_index].vector()
+    next_vector = face.vertices[next_index].vector() - face.vertices[corner_index].vector()
+    return previous_vector.crossProduct(next_vector).dotProduct(normal) < 0
 
 
 def generate_panel_shapes(
@@ -100,7 +109,13 @@ def generate_panel_shapes(
             adjacent_face_indices = vertex_id_to_face_indices[id(outer[vertex_index])]
             put_value_at_start(adjacent_face_indices,face_index)
             priorities = prioritizer(adjacent_face_indices)
-            current_priority = priorities[adjacent_face_indices.index(face_index)]
+            current_priority = priorities[0]
+            if is_face_corner_concave(outer_polyhedron.faces[face_index], vertex_index):
+                if priorities[1]<=current_priority or priorities[2]<=current_priority:
+                    if priorities[1]!=priorities[2]:
+                        raise ValueError(
+                            f"generate_panel_shapes: priorities on concave corner #{vertex_index} require to make a cut into face #{face_index}"
+                        )
             # inner
             planes=[inner_polyhedron.faces[face_index].compute_plane()]
             for c in range(1,3):

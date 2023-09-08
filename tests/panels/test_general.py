@@ -7,15 +7,18 @@ from source.utils import *
 import math
 
 
-def prioritize(outer, face_indices):
+def prioritize(outer, face_indices, super_important_face_indices):
     # 0 - horizontal
     # 1 - side
     # 2 - front/back
     # 3 - sloped
+    # 4 - super important
     types = []
     for face_index in face_indices:
         normal = outer.faces[face_index].compute_plane().normal
-        if math.fabs(normal.y) > normal.length() * 0.99:
+        if face_index in super_important_face_indices:
+            types.append(4)
+        elif math.fabs(normal.y) > normal.length() * 0.99:
             types.append(0)
         elif math.fabs(normal.x) > normal.length() * 0.99:
             types.append(1)
@@ -31,6 +34,8 @@ def prioritize(outer, face_indices):
             priorities.append(2)
         elif type == 2:
             priorities.append(1)
+        elif type == 4:
+            priorities.append(4) #otherwise we'll get a face cut
         else:  # sloped takes 2 or 3 whatever is present
             priorities.append(3 if 0 in types else 2)
     return priorities
@@ -40,7 +45,7 @@ def test_panel_generation(polyhedron_cutout_sloped):
     outer = polyhedron_cutout_sloped()
     inner = outer.apply_offset(offset=Decimal(-10))
     def local_prioritize(face_indices):
-        return prioritize(outer, face_indices)
+        return prioritize(outer, face_indices, [7,8,9])
     panels = generate_panel_shapes(outer, inner, local_prioritize)
     export_to_obj(outer, "outer.obj")
     export_to_obj(inner, "inner.obj")
@@ -55,6 +60,19 @@ def test_panel_generation_offsetmap(polyhedron_cutout_sloped):
     )
 
     def local_prioritize(face_indices):
-        return prioritize(outer, face_indices)
+        return prioritize(outer, face_indices, [7,8,9])
     panels = generate_panel_shapes(outer, inner, local_prioritize)
     assert len(panels) == 3
+
+
+def test_cut_check_for_concave_corners(polyhedron_cutout_sloped):
+    outer = polyhedron_cutout_sloped()
+    inner = outer.apply_offset(offset=Decimal(-10))
+    def local_prioritize(face_indices):
+        return prioritize(outer, face_indices, [])
+    exception = False
+    try:
+        panels = generate_panel_shapes(outer, inner, local_prioritize)
+    except ValueError:
+        exception = True
+    assert exception, "face cut caused by priorities on a concave corner has not been detected"
