@@ -83,6 +83,54 @@ def is_face_corner_concave(face: Face, corner_index: int) -> bool:
     return previous_vector.crossProduct(next_vector).dotProduct(normal) < 0
 
 
+def select_inner_vertex_position(
+    outer_polyhedron: Polyhedron,
+    inner_polyhedron: Polyhedron,
+    face_indices: [int], #the active face is the first one
+    priorities: [int]
+)->Vector3d:
+    """
+    Prefers inner planes, but cuts through panels with lower priority
+    """
+    planes = [inner_polyhedron.faces[face_indices[0]].plane]
+    for c in range(1, 3):
+        surface = inner_polyhedron
+        invertor = 1
+        if is_angle_internal(
+            outer_polyhedron.faces[face_indices[0]],
+            outer_polyhedron.faces[face_indices[c]],
+        ):
+            invertor = -1
+        if priorities[c] * invertor > priorities[0] * invertor:
+            surface = outer_polyhedron
+        planes.append(surface.faces[face_indices[c]].plane)
+    return compute_three_planes_intersection(planes[0], planes[1], planes[2])
+
+
+def select_outer_vertex_position(
+    outer_polyhedron: Polyhedron,
+    inner_polyhedron: Polyhedron,
+    face_indices: [int], #the active face is the first one
+    priorities: [int]
+)->Vector3d:
+    """
+    Prefers inner planes, but cuts through panels with lower priority
+    """
+    planes = [outer_polyhedron.faces[face_indices[0]].plane]
+    for c in range(1, 3):
+        surface = outer_polyhedron
+        invertor = 1
+        if is_angle_internal(
+            outer_polyhedron.faces[face_indices[0]],
+            outer_polyhedron.faces[face_indices[c]],
+        ):
+            invertor = -1
+        if priorities[c] * invertor < priorities[0] * invertor:
+            surface = inner_polyhedron
+        planes.append(surface.faces[face_indices[c]].plane)
+    return compute_three_planes_intersection(planes[0], planes[1], planes[2])
+
+
 def generate_panel_shapes(
     outer_polyhedron: Polyhedron, inner_polyhedron: Polyhedron, prioritizer
 ) -> dict[int, Polyhedron]:
@@ -138,36 +186,16 @@ def generate_panel_shapes(
                             f"generate_panel_shapes: priorities on concave corner #{vertex_index} require to make a cut into face #{face_index}"
                         )
             # inner
-            planes = [inner_polyhedron.faces[face_index].plane]
-            for c in range(1, 3):
-                surface = inner_polyhedron
-                invertor = 1
-                if is_angle_internal(
-                    outer_polyhedron.faces[face_index],
-                    outer_polyhedron.faces[adjacent_face_indices[c]],
-                ):
-                    invertor = -1
-                if priorities[c] * invertor > current_priority * invertor:
-                    surface = outer_polyhedron
-                planes.append(surface.faces[adjacent_face_indices[c]].plane)
-            inner[vertex_index] = make_vertex(
-                compute_three_planes_intersection(planes[0], planes[1], planes[2])
-            )
+            inner[vertex_index] = make_vertex(select_inner_vertex_position(
+                outer_polyhedron,
+                inner_polyhedron,
+                adjacent_face_indices,
+                priorities))
             # outer
-            planes = [outer_polyhedron.faces[face_index].plane]
-            for c in range(1, 3):
-                surface = outer_polyhedron
-                invertor = 1
-                if is_angle_internal(
-                    outer_polyhedron.faces[face_index],
-                    outer_polyhedron.faces[adjacent_face_indices[c]],
-                ):
-                    invertor = -1
-                if priorities[c] * invertor < current_priority * invertor:
-                    surface = inner_polyhedron
-                planes.append(surface.faces[adjacent_face_indices[c]].plane)
-            outer[vertex_index] = make_vertex(
-                compute_three_planes_intersection(planes[0], planes[1], planes[2])
-            )
+            outer[vertex_index] = make_vertex(select_outer_vertex_position(
+                outer_polyhedron,
+                inner_polyhedron,
+                adjacent_face_indices,
+                priorities))
         panels[face_index] = make_plate(outer, inner)
     return panels
