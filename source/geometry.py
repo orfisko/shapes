@@ -15,7 +15,7 @@ def calculate_contour_normal(points: list[Vector3d]):
     for index in range(len(points)):
         next = (index + 1) % len(points)
         sum += points[index].crossProduct(points[next])
-    return sum / sum.length()
+    return sum / sum.length
 
 
 def compute_line_plane_intersection(line: Line3d, plane: Plane3d) -> Vector3d:
@@ -31,9 +31,9 @@ def compute_line_plane_intersection(line: Line3d, plane: Plane3d) -> Vector3d:
 
 
 def compute_two_planes_intersection(plane1: Plane3d, plane2: Plane3d) -> Line3d:
-    line_direction = plane1.normal.crossProduct(plane2.normal).normalized()
+    line_direction = plane1.normal.crossProduct(plane2.normal).normalized
     line_position = compute_line_plane_intersection(
-        Line3d(plane1.origin, line_direction.crossProduct(plane1.normal).normalized()),
+        Line3d(plane1.origin, line_direction.crossProduct(plane1.normal).normalized),
         plane2,
     )
     return Line3d(line_position, line_direction)

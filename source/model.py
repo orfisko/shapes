@@ -4,14 +4,17 @@ import math
 from _decimal import Decimal
 from collections import defaultdict
 from copy import deepcopy
+from enum import Enum
 from typing import Optional, List, DefaultDict
 
-from pydantic import confloat, ConfigDict, model_validator
+from pydantic import confloat, ConfigDict, model_validator, PrivateAttr
 from pydantic.dataclasses import dataclass
 
 default_config = dict(
     slots=True,
-    config=ConfigDict(validate_assignment=True, arbitrary_types_allowed=True),
+    config=ConfigDict(
+        validate_assignment=True, arbitrary_types_allowed=True, frozen=True
+    ),
 )
 
 
@@ -21,12 +24,16 @@ class Vertex:
     y: Decimal
     z: Decimal
     normal: Optional[Normal] = None  # This can allow to cache the normal
+    _cached_vector: Vector3d = None
 
     def __add__(self, other):
         return Vertex(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
 
+    @property
     def vector(self) -> Vector3d:
-        return Vector3d(float(self.x), float(self.y), float(self.z))
+        if not self._cached_vector:
+            self._cached_vector = Vector3d(float(self.x), float(self.y), float(self.z))
+        return self._cached_vector
 
 
 @dataclass(**default_config)
@@ -39,14 +46,22 @@ class Normal:
 @dataclass(**default_config)
 class Face:
     vertices: List[Vertex]
+    _cached_plane: Plane3d = None
 
-    def compute_plane(self):
-        from source.geometry import calculate_contour_normal
+    @property
+    def plane(self):
+        if not self._cached_plane:
+            from source.geometry import calculate_contour_normal
 
-        return Plane3d(
-            origin=self.vertices[0].vector(),
-            normal=calculate_contour_normal([v.vector() for v in self.vertices]),
-        )
+            return Plane3d(
+                origin=self.vertices[0].vector,
+                normal=calculate_contour_normal([v.vector for v in self.vertices]),
+            )
+        return self._cached_plane
+
+    @property
+    def orientation(self) -> Orientation:
+        return self.plane.orientation
 
 
 @dataclass(**default_config)
@@ -119,9 +134,9 @@ class Polyhedron:
                 )
             planes = []
             for face_index in adjacent_face_indices:
-                plane = self.faces[face_index].compute_plane()
+                plane = self.faces[face_index].plane
                 face_offset = float(offset_map[face_index])
-                plane.origin += plane.normal.normalized() * face_offset
+                plane.origin += plane.normal.normalized * face_offset
                 planes.append(plane)
             new_position = compute_three_planes_intersection(
                 planes[0], planes[1], planes[2]
@@ -190,20 +205,54 @@ class Vector3d:
             self.x * other.y - self.y * other.x,
         )
 
+    @property
     def squaredLength(self):
         return self.dotProduct(self)
 
+    @property
     def length(self):
-        return math.sqrt(self.squaredLength())
+        return math.sqrt(self.squaredLength)
 
+    @property
     def normalized(self):
-        return self / self.length()
+        return self / self.length
+
+
+class Orientation(Enum):
+    """Indicates which absolute normals are different from 0"""
+
+    X = "X"  # Vertical - typically used for tops, bottoms and shelves
+    Y = "Y"  # Horizontal - typically used for sides
+    Z = "Z"  # Depth - typically used for front and backpanels
+    XY = "XY"  # Sloped panels in XY
+    YZ = "YZ"  # Sloped panels in YZ
+    OTHER = "OTHER"  # Other orientation
 
 
 @dataclass(**default_config)
 class Plane3d:
     origin: Vector3d
     normal: Vector3d
+
+    @property
+    def orientation(self) -> Orientation:
+        normal_length = self.normal.length * 0.99
+        types = []
+
+        abs_x = math.fabs(self.normal.x)
+        if abs_x > normal_length:
+            return Orientation.X
+        abs_y = math.fabs(self.normal.y)
+        if abs_y > normal_length:
+            return Orientation.Y
+        abs_z = math.fabs(self.normal.z)
+        if abs_z > normal_length:
+            return Orientation.Z
+        if abs_x + abs_y > normal_length:
+            return Orientation.XY
+        if abs_y + abs_z > normal_length:
+            return Orientation.YZ
+        return Orientation.OTHER
 
 
 @dataclass(**default_config)
