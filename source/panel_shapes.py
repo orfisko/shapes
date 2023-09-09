@@ -44,11 +44,13 @@ def are_faces_different(face1: Face, face2: Face, tolerance: float) -> bool:
     return math.fabs(distance) > tolerance
 
 
+def swap_list_elements(list,index1,index2):
+    if index1!=index2:
+        list[index1], list[index2] = list[index2], list[index1]
+
+
 def put_value_at_start(list, value):
-    index = list.index(value)
-    if index != 0:
-        list[0], list[index] = list[index], list[0]
-    return list
+    swap_list_elements(list, 0, list.index(value))
 
 
 def find_common_edge_direction(face1: Face, face2: Face) -> Vector3d:
@@ -113,7 +115,18 @@ def generate_panel_shapes(
         for vertex_index in range(len(outer)):
             adjacent_face_indices = vertex_id_to_face_indices[id(outer[vertex_index])]
             put_value_at_start(adjacent_face_indices, face_index)
-            priorities = prioritizer(adjacent_face_indices)
+            priorities=[]
+            if not face_has_offset[adjacent_face_indices[1]]:#make suure that all panel-less faces are at the end
+                swap_list_elements(adjacent_face_indices, 1, 2)
+            if not face_has_offset[adjacent_face_indices[1]]:
+                #no real need to compare faces - only one of them will get a panel
+                priorities = [1,1,1]
+            elif not face_has_offset[adjacent_face_indices[2]]:
+                #only two faces get panels, prioritize them and give something non-conflicting to the third one
+                priorities = prioritizer(adjacent_face_indices[0:2])
+                priorities.append(priorities[1])
+            else:
+                priorities = prioritizer(adjacent_face_indices)
             current_priority = priorities[0]
             if is_face_corner_concave(outer_polyhedron.faces[face_index], vertex_index):
                 if (

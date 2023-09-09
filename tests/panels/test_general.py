@@ -127,3 +127,21 @@ def test_that_panels_are_between_inner_and_outer(polyhedron_cutout_sloped):
                 ) >= -0.01, (
                     f"panel #{face_index} is behind the corresponding inner face"
                 )
+
+
+def test_that_prioritization_for_one_face_is_not_asked(polyhedron_cutout_sloped):
+    outer = polyhedron_cutout_sloped()
+    inner = outer.apply_offset(offset_map={0: Decimal(-50)})
+    def local_prioritize(face_indices):
+        assert False, "meaningless prioritization has been requested when only one face needs a panel"
+        return prioritize(outer, face_indices, [7, 8, 9])
+    generate_panel_shapes(outer, inner, local_prioritize)
+
+
+def test_that_prioritization_skips_faces_without_panels(polyhedron_cutout_sloped):
+    outer = polyhedron_cutout_sloped()
+    inner = outer.apply_offset(offset_map={0: Decimal(-50), 1: Decimal(-50)})
+    def local_prioritize(face_indices):
+        assert len(face_indices)==2, "a face not needing a panel has been asked to prioritize"
+        return prioritize(outer, face_indices, [7, 8, 9])
+    generate_panel_shapes(outer, inner, local_prioritize)
