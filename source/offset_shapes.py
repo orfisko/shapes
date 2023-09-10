@@ -1,7 +1,7 @@
 from collections import defaultdict
 from typing import DefaultDict, List
 
-from source.geometry import *
+from source.general import *
 from source.model import Vertex, Face, Polyhedron
 
 import math
@@ -44,8 +44,8 @@ def are_faces_different(face1: Face, face2: Face, tolerance: float) -> bool:
     return math.fabs(distance) > tolerance
 
 
-def swap_list_elements(list,index1,index2):
-    if index1!=index2:
+def swap_list_elements(list, index1, index2):
+    if index1 != index2:
         list[index1], list[index2] = list[index2], list[index1]
 
 
@@ -86,9 +86,9 @@ def is_face_corner_concave(face: Face, corner_index: int) -> bool:
 def select_inner_vertex_position(
     outer_polyhedron: Polyhedron,
     inner_polyhedron: Polyhedron,
-    face_indices: [int], #the active face is the first one
-    priorities: [int]
-)->Vector3d:
+    face_indices: [int],  # the active face is the first one
+    priorities: [int],
+) -> Vector3d:
     """
     Prefers inner planes, but cuts through panels with lower priority
     """
@@ -110,9 +110,9 @@ def select_inner_vertex_position(
 def select_outer_vertex_position(
     outer_polyhedron: Polyhedron,
     inner_polyhedron: Polyhedron,
-    face_indices: [int], #the active face is the first one
-    priorities: [int]
-)->Vector3d:
+    face_indices: [int],  # the active face is the first one
+    priorities: [int],
+) -> Vector3d:
     """
     Prefers inner planes, but cuts through panels with lower priority
     """
@@ -163,14 +163,16 @@ def generate_panel_shapes(
         for vertex_index in range(len(outer)):
             adjacent_face_indices = vertex_id_to_face_indices[id(outer[vertex_index])]
             put_value_at_start(adjacent_face_indices, face_index)
-            priorities=[]
-            if not face_has_offset[adjacent_face_indices[1]]:#make suure that all panel-less faces are at the end
+            priorities = []
+            if not face_has_offset[
+                adjacent_face_indices[1]
+            ]:  # make suure that all panel-less faces are at the end
                 swap_list_elements(adjacent_face_indices, 1, 2)
             if not face_has_offset[adjacent_face_indices[1]]:
-                #no real need to compare faces - only one of them will get a panel
-                priorities = [1,1,1]
+                # no real need to compare faces - only one of them will get a panel
+                priorities = [1, 1, 1]
             elif not face_has_offset[adjacent_face_indices[2]]:
-                #only two faces get panels, prioritize them and give something non-conflicting to the third one
+                # only two faces get panels, prioritize them and give something non-conflicting to the third one
                 priorities = prioritizer(adjacent_face_indices[0:2])
                 priorities.append(priorities[1])
             else:
@@ -186,16 +188,22 @@ def generate_panel_shapes(
                             f"generate_panel_shapes: priorities on concave corner #{vertex_index} require to make a cut into face #{face_index}"
                         )
             # inner
-            inner[vertex_index] = make_vertex(select_inner_vertex_position(
-                outer_polyhedron,
-                inner_polyhedron,
-                adjacent_face_indices,
-                priorities))
+            inner[vertex_index] = make_vertex(
+                select_inner_vertex_position(
+                    outer_polyhedron,
+                    inner_polyhedron,
+                    adjacent_face_indices,
+                    priorities,
+                )
+            )
             # outer
-            outer[vertex_index] = make_vertex(select_outer_vertex_position(
-                outer_polyhedron,
-                inner_polyhedron,
-                adjacent_face_indices,
-                priorities))
+            outer[vertex_index] = make_vertex(
+                select_outer_vertex_position(
+                    outer_polyhedron,
+                    inner_polyhedron,
+                    adjacent_face_indices,
+                    priorities,
+                )
+            )
         panels[face_index] = make_plate(outer, inner)
     return panels

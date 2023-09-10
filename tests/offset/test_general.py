@@ -1,6 +1,6 @@
 from _decimal import Decimal
 
-from source.geometry import *
+from source.general import *
 
 
 def test_that_topology_is_the_same(polyhedron_cutout_sloped):
