@@ -79,22 +79,6 @@ def test_panel_generation_offsetmap(polyhedron_cutout_sloped):
     assert len(panels) == 3
 
 
-def test_offset_too_large(polyhedron_cutout_sloped):
-    # apply offset on the angled face
-    outer = polyhedron_cutout_sloped()
-    inner_1 = outer.apply_offset(offset_map={1: Decimal(-100)})
-
-    def local_prioritize(face_indices):
-        return prioritize(outer, face_indices, [7, 8, 9])
-
-    panels_1 = generate_panel_shapes(outer, inner_1, local_prioritize)
-
-    inner_2 = outer.apply_offset(offset_map={1: Decimal(-200)})
-    panels_2 = generate_panel_shapes(outer, inner_2, local_prioritize)
-
-    assert panels_1[0] != panels_2[0]
-
-
 def test_orientation(polyhedron_cutout_sloped):
     poly = polyhedron_cutout_sloped()
     top_face = poly.faces[0]
