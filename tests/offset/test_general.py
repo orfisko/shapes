@@ -65,6 +65,16 @@ def test_that_input_and_output_do_not_reference_same_objects(polyhedron_cutout_s
                     ), "The output shares a vertex object with the input"
 
 
+def test_error_when_the_cut_covers_whole_faces(polyhedron_cutout_sloped):
+    input = polyhedron_cutout_sloped()
+    exception = False
+    try:
+        input.apply_offset(offset_map={1: Decimal(-200)})
+    except ValueError:
+        exception = True
+    assert exception, "offset which removes a face has not generated an exception"
+
+
 def makeVector(vertex):
     return Vector3d(vertex.x, vertex.y, vertex.z)
 

@@ -137,6 +137,11 @@ class Polyhedron:
             vertex.x = Decimal(round(new_position.x, 1))
             vertex.y = Decimal(round(new_position.y, 1))
             vertex.z = Decimal(round(new_position.z, 1))
+        for index in range(len(self.faces)):
+            original_normal = self.faces[index].plane.normal
+            offset_normal = offset_poly.faces[index].plane.normal
+            if original_normal.dotProduct(offset_normal)<0:
+                raise ValueError("offset completely removed one face")
         return offset_poly
 
 
