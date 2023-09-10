@@ -21,12 +21,12 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout_sloped):
     )
 
     # Collect distinct values in a set
-    distinct_front_z = {vertex.z for vertex in poly.faces[5].vertices}
+    distinct_front_z = {vertex.z for vertex in poly.faces[5].vectors}
     # In case the front face is not offset, the z coordinate should remain unchanged
     assert distinct_front_z == {Decimal(0)}, f"Expected 0, got {distinct_front_z}"
 
     # Collect distinct values in a set
-    distinct_back_z = {vertex.z for vertex in poly.faces[6].vertices}
+    distinct_back_z = {vertex.z for vertex in poly.faces[6].vectors}
     # In case the front face is not offset, the z coordinate should remain unchanged
     assert distinct_back_z == {Decimal(-600)}, f"Expected 0, got {distinct_back_z}"
 
@@ -43,7 +43,7 @@ def test_that_the_offset_has_been_done(polyhedron_cutout_sloped):
         assert (
             output_plane.normal - input_plane.normal
         ).length < 0.001, f"Face #{face_index} has a different normal after offset"
-        for vertex in output.faces[face_index].vertices:
+        for vertex in output.faces[face_index].vectors:
             distance_to_plane = calculate_signed_distance_to_plane(
                 vertex.vector, input_plane
             )

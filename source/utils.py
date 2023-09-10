@@ -4,7 +4,7 @@ def export_to_obj(polyhedron, path):
         vertex_indices = {}
         next_index = 1
         for face in polyhedron.faces:
-            for vertex in face.vertices:
+            for vertex in face.vectors:
                 if not id(vertex) in vertex_indices:
                     file.write(
                         "v "
@@ -18,6 +18,6 @@ def export_to_obj(polyhedron, path):
                     vertex_indices[id(vertex)] = next_index
                     next_index += 1
             file.write("f")
-            for vertex in face.vertices:
+            for vertex in face.vectors:
                 file.write(" " + str(vertex_indices[id(vertex)]))
             file.write("\n")

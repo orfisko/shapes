@@ -7,7 +7,7 @@ from copy import deepcopy
 from enum import Enum
 from typing import Optional, List, DefaultDict
 
-from pydantic import confloat, ConfigDict, model_validator, PrivateAttr
+from pydantic import confloat, ConfigDict, model_validator
 from pydantic.dataclasses import dataclass
 
 default_config = dict(
@@ -19,21 +19,6 @@ default_config = dict(
 
 
 @dataclass(**default_config)
-class Vertex:
-    x: Decimal
-    y: Decimal
-    z: Decimal
-    normal: Optional[Normal] = None  # This can allow to cache the normal
-
-    def __add__(self, other):
-        return Vertex(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
-
-    @property
-    def vector(self) -> Vector3d:
-        return Vector3d(float(self.x), float(self.y), float(self.z))
-
-
-@dataclass(**default_config)
 class Normal:
     x: confloat(ge=-1, le=1)
     y: confloat(ge=-1, le=1)
@@ -42,15 +27,15 @@ class Normal:
 
 @dataclass(**default_config)
 class Face:
-    vertices: List[Vertex]
+    vectors: List[Vector3d]
 
     @property
     def plane(self):
         from source.general import calculate_contour_normal
 
         return Plane3d(
-            origin=self.vertices[0].vector,
-            normal=calculate_contour_normal([v.vector for v in self.vertices]),
+            origin=self.vectors[0],
+            normal=calculate_contour_normal(self.vectors),
         )
 
     @property
@@ -65,12 +50,12 @@ class Polyhedron:
     def __deepcopy__(self, memodict=None) -> Polyhedron:
         memodict = {}
         for face in self.faces:
-            for vertex in face.vertices:
-                if not (id(vertex) in memodict):
-                    memodict[id(vertex)] = Vertex(vertex.x, vertex.y, vertex.z)
+            for vector in face.vectors:
+                if not (id(vector) in memodict):
+                    memodict[id(vector)] = vector
         return Polyhedron(
             faces=[
-                Face(vertices=[memodict[id(v)] for v in face.vertices])
+                Face(vectors=[memodict[id(v)] for v in face.vectors])
                 for face in self.faces
             ]
         )
@@ -113,7 +98,7 @@ class Polyhedron:
         vertex_to_face_indices: DefaultDict[int, List[int]] = defaultdict(list)
         vertices = []
         for face_index in range(len(offset_poly.faces)):
-            for vertex in offset_poly.faces[face_index].vertices:
+            for vertex in offset_poly.faces[face_index].vectors:
                 if not (id(vertex) in vertex_to_face_indices):
                     # vertex_to_face_indices[id(vertex)] = []
                     vertices.append(vertex)
@@ -140,19 +125,19 @@ class Polyhedron:
         for index in range(len(self.faces)):
             original_normal = self.faces[index].plane.normal
             offset_normal = offset_poly.faces[index].plane.normal
-            if original_normal.dotProduct(offset_normal)<0:
+            if original_normal.dotProduct(offset_normal) < 0:
                 raise ValueError("offset completely removed one face")
         return offset_poly
 
 
 @dataclass(**default_config)
 class SliceInterval:
-    x0: Decimal = None
-    x1: Decimal = None
-    y0: Decimal = None
-    y1: Decimal = None
-    z0: Decimal = None
-    z1: Decimal = None
+    x0: float = None
+    x1: float = None
+    y0: float = None
+    y1: float = None
+    z0: float = None
+    z1: float = None
 
     @model_validator(mode="after")
     @classmethod
@@ -170,9 +155,9 @@ class SliceInterval:
 
 @dataclass
 class Slice:
-    x: Decimal = None
-    y: Decimal = None
-    z: Decimal = None
+    x: float = None
+    y: float = None
+    z: float = None
 
 
 @dataclass(**default_config)

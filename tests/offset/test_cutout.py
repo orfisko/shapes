@@ -3,16 +3,16 @@ from _decimal import Decimal
 
 def test_offset_all_faces(polyhedron_cutout):
     poly = polyhedron_cutout()
-    offset_poly = poly.apply_offset(offset=Decimal(18))
+    offset_poly = poly.apply_offset(offset=float(18))
 
-    left = Decimal(0 - 18)
-    right = Decimal(1200 + 18)
-    top = Decimal(2500 + 18)
-    bottom = Decimal(0 - 18)
-    back = Decimal(-600 - 18)
-    front = Decimal(0 + 18)
-    cutout_z = Decimal(-300 - 18)
-    cutout_x = Decimal(500 + 18)
+    left = float(0 - 18)
+    right = float(1200 + 18)
+    top = float(2500 + 18)
+    bottom = float(0 - 18)
+    back = float(-600 - 18)
+    front = float(0 + 18)
+    cutout_z = float(-300 - 18)
+    cutout_x = float(500 + 18)
 
     check_poly = polyhedron_cutout(
         left=left,
@@ -42,7 +42,7 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout):
         for poly in (poly, new_poly)
         for idx, face in enumerate(poly.faces)
         if idx == 4
-        for vertex in face.vertices
+        for vertex in face.vectors
     }
     # In case the front face is not offset, the z coordinate should remain unchanged
     assert (
@@ -55,7 +55,7 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout):
         for poly in (poly, new_poly)
         for idx, face in enumerate(poly.faces)
         if idx == 4
-        for vertex in face.vertices
+        for vertex in face.vectors
     }
     # In case the back face is not offset, the z coordinate should remain unchanged
     assert (

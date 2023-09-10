@@ -2,36 +2,36 @@ from _decimal import Decimal
 
 from _pytest.fixtures import fixture
 
-from source.model import Vertex, Face, Polyhedron
+from source.model import Face, Polyhedron, Vector3d
 
 
 def polyhedron_cutout_fixture(
-    left=Decimal(0),
-    right=Decimal(1200),
-    top=Decimal(2500),
-    bottom=Decimal(0),
-    back=Decimal(-600),
-    front=Decimal(0),
-    cutout_z=Decimal(-300),
-    cutout_x=Decimal(500),
+    left=float(0),
+    right=float(1200),
+    top=float(2500),
+    bottom=float(0),
+    back=float(-600),
+    front=float(0),
+    cutout_z=float(-300),
+    cutout_x=float(500),
 ) -> Polyhedron:
     # Front Face vertices
-    A = Vertex(x=left, y=top, z=front)
-    B = Vertex(x=left, y=bottom, z=front)
-    C = Vertex(x=right, y=bottom, z=front)
-    D = Vertex(x=right, y=top, z=front)
+    A = Vector3d(x=left, y=top, z=front)
+    B = Vector3d(x=left, y=bottom, z=front)
+    C = Vector3d(x=right, y=bottom, z=front)
+    D = Vector3d(x=right, y=top, z=front)
 
     # Back Face vertices
-    E = Vertex(x=left, y=top, z=back)
-    F = Vertex(x=left, y=bottom, z=back)
-    G = Vertex(x=cutout_x, y=bottom, z=back)
-    H = Vertex(x=cutout_x, y=top, z=back)
+    E = Vector3d(x=left, y=top, z=back)
+    F = Vector3d(x=left, y=bottom, z=back)
+    G = Vector3d(x=cutout_x, y=bottom, z=back)
+    H = Vector3d(x=cutout_x, y=top, z=back)
 
     # Front cutout
-    I = Vertex(x=cutout_x, y=top, z=cutout_z)
-    J = Vertex(x=cutout_x, y=bottom, z=cutout_z)
-    K = Vertex(x=right, y=bottom, z=cutout_z)
-    L = Vertex(x=right, y=top, z=cutout_z)
+    I = Vector3d(x=cutout_x, y=top, z=cutout_z)
+    J = Vector3d(x=cutout_x, y=bottom, z=cutout_z)
+    K = Vector3d(x=right, y=bottom, z=cutout_z)
+    L = Vector3d(x=right, y=top, z=cutout_z)
 
     check = set(
         eval(f"'{letter}'") for letter in map(chr, range(ord("A"), ord("L") + 1))
@@ -40,23 +40,23 @@ def polyhedron_cutout_fixture(
 
     # Faces definition - counterclockwise -> threejs only renders one side of the face
     # 8 faces
-    TOP = Face(vertices=[H, E, A, D, L, I])
-    assert {vertex.y for vertex in TOP.vertices} == {top}
-    RIGHT = Face(vertices=[L, D, C, K])
-    assert {vertex.x for vertex in RIGHT.vertices} == {right}
-    BOTTOM = Face(vertices=[F, G, J, K, C, B])
-    assert {vertex.y for vertex in BOTTOM.vertices} == {bottom}
-    LEFT = Face(vertices=[A, E, F, B])
-    assert {vertex.x for vertex in LEFT.vertices} == {left}
-    FRONT = Face(vertices=[A, B, C, D])
-    assert {vertex.z for vertex in FRONT.vertices} == {front}
-    BACK = Face(vertices=[E, H, G, F])
-    assert {vertex.z for vertex in BACK.vertices} == {back}
+    TOP = Face(vectors=[H, E, A, D, L, I])
+    assert {vertex.y for vertex in TOP.vectors} == {top}
+    RIGHT = Face(vectors=[L, D, C, K])
+    assert {vertex.x for vertex in RIGHT.vectors} == {right}
+    BOTTOM = Face(vectors=[F, G, J, K, C, B])
+    assert {vertex.y for vertex in BOTTOM.vectors} == {bottom}
+    LEFT = Face(vectors=[A, E, F, B])
+    assert {vertex.x for vertex in LEFT.vectors} == {left}
+    FRONT = Face(vectors=[A, B, C, D])
+    assert {vertex.z for vertex in FRONT.vectors} == {front}
+    BACK = Face(vectors=[E, H, G, F])
+    assert {vertex.z for vertex in BACK.vectors} == {back}
 
-    RIGHT_CUTOUT = Face(vertices=[G, H, I, J])
-    assert {vertex.x for vertex in RIGHT_CUTOUT.vertices} == {cutout_x}
-    FRONT_CUTOUT = Face(vertices=[K, J, I, L])
-    assert {vertex.z for vertex in FRONT_CUTOUT.vertices} == {cutout_z}
+    RIGHT_CUTOUT = Face(vectors=[G, H, I, J])
+    assert {vertex.x for vertex in RIGHT_CUTOUT.vectors} == {cutout_x}
+    FRONT_CUTOUT = Face(vectors=[K, J, I, L])
+    assert {vertex.z for vertex in FRONT_CUTOUT.vectors} == {cutout_z}
 
     return Polyhedron(
         faces=[
@@ -73,40 +73,40 @@ def polyhedron_cutout_fixture(
 
 
 def polyhedron_cutout_slope_fixture(
-    left=Decimal(0),
-    right=Decimal(1200),
-    top=Decimal(2500),
-    bottom=Decimal(0),
-    back=Decimal(-600),
-    front=Decimal(0),
-    angle_x=Decimal(350),  # Start point in X of the angle on right hand side
-    angle_y=Decimal(2000),  # Start point in Y of the angle on right hand side
-    cutout_z=Decimal(-300),
-    cutout_x=Decimal(200),
-    cutout_y=Decimal(400),
+    left=float(0),
+    right=float(1200),
+    top=float(2500),
+    bottom=float(0),
+    back=float(-600),
+    front=float(0),
+    angle_x=float(350),  # Start point in X of the angle on right hand side
+    angle_y=float(2000),  # Start point in Y of the angle on right hand side
+    cutout_z=float(-300),
+    cutout_x=float(200),
+    cutout_y=float(400),
 ) -> Polyhedron:
     # Front Face vertices
-    A = Vertex(x=left, y=top, z=front)
-    B = Vertex(x=left, y=bottom, z=front)
-    C = Vertex(x=right, y=bottom, z=front)
-    D = Vertex(x=right, y=angle_y, z=front)
-    E = Vertex(x=angle_x, y=top, z=front)
+    A = Vector3d(x=left, y=top, z=front)
+    B = Vector3d(x=left, y=bottom, z=front)
+    C = Vector3d(x=right, y=bottom, z=front)
+    D = Vector3d(x=right, y=angle_y, z=front)
+    E = Vector3d(x=angle_x, y=top, z=front)
 
     # Back Face vertices
-    F = Vertex(x=left, y=top, z=back)
-    G = Vertex(x=angle_x, y=top, z=back)
-    H = Vertex(x=right, y=angle_y, z=back)
-    I = Vertex(x=right, y=cutout_y, z=back)
-    J = Vertex(x=cutout_x, y=cutout_y, z=back)
-    K = Vertex(x=cutout_x, y=bottom, z=back)
-    L = Vertex(x=left, y=bottom, z=back)
+    F = Vector3d(x=left, y=top, z=back)
+    G = Vector3d(x=angle_x, y=top, z=back)
+    H = Vector3d(x=right, y=angle_y, z=back)
+    I = Vector3d(x=right, y=cutout_y, z=back)
+    J = Vector3d(x=cutout_x, y=cutout_y, z=back)
+    K = Vector3d(x=cutout_x, y=bottom, z=back)
+    L = Vector3d(x=left, y=bottom, z=back)
 
     # Left Face - No additional vertices needed
     # Right Face - 1 additional vertex
-    M = Vertex(x=right, y=cutout_y, z=cutout_z)
-    N = Vertex(x=right, y=bottom, z=cutout_z)
-    O = Vertex(x=cutout_x, y=bottom, z=cutout_z)
-    P = Vertex(x=cutout_x, y=cutout_y, z=cutout_z)
+    M = Vector3d(x=right, y=cutout_y, z=cutout_z)
+    N = Vector3d(x=right, y=bottom, z=cutout_z)
+    O = Vector3d(x=cutout_x, y=bottom, z=cutout_z)
+    P = Vector3d(x=cutout_x, y=cutout_y, z=cutout_z)
 
     check = set(
         eval(f"'{letter}'") for letter in map(chr, range(ord("A"), ord("P") + 1))
@@ -115,23 +115,23 @@ def polyhedron_cutout_slope_fixture(
 
     # Faces definition - counterclockwise -> threejs only renders one side of the face
     # 10 faces
-    TOP = Face(vertices=[A, E, G, F])
-    assert {vertex.y for vertex in TOP.vertices} == {top}
-    RIGHT = Face(vertices=[N, M, I, H, D, C])
-    assert {vertex.x for vertex in RIGHT.vertices} == {right}
-    BOTTOM = Face(vertices=[L, K, O, N, C, B])
-    assert {vertex.y for vertex in BOTTOM.vertices} == {bottom}
-    LEFT = Face(vertices=[F, L, B, A])
-    assert {vertex.x for vertex in LEFT.vertices} == {left}
-    FRONT = Face(vertices=[A, B, C, D, E])
-    assert {vertex.z for vertex in FRONT.vertices} == {front}
-    BACK = Face(vertices=[F, G, H, I, J, K, L])
-    assert {vertex.z for vertex in BACK.vertices} == {back}
+    TOP = Face(vectors=[A, E, G, F])
+    assert {vertex.y for vertex in TOP.vectors} == {top}
+    RIGHT = Face(vectors=[N, M, I, H, D, C])
+    assert {vertex.x for vertex in RIGHT.vectors} == {right}
+    BOTTOM = Face(vectors=[L, K, O, N, C, B])
+    assert {vertex.y for vertex in BOTTOM.vectors} == {bottom}
+    LEFT = Face(vectors=[F, L, B, A])
+    assert {vertex.x for vertex in LEFT.vectors} == {left}
+    FRONT = Face(vectors=[A, B, C, D, E])
+    assert {vertex.z for vertex in FRONT.vectors} == {front}
+    BACK = Face(vectors=[F, G, H, I, J, K, L])
+    assert {vertex.z for vertex in BACK.vectors} == {back}
 
-    RIGHT_ANGLED = Face(vertices=[D, H, G, E])
-    RIGHT_CUTOUT = Face(vertices=[P, O, K, J])
-    TOP_CUTOUT = Face(vertices=[I, M, P, J])
-    FRONT_CUTOUT = Face(vertices=[M, N, O, P])
+    RIGHT_ANGLED = Face(vectors=[D, H, G, E])
+    RIGHT_CUTOUT = Face(vectors=[P, O, K, J])
+    TOP_CUTOUT = Face(vectors=[I, M, P, J])
+    FRONT_CUTOUT = Face(vectors=[M, N, O, P])
 
     return Polyhedron(
         faces=[
