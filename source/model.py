@@ -90,7 +90,6 @@ class Polyhedron:
         Generates a new polyhedron with the offset applied to the vertices. The offset is applied to all faces unless
         an offset_map is supplied. The offset_map is a dictionary with the face index as key and the offset as value.
         Args:
-            polyhedron: the polyhedron for which the offset needs to be applied
             offset: global offset for all faces, defaults to 0 if offset_map is supplied
             offset_map: offset to apply on the face with the specified index as key. Missing values are filled with the
                 offset value
