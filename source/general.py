@@ -45,3 +45,9 @@ def compute_three_planes_intersection(
     return compute_line_plane_intersection(
         compute_two_planes_intersection(plane1, plane2), plane3
     )
+
+
+def calculate_signed_distance_to_plane(
+    point: Vector3d, plane: Plane3d
+) -> float:
+    return (point - plane.origin).dotProduct(plane.normal.normalized)

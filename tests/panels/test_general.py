@@ -6,6 +6,7 @@ import pytest
 from source.model import Orientation
 from source.offset_shapes import generate_panel_shapes
 from source.utils import *
+from source.general import calculate_signed_distance_to_plane
 
 
 def prioritize(outer, face_indices, super_important_face_indices) -> list[int]:
@@ -117,14 +118,10 @@ def test_that_panels_are_between_inner_and_outer(polyhedron_cutout_sloped):
         for panel_face in panel.faces:
             for vertex in panel_face.vertices:
                 position = vertex.vector
-                assert (position - outer_plane.origin).dotProduct(
-                    outer_plane.normal
-                ) <= 0.01, (
+                assert calculate_signed_distance_to_plane(position, outer_plane) <= 0.01, (
                     f"panel #{face_index} is in front of the corresponding outer face"
                 )
-                assert (position - inner_plane.origin).dotProduct(
-                    inner_plane.normal
-                ) >= -0.01, (
+                assert calculate_signed_distance_to_plane(position, inner_plane) >= -0.01, (
                     f"panel #{face_index} is behind the corresponding inner face"
                 )
 
