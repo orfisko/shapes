@@ -1,10 +1,8 @@
 import math
 from _decimal import Decimal
 
-from tests.offset.test_general import (
-    calculate_face_normal,
+from source.general import (
     calculate_signed_distance_to_plane,
-    makeVector,
 )
 
 
@@ -40,14 +38,14 @@ def test_that_the_offset_has_been_done(polyhedron_cutout_sloped):
     for face_index in range(len(input.faces)):
         input_face = input.faces[face_index]
         output_face = output.faces[face_index]
-        input_normal = calculate_face_normal(input_face)
-        output_normal = calculate_face_normal(output_face)
+        input_plane = input_face.plane
+        output_plane = output_face.plane
         assert (
-            output_normal - input_normal
+            output_plane.normal - input_plane.normal
         ).length < 0.001, f"Face #{face_index} has a different normal after offset"
         for vertex in output.faces[face_index].vertices:
             distance_to_plane = calculate_signed_distance_to_plane(
-                makeVector(vertex), makeVector(input_face.vertices[0]), input_normal
+                vertex.vector, input_plane
             )
             assert (
                 math.fabs(distance_to_plane - float(offset_distance)) < 0.1

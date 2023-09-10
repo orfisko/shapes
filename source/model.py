@@ -24,16 +24,13 @@ class Vertex:
     y: Decimal
     z: Decimal
     normal: Optional[Normal] = None  # This can allow to cache the normal
-    _cached_vector: Vector3d = None
 
     def __add__(self, other):
         return Vertex(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
 
     @property
     def vector(self) -> Vector3d:
-        if not self._cached_vector:
-            self._cached_vector = Vector3d(float(self.x), float(self.y), float(self.z))
-        return self._cached_vector
+        return Vector3d(float(self.x), float(self.y), float(self.z))
 
 
 @dataclass(**default_config)
@@ -46,18 +43,15 @@ class Normal:
 @dataclass(**default_config)
 class Face:
     vertices: List[Vertex]
-    _cached_plane: Plane3d = None
 
     @property
     def plane(self):
-        if not self._cached_plane:
-            from source.general import calculate_contour_normal
+        from source.general import calculate_contour_normal
 
-            return Plane3d(
-                origin=self.vertices[0].vector,
-                normal=calculate_contour_normal([v.vector for v in self.vertices]),
-            )
-        return self._cached_plane
+        return Plane3d(
+            origin=self.vertices[0].vector,
+            normal=calculate_contour_normal([v.vector for v in self.vertices]),
+        )
 
     @property
     def orientation(self) -> Orientation:
@@ -143,6 +137,11 @@ class Polyhedron:
             vertex.x = Decimal(round(new_position.x, 1))
             vertex.y = Decimal(round(new_position.y, 1))
             vertex.z = Decimal(round(new_position.z, 1))
+        for index in range(len(self.faces)):
+            original_normal = self.faces[index].plane.normal
+            offset_normal = offset_poly.faces[index].plane.normal
+            if original_normal.dotProduct(offset_normal)<0:
+                raise ValueError("offset completely removed one face")
         return offset_poly
 
 

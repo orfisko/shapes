@@ -37,10 +37,7 @@ def make_vertex(position: Vector3d) -> Vertex:
 
 
 def are_faces_different(face1: Face, face2: Face, tolerance: float) -> bool:
-    plane1 = face1.plane
-    distance = (face2.vertices[0].vector - plane1.origin).dotProduct(
-        plane1.normal.normalized
-    )
+    distance = calculate_signed_distance_to_plane(face2.vertices[0].vector, face1.plane)
     return math.fabs(distance) > tolerance
 
 

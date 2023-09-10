@@ -115,23 +115,23 @@ def polyhedron_cutout_slope_fixture(
 
     # Faces definition - counterclockwise -> threejs only renders one side of the face
     # 10 faces
-    TOP = Face(vertices=[F, G, E, A])
+    TOP = Face(vertices=[A, E, G, F])
     assert {vertex.y for vertex in TOP.vertices} == {top}
-    RIGHT = Face(vertices=[C, D, H, I, M, N])
+    RIGHT = Face(vertices=[N, M, I, H, D, C])
     assert {vertex.x for vertex in RIGHT.vertices} == {right}
-    BOTTOM = Face(vertices=[B, C, N, O, K, L])
+    BOTTOM = Face(vertices=[L, K, O, N, C, B])
     assert {vertex.y for vertex in BOTTOM.vertices} == {bottom}
-    LEFT = Face(vertices=[A, B, L, F])
+    LEFT = Face(vertices=[F, L, B, A])
     assert {vertex.x for vertex in LEFT.vertices} == {left}
-    FRONT = Face(vertices=[E, D, C, B, A])
+    FRONT = Face(vertices=[A, B, C, D, E])
     assert {vertex.z for vertex in FRONT.vertices} == {front}
-    BACK = Face(vertices=[L, K, J, I, H, G, F])
+    BACK = Face(vertices=[F, G, H, I, J, K, L])
     assert {vertex.z for vertex in BACK.vertices} == {back}
 
-    RIGHT_ANGLED = Face(vertices=[E, G, H, D])
-    RIGHT_CUTOUT = Face(vertices=[J, K, O, P])
-    TOP_CUTOUT = Face(vertices=[J, P, M, I])
-    FRONT_CUTOUT = Face(vertices=[P, O, N, M])
+    RIGHT_ANGLED = Face(vertices=[D, H, G, E])
+    RIGHT_CUTOUT = Face(vertices=[P, O, K, J])
+    TOP_CUTOUT = Face(vertices=[I, M, P, J])
+    FRONT_CUTOUT = Face(vertices=[M, N, O, P])
 
     return Polyhedron(
         faces=[
