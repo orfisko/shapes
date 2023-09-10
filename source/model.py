@@ -52,7 +52,7 @@ class Polyhedron:
         for face in self.faces:
             for vector in face.vectors:
                 if not (id(vector) in memodict):
-                    memodict[id(vector)] = vector
+                    memodict[id(vector)] = Vector3d(vector.x, vector.y, vector.z)
         return Polyhedron(
             faces=[
                 Face(vectors=[memodict[id(v)] for v in face.vectors])
