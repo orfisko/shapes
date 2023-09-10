@@ -45,7 +45,7 @@ def test_that_the_offset_has_been_done(polyhedron_cutout_sloped):
         ).length < 0.001, f"Face #{face_index} has a different normal after offset"
         for vertex in output.faces[face_index].vectors:
             distance_to_plane = calculate_signed_distance_to_plane(
-                vertex.vector, input_plane
+                vertex, input_plane
             )
             assert (
                 math.fabs(distance_to_plane - float(offset_distance)) < 0.1
