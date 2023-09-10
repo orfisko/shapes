@@ -75,13 +75,5 @@ def test_error_when_the_cut_covers_whole_faces(polyhedron_cutout_sloped):
     assert exception, "offset which removes a face has not generated an exception"
 
 
-def makeVector(vertex):
-    return Vector3d(vertex.x, vertex.y, vertex.z)
-
-
-def calculate_face_normal(face):
-    return calculate_contour_normal([makeVector(v) for v in face.vertices])
-
-
 def calculate_signed_distance_to_plane(point, planePoint, planeNormal):
     return (point - planePoint).dotProduct(planeNormal)
