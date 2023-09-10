@@ -128,7 +128,7 @@ def select_outer_vertex_position(
     return compute_three_planes_intersection(planes[0], planes[1], planes[2])
 
 
-def generate_delta_polyhedrons(
+def generate_delta_polyhedra(
     outer_polyhedron: Polyhedron, inner_polyhedron: Polyhedron, prioritizer
 ) -> dict[int, Polyhedron]:
     """

@@ -4,7 +4,7 @@ from _decimal import Decimal
 import pytest
 
 from source.model import Orientation
-from source.offset_shapes import generate_delta_polyhedrons
+from source.offset_shapes import generate_delta_polyhedra
 from source.utils import *
 from source.general import calculate_signed_distance_to_plane
 
@@ -60,7 +60,7 @@ def test_panel_generation(polyhedron_cutout_sloped):
     def local_prioritize(face_indices):
         return prioritize(outer, face_indices, [7, 8, 9])
 
-    panels = generate_delta_polyhedrons(outer, inner, local_prioritize)
+    panels = generate_delta_polyhedra(outer, inner, local_prioritize)
     export_to_obj(outer, "outer.obj")
     export_to_obj(inner, "inner.obj")
     for panel_index, panel in panels.items():
@@ -76,7 +76,7 @@ def test_panel_generation_offsetmap(polyhedron_cutout_sloped):
     def local_prioritize(face_indices):
         return prioritize(outer, face_indices, [7, 8, 9])
 
-    panels = generate_delta_polyhedrons(outer, inner, local_prioritize)
+    panels = generate_delta_polyhedra(outer, inner, local_prioritize)
     assert len(panels) == 3
 
 
@@ -96,7 +96,7 @@ def test_cut_check_for_concave_corners(polyhedron_cutout_sloped):
 
     exception = False
     try:
-        panels = generate_delta_polyhedrons(outer, inner, local_prioritize)
+        panels = generate_delta_polyhedra(outer, inner, local_prioritize)
     except ValueError:
         exception = True
     assert (
@@ -111,19 +111,19 @@ def test_that_panels_are_between_inner_and_outer(polyhedron_cutout_sloped):
     def local_prioritize(face_indices):
         return prioritize(outer, face_indices, [7, 8, 9])
 
-    panels = generate_delta_polyhedrons(outer, inner, local_prioritize)
+    panels = generate_delta_polyhedra(outer, inner, local_prioritize)
     for face_index, panel in panels.items():
         outer_plane = outer.faces[face_index].plane
         inner_plane = inner.faces[face_index].plane
         for panel_face in panel.faces:
             for vertex in panel_face.vertices:
                 position = vertex.vector
-                assert calculate_signed_distance_to_plane(position, outer_plane) <= 0.01, (
-                    f"panel #{face_index} is in front of the corresponding outer face"
-                )
-                assert calculate_signed_distance_to_plane(position, inner_plane) >= -0.01, (
-                    f"panel #{face_index} is behind the corresponding inner face"
-                )
+                assert (
+                    calculate_signed_distance_to_plane(position, outer_plane) <= 0.01
+                ), f"panel #{face_index} is in front of the corresponding outer face"
+                assert (
+                    calculate_signed_distance_to_plane(position, inner_plane) >= -0.01
+                ), f"panel #{face_index} is behind the corresponding inner face"
 
 
 def test_that_prioritization_for_one_face_is_not_asked(polyhedron_cutout_sloped):
@@ -136,7 +136,7 @@ def test_that_prioritization_for_one_face_is_not_asked(polyhedron_cutout_sloped)
         ), "meaningless prioritization has been requested when only one face needs a panel"
         return prioritize(outer, face_indices, [7, 8, 9])
 
-    generate_delta_polyhedrons(outer, inner, local_prioritize)
+    generate_delta_polyhedra(outer, inner, local_prioritize)
 
 
 def test_that_prioritization_skips_faces_without_panels(polyhedron_cutout_sloped):
@@ -149,4 +149,4 @@ def test_that_prioritization_skips_faces_without_panels(polyhedron_cutout_sloped
         ), "a face not needing a panel has been asked to prioritize"
         return prioritize(outer, face_indices, [7, 8, 9])
 
-    generate_delta_polyhedrons(outer, inner, local_prioritize)
+    generate_delta_polyhedra(outer, inner, local_prioritize)
