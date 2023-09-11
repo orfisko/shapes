@@ -116,7 +116,7 @@ def test_that_panels_are_between_inner_and_outer(polyhedron_cutout_sloped):
         outer_plane = outer.faces[face_index].plane
         inner_plane = inner.faces[face_index].plane
         for panel_face in panel.faces:
-            for vertex in panel_face.vectors:
+            for vertex in panel_face.vertices:
                 assert (
                     calculate_signed_distance_to_plane(vertex, outer_plane) <= 0.01
                 ), f"panel #{face_index} is in front of the corresponding outer face"

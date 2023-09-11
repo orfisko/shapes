@@ -42,7 +42,7 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout):
         for poly in (poly, new_poly)
         for idx, face in enumerate(poly.faces)
         if idx == 4
-        for vertex in face.vectors
+        for vertex in face.vertices
     }
     # In case the front face is not offset, the z coordinate should remain unchanged
     assert (
@@ -55,7 +55,7 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout):
         for poly in (poly, new_poly)
         for idx, face in enumerate(poly.faces)
         if idx == 4
-        for vertex in face.vectors
+        for vertex in face.vertices
     }
     # In case the back face is not offset, the z coordinate should remain unchanged
     assert (

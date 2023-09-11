@@ -27,15 +27,15 @@ class Normal:
 
 @dataclass(**default_config)
 class Face:
-    vectors: List[Vector3d]
+    vertices: List[Vector3d]
 
     @property
     def plane(self):
         from source.general import calculate_contour_normal
 
         return Plane3d(
-            origin=self.vectors[0],
-            normal=calculate_contour_normal(self.vectors),
+            origin=self.vertices[0],
+            normal=calculate_contour_normal(self.vertices),
         )
 
     @property
@@ -50,12 +50,12 @@ class Polyhedron:
     def __deepcopy__(self, memodict=None) -> Polyhedron:
         memodict = {}
         for face in self.faces:
-            for vector in face.vectors:
+            for vector in face.vertices:
                 if not (id(vector) in memodict):
                     memodict[id(vector)] = Vector3d(vector.x, vector.y, vector.z)
         return Polyhedron(
             faces=[
-                Face(vectors=[memodict[id(v)] for v in face.vectors])
+                Face(vertices=[memodict[id(v)] for v in face.vertices])
                 for face in self.faces
             ]
         )
@@ -98,7 +98,7 @@ class Polyhedron:
         vertex_to_face_indices: DefaultDict[int, List[int]] = defaultdict(list)
         vertices = []
         for face_index in range(len(offset_poly.faces)):
-            for vertex in offset_poly.faces[face_index].vectors:
+            for vertex in offset_poly.faces[face_index].vertices:
                 if not (id(vertex) in vertex_to_face_indices):
                     # vertex_to_face_indices[id(vertex)] = []
                     vertices.append(vertex)

@@ -15,12 +15,12 @@ def make_plate(
             "make_plate: outer and inner contours have different number of vertices"
         )
     result = Polyhedron(faces=[])
-    result.faces.append(Face(vectors=outer_face_contour))
+    result.faces.append(Face(vertices=outer_face_contour))
     for edge_index in range(len(outer_face_contour)):
         next_index = (edge_index + 1) % len(outer_face_contour)
         result.faces.append(
             Face(
-                vectors=[
+                vertices=[
                     outer_face_contour[next_index],
                     outer_face_contour[edge_index],
                     inner_face_contour[edge_index],
@@ -28,7 +28,7 @@ def make_plate(
                 ]
             )
         )
-    result.faces.append(Face(vectors=inner_face_contour[::-1]))
+    result.faces.append(Face(vertices=inner_face_contour[::-1]))
     return result
 
 
@@ -37,7 +37,7 @@ def make_vertex(position: Vector3d) -> Vector3d:
 
 
 def are_faces_different(face1: Face, face2: Face, tolerance: float) -> bool:
-    distance = calculate_signed_distance_to_plane(face2.vectors[0], face1.plane)
+    distance = calculate_signed_distance_to_plane(face2.vertices[0], face1.plane)
     return math.fabs(distance) > tolerance
 
 
@@ -51,12 +51,12 @@ def put_value_at_start(list, value):
 
 
 def find_common_edge_direction(face1: Face, face2: Face) -> Vector3d:
-    for edge_index in range(len(face1.vectors)):
-        edge_start = face1.vectors[edge_index]
-        edge_finish = face1.vectors[(edge_index + 1) % len(face1.vectors)]
-        if not (edge_start in face2.vectors):
+    for edge_index in range(len(face1.vertices)):
+        edge_start = face1.vertices[edge_index]
+        edge_finish = face1.vertices[(edge_index + 1) % len(face1.vertices)]
+        if not (edge_start in face2.vertices):
             continue
-        if not (edge_finish in face2.vectors):
+        if not (edge_finish in face2.vertices):
             continue
         return edge_finish - edge_start
     raise ValueError("find_common_edge_direction: the given faces are not adjacent")
@@ -71,10 +71,10 @@ def is_angle_internal(face1: Face, face2: Face) -> bool:
 
 def is_face_corner_concave(face: Face, corner_index: int) -> bool:
     normal = face.plane.normal
-    previous_index = (corner_index - 1) % len(face.vectors)
-    next_index = (corner_index + 1) % len(face.vectors)
-    previous_vector = face.vectors[corner_index] - face.vectors[previous_index]
-    next_vector = face.vectors[next_index] - face.vectors[corner_index]
+    previous_index = (corner_index - 1) % len(face.vertices)
+    next_index = (corner_index + 1) % len(face.vertices)
+    previous_vector = face.vertices[corner_index] - face.vertices[previous_index]
+    next_vector = face.vertices[next_index] - face.vertices[corner_index]
     return previous_vector.crossProduct(next_vector).dotProduct(normal) < 0
 
 
@@ -141,7 +141,7 @@ def generate_delta_polyhedra(
     """
     vertex_id_to_face_indices: DefaultDict[int, List[int]] = defaultdict(list)
     for face_index in range(len(outer_polyhedron.faces)):
-        for vertex in outer_polyhedron.faces[face_index].vectors:
+        for vertex in outer_polyhedron.faces[face_index].vertices:
             vertex_id_to_face_indices[id(vertex)].append(face_index)
     face_has_offset = [
         are_faces_different(
@@ -153,8 +153,8 @@ def generate_delta_polyhedra(
     for face_index in range(len(inner_polyhedron.faces)):
         if not face_has_offset[face_index]:
             continue
-        outer = outer_polyhedron.faces[face_index].vectors[:]
-        inner = inner_polyhedron.faces[face_index].vectors[:]
+        outer = outer_polyhedron.faces[face_index].vertices[:]
+        inner = inner_polyhedron.faces[face_index].vertices[:]
         for vertex_index in range(len(outer)):
             adjacent_face_indices = vertex_id_to_face_indices[id(outer[vertex_index])]
             put_value_at_start(adjacent_face_indices, face_index)

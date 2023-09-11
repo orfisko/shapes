@@ -40,23 +40,23 @@ def polyhedron_cutout_fixture(
 
     # Faces definition - counterclockwise -> threejs only renders one side of the face
     # 8 faces
-    TOP = Face(vectors=[H, E, A, D, L, I])
-    assert {vertex.y for vertex in TOP.vectors} == {top}
-    RIGHT = Face(vectors=[L, D, C, K])
-    assert {vertex.x for vertex in RIGHT.vectors} == {right}
-    BOTTOM = Face(vectors=[F, G, J, K, C, B])
-    assert {vertex.y for vertex in BOTTOM.vectors} == {bottom}
-    LEFT = Face(vectors=[A, E, F, B])
-    assert {vertex.x for vertex in LEFT.vectors} == {left}
-    FRONT = Face(vectors=[A, B, C, D])
-    assert {vertex.z for vertex in FRONT.vectors} == {front}
-    BACK = Face(vectors=[E, H, G, F])
-    assert {vertex.z for vertex in BACK.vectors} == {back}
+    TOP = Face(vertices=[H, E, A, D, L, I])
+    assert {vertex.y for vertex in TOP.vertices} == {top}
+    RIGHT = Face(vertices=[L, D, C, K])
+    assert {vertex.x for vertex in RIGHT.vertices} == {right}
+    BOTTOM = Face(vertices=[F, G, J, K, C, B])
+    assert {vertex.y for vertex in BOTTOM.vertices} == {bottom}
+    LEFT = Face(vertices=[A, E, F, B])
+    assert {vertex.x for vertex in LEFT.vertices} == {left}
+    FRONT = Face(vertices=[A, B, C, D])
+    assert {vertex.z for vertex in FRONT.vertices} == {front}
+    BACK = Face(vertices=[E, H, G, F])
+    assert {vertex.z for vertex in BACK.vertices} == {back}
 
-    RIGHT_CUTOUT = Face(vectors=[G, H, I, J])
-    assert {vertex.x for vertex in RIGHT_CUTOUT.vectors} == {cutout_x}
-    FRONT_CUTOUT = Face(vectors=[K, J, I, L])
-    assert {vertex.z for vertex in FRONT_CUTOUT.vectors} == {cutout_z}
+    RIGHT_CUTOUT = Face(vertices=[G, H, I, J])
+    assert {vertex.x for vertex in RIGHT_CUTOUT.vertices} == {cutout_x}
+    FRONT_CUTOUT = Face(vertices=[K, J, I, L])
+    assert {vertex.z for vertex in FRONT_CUTOUT.vertices} == {cutout_z}
 
     return Polyhedron(
         faces=[
@@ -115,23 +115,23 @@ def polyhedron_cutout_slope_fixture(
 
     # Faces definition - counterclockwise -> threejs only renders one side of the face
     # 10 faces
-    TOP = Face(vectors=[A, E, G, F])
-    assert {vertex.y for vertex in TOP.vectors} == {top}
-    RIGHT = Face(vectors=[N, M, I, H, D, C])
-    assert {vertex.x for vertex in RIGHT.vectors} == {right}
-    BOTTOM = Face(vectors=[L, K, O, N, C, B])
-    assert {vertex.y for vertex in BOTTOM.vectors} == {bottom}
-    LEFT = Face(vectors=[F, L, B, A])
-    assert {vertex.x for vertex in LEFT.vectors} == {left}
-    FRONT = Face(vectors=[A, B, C, D, E])
-    assert {vertex.z for vertex in FRONT.vectors} == {front}
-    BACK = Face(vectors=[F, G, H, I, J, K, L])
-    assert {vertex.z for vertex in BACK.vectors} == {back}
+    TOP = Face(vertices=[A, E, G, F])
+    assert {vertex.y for vertex in TOP.vertices} == {top}
+    RIGHT = Face(vertices=[N, M, I, H, D, C])
+    assert {vertex.x for vertex in RIGHT.vertices} == {right}
+    BOTTOM = Face(vertices=[L, K, O, N, C, B])
+    assert {vertex.y for vertex in BOTTOM.vertices} == {bottom}
+    LEFT = Face(vertices=[F, L, B, A])
+    assert {vertex.x for vertex in LEFT.vertices} == {left}
+    FRONT = Face(vertices=[A, B, C, D, E])
+    assert {vertex.z for vertex in FRONT.vertices} == {front}
+    BACK = Face(vertices=[F, G, H, I, J, K, L])
+    assert {vertex.z for vertex in BACK.vertices} == {back}
 
-    RIGHT_ANGLED = Face(vectors=[D, H, G, E])
-    RIGHT_CUTOUT = Face(vectors=[P, O, K, J])
-    TOP_CUTOUT = Face(vectors=[I, M, P, J])
-    FRONT_CUTOUT = Face(vectors=[M, N, O, P])
+    RIGHT_ANGLED = Face(vertices=[D, H, G, E])
+    RIGHT_CUTOUT = Face(vertices=[P, O, K, J])
+    TOP_CUTOUT = Face(vertices=[I, M, P, J])
+    FRONT_CUTOUT = Face(vertices=[M, N, O, P])
 
     return Polyhedron(
         faces=[
