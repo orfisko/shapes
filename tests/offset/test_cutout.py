@@ -3,7 +3,7 @@ from _decimal import Decimal
 
 def test_offset_all_faces(polyhedron_cutout):
     poly = polyhedron_cutout()
-    offset_poly = poly.apply_offset(offset=float(18))
+    offset_poly = poly.generate_offset(offset=float(18))
 
     left = float(0 - 18)
     right = float(1200 + 18)
@@ -31,7 +31,7 @@ def test_offset_all_faces(polyhedron_cutout):
 def test_polyhedron_offset_exclude_front_back(polyhedron_cutout):
     poly = polyhedron_cutout()
 
-    new_poly = poly.apply_offset(
+    new_poly = poly.generate_offset(
         offset=Decimal(18),
         offset_map={5: Decimal(0), 4: Decimal(0)},
     )
@@ -66,7 +66,7 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout):
 def test_partly_offset(polyhedron_cutout):
     poly = polyhedron_cutout()
     # Offset top and right face
-    offset_poly = poly.apply_offset(
+    offset_poly = poly.generate_offset(
         offset_map={0: Decimal(20), 1: Decimal(25)},
     )
 

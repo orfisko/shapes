@@ -15,7 +15,7 @@ def test_offset_all_faces(polyhedron_cutout_sloped):
 def test_polyhedron_offset_exclude_front_back(polyhedron_cutout_sloped):
     poly = polyhedron_cutout_sloped()
 
-    new_poly = poly.apply_offset(
+    new_poly = poly.generate_offset(
         offset=Decimal(18),
         offset_map={6: Decimal(0), 5: Decimal(0)},
     )
@@ -34,7 +34,7 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout_sloped):
 def test_that_the_offset_has_been_done(polyhedron_cutout_sloped):
     offset_distance = Decimal(10)
     input = polyhedron_cutout_sloped()
-    output = input.apply_offset(offset=offset_distance)
+    output = input.generate_offset(offset=offset_distance)
     for face_index in range(len(input.faces)):
         input_face = input.faces[face_index]
         output_face = output.faces[face_index]

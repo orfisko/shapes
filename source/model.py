@@ -60,7 +60,7 @@ class Polyhedron:
             ]
         )
 
-    def apply_offset(
+    def generate_offset(
         self,
         offset: Optional[Decimal] = None,
         offset_map: Optional[dict[int, Decimal]] = None,
