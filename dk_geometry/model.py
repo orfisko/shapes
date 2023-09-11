@@ -39,6 +39,30 @@ class Face:
     def orientation(self) -> Orientation:
         return self.plane.orientation
 
+    @property
+    def min_x(self):
+        return min([v.x for v in self.vertices])
+
+    @property
+    def max_x(self):
+        return max([v.x for v in self.vertices])
+
+    @property
+    def min_y(self):
+        return min([v.y for v in self.vertices])
+
+    @property
+    def max_y(self):
+        return max([v.y for v in self.vertices])
+
+    @property
+    def min_z(self):
+        return min([v.z for v in self.vertices])
+
+    @property
+    def max_z(self):
+        return max([v.z for v in self.vertices])
+
 
 @dataclass(**default_config)
 class Polyhedron:
@@ -56,6 +80,30 @@ class Polyhedron:
                 for face in self.faces
             ]
         )
+
+    @property
+    def min_x(self):
+        return min([v.min_x for v in self.faces])
+
+    @property
+    def max_x(self):
+        return max([v.max_x for v in self.faces])
+
+    @property
+    def min_y(self):
+        return min([v.min_y for v in self.faces])
+
+    @property
+    def max_y(self):
+        return max([v.max_y for v in self.faces])
+
+    @property
+    def min_z(self):
+        return min([v.min_z for v in self.faces])
+
+    @property
+    def max_z(self):
+        return max([v.max_z for v in self.faces])
 
 
 @dataclass(**default_config)
