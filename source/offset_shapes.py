@@ -7,31 +7,6 @@ from source.model import Face, Polyhedron
 import math
 
 
-def make_plate(
-    outer_face_contour: List[Vector3d], inner_face_contour: List[Vector3d]
-) -> Polyhedron:
-    if len(outer_face_contour) != len(inner_face_contour):
-        raise ValueError(
-            "make_plate: outer and inner contours have different number of vertices"
-        )
-    result = Polyhedron(faces=[])
-    result.faces.append(Face(vertices=outer_face_contour))
-    for edge_index in range(len(outer_face_contour)):
-        next_index = (edge_index + 1) % len(outer_face_contour)
-        result.faces.append(
-            Face(
-                vertices=[
-                    outer_face_contour[next_index],
-                    outer_face_contour[edge_index],
-                    inner_face_contour[edge_index],
-                    inner_face_contour[next_index],
-                ]
-            )
-        )
-    result.faces.append(Face(vertices=inner_face_contour[::-1]))
-    return result
-
-
 def make_vertex(position: Vector3d) -> Vector3d:
     return Vector3d(position.x, position.y, position.z)
 
@@ -196,5 +171,5 @@ def generate_delta_polyhedra(
                 adjacent_face_indices,
                 priorities,
             )
-        panels[face_index] = make_plate(outer, inner)
+        panels[face_index] = make_polyhedron_between_faces(outer, inner)
     return panels
