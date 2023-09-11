@@ -47,25 +47,23 @@ def compute_three_planes_intersection(
     )
 
 
-def calculate_signed_distance_to_plane(
-    point: Vector3d, plane: Plane3d
-) -> float:
+def calculate_signed_distance_to_plane(point: Vector3d, plane: Plane3d) -> float:
     return (point - plane.origin).dotProduct(plane.normal.normalized)
 
 
 def calculate_polyhedron_signed_volume(polyhedron: Polyhedron) -> float:
     volume = 0
     for face in polyhedron.faces:
-        for index in range(len(face.vertices)-2):
+        for index in range(len(face.vertices) - 2):
             a = face.vertices[index]
-            b = face.vertices[index+1]
-            c = face.vertices[index+2]
+            b = face.vertices[index + 1]
+            c = face.vertices[index + 2]
             volume += a.crossProduct(b).dotProduct(c)
     return volume
 
 
 def make_polyhedron_between_faces(
-    outer_face_contour: List[Vector3d], inner_face_contour: List[Vector3d]
+    outer_face_contour: list[Vector3d], inner_face_contour: list[Vector3d]
 ) -> Polyhedron:
     if len(outer_face_contour) != len(inner_face_contour):
         raise ValueError(
@@ -90,8 +88,8 @@ def make_polyhedron_between_faces(
 
 
 def make_plate(face: Face, offset: float) -> Polyhedron:
-    if offset<0:
-        return make_plate(Face(vertices = face.vertices[::-1]), -offset)
+    if offset < 0:
+        return make_plate(Face(vertices=face.vertices[::-1]), -offset)
     shift = face.plane.normal.normalized * offset
-    shifted_face = Face(vertices=[v+shift for v in face.vertices])
+    shifted_face = Face(vertices=[v + shift for v in face.vertices])
     return make_polyhedron_between_faces(shifted_face.vertices, face.vertices)
