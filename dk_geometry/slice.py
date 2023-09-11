@@ -1,7 +1,7 @@
 from _decimal import Decimal
 from typing import List, Set
 
-from source.model import Polyhedron, SliceInterval, Slice, Vector3d
+from dk_geometry.model import Polyhedron, SliceInterval, Slice, Vector3d
 
 
 def apply_slice(polyhedron: Polyhedron, slice: Slice) -> List[Vector3d]:

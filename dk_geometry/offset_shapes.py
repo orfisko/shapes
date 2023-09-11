@@ -1,8 +1,8 @@
 from collections import defaultdict
 from typing import DefaultDict, List
 
-from source.general import *
-from source.model import Face, Polyhedron
+from dk_geometry.general import *
+from dk_geometry.model import Face, Polyhedron
 
 import math
 

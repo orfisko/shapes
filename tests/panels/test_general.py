@@ -3,10 +3,10 @@ from _decimal import Decimal
 
 import pytest
 
-from source.model import Orientation
-from source.offset_shapes import generate_delta_polyhedra
-from source.utils import *
-from source.general import calculate_signed_distance_to_plane
+from dk_geometry.model import Orientation
+from dk_geometry.offset_shapes import generate_delta_polyhedra
+from dk_geometry.utils import *
+from dk_geometry.general import calculate_signed_distance_to_plane
 
 
 def prioritize(outer, face_indices, super_important_face_indices) -> list[int]:

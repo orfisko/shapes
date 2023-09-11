@@ -1,7 +1,7 @@
 import math
 from _decimal import Decimal
 
-from source.general import (
+from dk_geometry.general import (
     calculate_signed_distance_to_plane,
 )
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import ConfigDict
 
-from source.model import Vector3d, Plane3d, Line3d, Face, Polyhedron
+from dk_geometry.model import Vector3d, Plane3d, Line3d, Face, Polyhedron
 
 default_config = dict(
     slots=True,
