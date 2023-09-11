@@ -55,3 +55,13 @@ def test_that_faces_are_not_skewed():
         assert (
             math.fabs(cos) < 0.0001 or math.fabs(cos) > 0.9999
         ), f"a face is neither parallel nor orthogonal to the original one"
+
+
+def test_that_the_input_objects_are_not_reused():
+    input_face = make_simple_square_face()
+    panels = make_plate(input_face, 1)
+    for face in panels.faces:
+        assert face is not input_face, "the input face is reused"
+        for v in face.vertices:
+            for input_v in input_face.vertices:
+                assert v is not input_v, "the input vertex is reused"
