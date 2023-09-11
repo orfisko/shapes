@@ -9,10 +9,6 @@ from dk_geometry.model import Face, Polyhedron
 import math
 
 
-def make_vertex(position: Vector3d) -> Vector3d:
-    return Vector3d(position.x, position.y, position.z)
-
-
 def are_faces_different(face1: Face, face2: Face, tolerance: float) -> bool:
     distance = calculate_signed_distance_to_plane(face2.vertices[0], face1.plane)
     return math.fabs(distance) > tolerance

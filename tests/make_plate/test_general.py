@@ -1,6 +1,5 @@
-import math
-from dk_geometry.model import *
 from dk_geometry.general import *
+from dk_geometry.model import *
 
 
 def make_simple_square_face() -> Face:
@@ -55,3 +54,18 @@ def test_that_faces_are_not_skewed():
         assert (
             math.fabs(cos) < 0.0001 or math.fabs(cos) > 0.9999
         ), f"a face is neither parallel nor orthogonal to the original one"
+
+
+def test_sloped_face():
+    sloped_face = Face(
+        vertices=[
+            Vector3d(0, 2, -2),
+            Vector3d(2, 0, -2),
+            Vector3d(2, 0, 0),
+            Vector3d(0, 2, 0),
+        ]
+    )
+
+    plate = make_plate(sloped_face, 2)
+
+    assert plate.faces[5].vertices == sloped_face.vertices[::-1]
