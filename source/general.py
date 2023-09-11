@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import ConfigDict
 
-from source.model import Vector3d, Plane3d, Line3d
+from source.model import Vector3d, Plane3d, Line3d, Face, Polyhedron
 
 default_config = dict(
     slots=True,
@@ -51,3 +51,28 @@ def calculate_signed_distance_to_plane(
     point: Vector3d, plane: Plane3d
 ) -> float:
     return (point - plane.origin).dotProduct(plane.normal.normalized)
+
+
+def make_polyhedron_between_faces(
+    outer_face_contour: List[Vector3d], inner_face_contour: List[Vector3d]
+) -> Polyhedron:
+    if len(outer_face_contour) != len(inner_face_contour):
+        raise ValueError(
+            "make_plate: outer and inner contours have different number of vertices"
+        )
+    result = Polyhedron(faces=[])
+    result.faces.append(Face(vertices=outer_face_contour))
+    for edge_index in range(len(outer_face_contour)):
+        next_index = (edge_index + 1) % len(outer_face_contour)
+        result.faces.append(
+            Face(
+                vertices=[
+                    outer_face_contour[next_index],
+                    outer_face_contour[edge_index],
+                    inner_face_contour[edge_index],
+                    inner_face_contour[next_index],
+                ]
+            )
+        )
+    result.faces.append(Face(vertices=inner_face_contour[::-1]))
+    return result
