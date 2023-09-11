@@ -31,7 +31,7 @@ class Face:
 
     @property
     def plane(self):
-        from source.general import calculate_contour_normal
+        from .general import calculate_contour_normal
 
         return Plane3d(
             origin=self.vertices[0],
@@ -76,7 +76,7 @@ class Polyhedron:
         Returns:
             a new polyhedron with the offset applied
         """
-        from source.general import compute_three_planes_intersection
+        from .general import compute_three_planes_intersection
 
         if not any((offset, offset_map)):
             raise ValueError("Either offset or offset_map needs to be supplied")

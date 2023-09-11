@@ -2,7 +2,7 @@ from _decimal import Decimal
 
 import pytest
 
-from source.general import *
+from dk_geometry.general import *
 
 
 def test_that_topology_is_the_same(polyhedron_cutout_sloped):

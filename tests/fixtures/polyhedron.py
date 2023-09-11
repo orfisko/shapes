@@ -1,8 +1,6 @@
-from _decimal import Decimal
-
 from _pytest.fixtures import fixture
 
-from source.model import Face, Polyhedron, Vector3d
+from dk_geometry.model import Face, Polyhedron, Vector3d
 
 
 def polyhedron_cutout_fixture(

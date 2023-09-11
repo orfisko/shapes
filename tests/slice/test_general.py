@@ -1,9 +1,10 @@
 from _decimal import Decimal
 
-from source.model import SliceInterval
-from source.slice import apply_slice_interval
+from dk_geometry.model import SliceInterval
+from dk_geometry.slice import apply_slice_interval
 
 import pytest
+
 
 @pytest.mark.skip(reason="not implemented")
 def test_change_rotation(polyhedron_cutout):

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import ConfigDict
 
-from source.model import Vector3d, Plane3d, Line3d
+from dk_geometry.model import Vector3d, Plane3d, Line3d
 
 default_config = dict(
     slots=True,
@@ -47,7 +47,5 @@ def compute_three_planes_intersection(
     )
 
 
-def calculate_signed_distance_to_plane(
-    point: Vector3d, plane: Plane3d
-) -> float:
+def calculate_signed_distance_to_plane(point: Vector3d, plane: Plane3d) -> float:
     return (point - plane.origin).dotProduct(plane.normal.normalized)
