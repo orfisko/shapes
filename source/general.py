@@ -76,3 +76,11 @@ def make_polyhedron_between_faces(
         )
     result.faces.append(Face(vertices=inner_face_contour[::-1]))
     return result
+
+
+def make_plate(face: Face, offset: float) -> Polyhedron:
+    if offset<0:
+        return make_plate(Face(vertices = face.vertices[::-1]), -offset)
+    shift = face.plane.normal.normalized * offset
+    shifted_face = Face(vertices=[v+shift for v in face.vertices])
+    return make_polyhedron_between_faces(shifted_face.vertices, face.vertices)
