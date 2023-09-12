@@ -79,12 +79,8 @@ def make_polyhedron_between_faces(
 def make_plate(face: Face, offset: float) -> Polyhedron:
     if offset < 0:
         return make_plate(Face(vertices=face.vertices[::-1]), -offset)
-    #avoid reusing the input vertices
-    face = Face(
-        vertices=[
-            Vector3d(v.x, v.y, v.z) for v in face.vertices
-        ]
-    )
+    # avoid reusing the input vertices
+    face = Face(vertices=[Vector3d(v.x, v.y, v.z) for v in face.vertices])
     shift = face.plane.normal.normalized * offset
     shifted_face = Face(vertices=[v + shift for v in face.vertices])
     return make_polyhedron_between_faces(shifted_face.vertices, face.vertices)

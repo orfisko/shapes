@@ -232,23 +232,22 @@ class Plane3d:
 
     @property
     def orientation(self) -> Orientation:
-        normal_length = self.normal.length * 0.99
         types = []
 
-        abs_x = math.fabs(self.normal.x)
-        if abs_x > normal_length:
-            return Orientation.X
-        abs_y = math.fabs(self.normal.y)
-        if abs_y > normal_length:
-            return Orientation.Y
-        abs_z = math.fabs(self.normal.z)
-        if abs_z > normal_length:
-            return Orientation.Z
-        if abs_x + abs_y > normal_length:
-            return Orientation.XY
-        if abs_y + abs_z > normal_length:
-            return Orientation.YZ
-        return Orientation.OTHER
+        if self.normal.x > 0:
+            types.append("R")
+        elif self.normal.x < 0:
+            types.append("L")
+        elif self.normal.y < 0:
+            types.append("B")
+        if self.normal.z > 0:
+            types.append("F")
+        elif self.normal.z < 0:
+            types.append("BK")
+        if self.normal.y > 0:
+            types.append("T")
+
+        return Orientation("_".join(types))
 
 
 @dataclass(**default_config)
