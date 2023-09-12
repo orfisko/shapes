@@ -126,7 +126,11 @@ class Polyhedron:
         return volume
 
     def get_face_indices_by_orientation(self, orientation: Orientation) -> list[int]:
-        return [idx for idx, face in enumerate(self.faces) if face.orientation == orientation]
+        return [
+            idx
+            for idx, face in enumerate(self.faces)
+            if face.orientation == orientation
+        ]
 
 
 @dataclass(**default_config)
@@ -219,16 +223,16 @@ class Plane3d:
 
         if self.normal.x > 0:
             types.append("R")
-        elif self.normal.x < 0:
+        if self.normal.x < 0:
             types.append("L")
-        elif self.normal.y < 0:
+        if self.normal.y < 0:
             types.append("B")
         if self.normal.z > 0:
             types.append("F")
-        elif self.normal.z < 0:
-            types.append("BK")
         if self.normal.y > 0:
             types.append("T")
+        if self.normal.z < 0:
+            types.append("BK")
 
         return Orientation("_".join(types))
 

@@ -13,28 +13,42 @@ class Orientation(str, Enum):
     F = "F"  # Front
     BK = "BK"  # Back
     L_BK = "L_BK"  # Left back
+    L_F = "L_F"  # Left front
     R_BK = "R_BK"  # Right back
+    R_F = "R_F"  # Right front
     T_BK = "T_BK"  # Top back
+    T_F = "T_F"  # Top front
     L_T = "L_T"  # Left top
+    L_B = "L_B"  # Left bottom
     R_T = "R_T"  # Right top
+    R_B = "R_B"  # Right bottom
     OTHER = "OTHER"
 
     @classmethod
     def _missing_(cls, value):
         return cls.OTHER
 
-    def __neg__(self):
-        if self.name == "L":
-            return Orientation.R
-        if self.name == "R":
-            return Orientation.L
-        if self.name == "T":
-            return Orientation.B
-        if self.name == "B":
-            return Orientation.T
-        if self.name == "F":
-            return Orientation.BK
-        if self.name == "BK":
-            return Orientation.F
-        else:
-            raise NotImplemented
+    def __neg__(self) -> Orientation:
+        """Should return the opposite orientation. This should allow to identify the face parallel to the one
+        with orientation self"""
+        opposites = [
+            "R",
+            "L",
+            "B",
+            "T",
+            "BK",
+            "F",
+            "L_F",
+            "L_BK",
+            "R_F",
+            "R_BK",
+            "T_F",
+            "T_BK",
+            "L_B",
+            "L_T",
+            "R_B",
+            "R_T",
+            "OTHER",
+        ]
+
+        return Orientation(opposites[list(Orientation).index(self)])
