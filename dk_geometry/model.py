@@ -29,20 +29,22 @@ class Face:
 
     @property
     def plane(self):
-        from .general import calculate_contour_normal
-
         return Plane3d(
             origin=self.vertices[0],
-            normal=calculate_contour_normal(self.vertices),
+            normal=self.areaVector.normalized,
         )
 
     @property
-    def surfaceArea(self) -> float:
+    def areaVector(self) -> float:
         area = Vector3d(0,0,0)
         for e in range(len(self.vertices)):
             edge = self.get_edge(e)
             area += edge[0].crossProduct(edge[1])/2
-        return area.length
+        return area
+
+    @property
+    def surfaceArea(self) -> float:
+        return self.areaVector.length
 
     @property
     def orientation(self) -> Orientation:

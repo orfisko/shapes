@@ -10,14 +10,6 @@ default_config = dict(
 )
 
 
-def calculate_contour_normal(points: list[Vector3d]):
-    sum = Vector3d(0, 0, 0)
-    for index in range(len(points)):
-        next = (index + 1) % len(points)
-        sum += points[index].crossProduct(points[next])
-    return sum / sum.length
-
-
 def compute_line_plane_intersection(line: Line3d, plane: Plane3d) -> Vector3d:
     # P=line.origin+t*line.direction
     # (P-plane.origin).dot(plane.normal)=0
