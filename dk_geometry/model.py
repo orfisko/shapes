@@ -125,6 +125,9 @@ class Polyhedron:
                 volume += a.crossProduct(b).dotProduct(c) / 6
         return volume
 
+    def get_face_indices_by_orientation(self, orientation: Orientation) -> list[int]:
+        return [idx for idx, face in enumerate(self.faces) if face.orientation == orientation]
+
 
 @dataclass(**default_config)
 class SliceInterval:
