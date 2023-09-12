@@ -37,8 +37,12 @@ class Face:
         )
 
     @property
-    def surface(self) -> float:
-        """Insert wizardry here"""
+    def surfaceArea(self) -> float:
+        area = Vector3d(0,0,0)
+        for e in range(len(self.vertices)):
+            edge = self.get_edge(e)
+            area += edge[0].crossProduct(edge[1])/2
+        return area.length
 
     @property
     def orientation(self) -> Orientation:

@@ -13,4 +13,4 @@ def test_orientation(polyhedron_cutout_sloped):
 
 def test_surface(polyhedron_cutout_sloped):
     poly = polyhedron_cutout_sloped()
-    assert poly.faces[0].surface == 350 * 600
+    assert poly.faces[0].surfaceArea == 350 * 600
