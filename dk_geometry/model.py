@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import math
-from enum import Enum
-from typing import List
+from _decimal import Decimal
 
 from pydantic import confloat, ConfigDict, model_validator
 from pydantic.dataclasses import dataclass
+
+from dk_geometry.enums import Orientation
 
 default_config = dict(
     slots=True,
@@ -24,7 +25,7 @@ class Normal:
 
 @dataclass(**default_config)
 class Face:
-    vertices: List[Vector3d]
+    vertices: list[Vector3d]
 
     @property
     def plane(self):
@@ -66,7 +67,7 @@ class Face:
 
 @dataclass(**default_config)
 class Polyhedron:
-    faces: List[Face]
+    faces: list[Face]
 
     def __deepcopy__(self, memodict=None) -> Polyhedron:
         memodict = {}
@@ -104,6 +105,14 @@ class Polyhedron:
     @property
     def max_z(self):
         return max([v.max_z for v in self.faces])
+
+    @property
+    def boundingBox(self) -> Polyhedron:
+        """Insert wizardry here"""
+
+    @property
+    def volume(self) -> Decimal:
+        """Insert wizardry here"""
 
 
 @dataclass(**default_config)
@@ -177,29 +186,18 @@ class Vector3d:
         return self / self.length
 
 
-class Orientation(Enum):
-    """Indicates which absolute normals are different from 0"""
-
-    X = "X"  # Vertical - typically used for tops, bottoms and shelves
-    Y = "Y"  # Horizontal - typically used for sides
-    Z = "Z"  # Depth - typically used for front and backpanels
-    XY = "XY"  # Sloped panels in XY
-    YZ = "YZ"  # Sloped panels in YZ
-    OTHER = "OTHER"  # Other orientation
-
-    def __neg__(self):
-        if self.name == "X":
-            return Orientation.Y
-        if self.name == "Y":
-            return Orientation.X
-        else:
-            raise NotImplemented
-
-
 @dataclass(**default_config)
 class Plane3d:
     origin: Vector3d
     normal: Vector3d
+
+    @property
+    def length(self) -> Decimal:
+        """Longest distance between two vertices"""
+
+    @property
+    def width(self) -> Decimal:
+        """Shortest distance between two vertices"""
 
     @property
     def orientation(self) -> Orientation:

@@ -3,7 +3,7 @@ from _decimal import Decimal
 
 import pytest
 
-from dk_geometry.model import Orientation
+from dk_geometry.enums import Orientation
 from dk_geometry.offset import generate_delta_polyhedra, generate_offset
 from dk_geometry.utils import *
 from dk_geometry.general import calculate_signed_distance_to_plane
