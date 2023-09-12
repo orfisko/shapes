@@ -37,6 +37,10 @@ class Face:
         )
 
     @property
+    def surface(self) -> float:
+        """Insert wizardry here"""
+
+    @property
     def orientation(self) -> Orientation:
         return self.plane.orientation
 
@@ -109,30 +113,6 @@ class Polyhedron:
     @property
     def boundingBox(self) -> Polyhedron:
         """Insert wizardry here"""
-
-    @property
-    def backFaces(self) -> list[int]:
-        ...
-
-    @property
-    def frontFaces(self) -> list[int]:
-        ...
-
-    @property
-    def leftFaces(self) -> list[int]:
-        ...
-
-    @property
-    def rightFaces(self) -> list[int]:
-        ...
-
-    @property
-    def topFaces(self) -> list[int]:
-        ...
-
-    @property
-    def bottomFaces(self) -> list[int]:
-        ...
 
     @property
     def volume(self) -> float:
