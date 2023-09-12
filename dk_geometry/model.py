@@ -111,6 +111,30 @@ class Polyhedron:
         """Insert wizardry here"""
 
     @property
+    def backFaces(self) -> list[int]:
+        ...
+
+    @property
+    def frontFaces(self) -> list[int]:
+        ...
+
+    @property
+    def leftFaces(self) -> list[int]:
+        ...
+
+    @property
+    def rightFaces(self) -> list[int]:
+        ...
+
+    @property
+    def topFaces(self) -> list[int]:
+        ...
+
+    @property
+    def bottomFaces(self) -> list[int]:
+        ...
+
+    @property
     def volume(self) -> float:
         volume = 0
         for face in self.faces:
@@ -118,7 +142,7 @@ class Polyhedron:
                 a = face.vertices[index]
                 b = face.vertices[index + 1]
                 c = face.vertices[index + 2]
-                volume += a.crossProduct(b).dotProduct(c)/6
+                volume += a.crossProduct(b).dotProduct(c) / 6
         return volume
 
 
