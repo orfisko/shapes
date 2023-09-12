@@ -68,6 +68,12 @@ class Face:
     def max_z(self):
         return max([v.z for v in self.vertices])
 
+    def get_edge(self, index: int) -> tuple(Vector3d, Vector3d):
+        return (
+            self.vertices[index],
+            self.vertices[(index+1) % len(self.vertices)]
+        )
+
 
 @dataclass(**default_config)
 class Polyhedron:

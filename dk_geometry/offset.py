@@ -25,13 +25,12 @@ def put_value_at_start(list, value):
 
 def find_common_edge_direction(face1: Face, face2: Face) -> Vector3d:
     for edge_index in range(len(face1.vertices)):
-        edge_start = face1.vertices[edge_index]
-        edge_finish = face1.vertices[(edge_index + 1) % len(face1.vertices)]
-        if not (edge_start in face2.vertices):
+        edge = face1.get_edge(edge_index)
+        if not (edge[0] in face2.vertices):
             continue
-        if not (edge_finish in face2.vertices):
+        if not (edge[1] in face2.vertices):
             continue
-        return edge_finish - edge_start
+        return edge[1] - edge[0]
     raise ValueError("find_common_edge_direction: the given faces are not adjacent")
 
 
