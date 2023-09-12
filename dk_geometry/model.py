@@ -111,8 +111,15 @@ class Polyhedron:
         """Insert wizardry here"""
 
     @property
-    def volume(self) -> Decimal:
-        """Insert wizardry here"""
+    def volume(self) -> float:
+        volume = 0
+        for face in self.faces:
+            for index in range(len(face.vertices) - 2):
+                a = face.vertices[index]
+                b = face.vertices[index + 1]
+                c = face.vertices[index + 2]
+                volume += a.crossProduct(b).dotProduct(c)/6
+        return volume
 
 
 @dataclass(**default_config)

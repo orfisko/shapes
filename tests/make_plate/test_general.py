@@ -41,8 +41,7 @@ def test_that_vertices_are_either_on_face_or_another_plane():
 def test_that_plates_are_not_inverted():
     for offset in [-1, 1]:
         plate = make_plate(make_simple_square_face(), offset)
-        volume = calculate_polyhedron_signed_volume(plate)
-        assert volume > 0, f"plate volume is negative for offset {offset}"
+        assert plate.volume > 0, f"plate volume is negative for offset {offset}"
 
 
 def test_that_faces_are_not_skewed():

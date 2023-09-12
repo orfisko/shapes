@@ -51,17 +51,6 @@ def calculate_signed_distance_to_plane(point: Vector3d, plane: Plane3d) -> float
     return (point - plane.origin).dotProduct(plane.normal.normalized)
 
 
-def calculate_polyhedron_signed_volume(polyhedron: Polyhedron) -> float:
-    volume = 0
-    for face in polyhedron.faces:
-        for index in range(len(face.vertices) - 2):
-            a = face.vertices[index]
-            b = face.vertices[index + 1]
-            c = face.vertices[index + 2]
-            volume += a.crossProduct(b).dotProduct(c)
-    return volume
-
-
 def make_polyhedron_between_faces(
     outer_face_contour: list[Vector3d], inner_face_contour: list[Vector3d]
 ) -> Polyhedron:
