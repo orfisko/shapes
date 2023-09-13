@@ -27,6 +27,11 @@ class Normal:
 class Face:
     vertices: list[Vector3d]
 
+    @dataclass(**default_config)
+    class LWDimensions:
+        length: float
+        width: float
+
     @property
     def plane(self):
         return Plane3d(
@@ -73,6 +78,24 @@ class Face:
     @property
     def max_z(self):
         return max([v.z for v in self.vertices])
+
+    @property
+    def lw_dimensions(self) -> Face.LWDimensions:
+        """
+        Assuming the face has long and narrow shape, returns its length and width.
+        """
+        longest_edge = max(
+            [self.get_edge(i) for i in range(len(self.vertices))],
+            key = lambda edge: (edge[1] - edge[0]).length)
+        length_direction = (longest_edge[1] - longest_edge[0]).normalized
+        width_direction = self.plane.normal.crossProduct(length_direction)
+        def measure_size(vertices, direction):
+            parameters = [v.dotProduct(direction) for v in vertices]
+            return max(parameters) - min(parameters)
+        return Face.LWDimensions(
+            length = measure_size(self.vertices, length_direction),
+            width = measure_size(self.vertices, width_direction),
+        )
 
     def get_edge(self, index: int) -> tuple(Vector3d, Vector3d):
         return (
@@ -220,14 +243,6 @@ class Vector3d:
 class Plane3d:
     origin: Vector3d
     normal: Vector3d
-
-    @property
-    def length(self) -> Decimal:
-        """Longest distance between two vertices"""
-
-    @property
-    def width(self) -> Decimal:
-        """Shortest distance between two vertices"""
 
     @property
     def orientation(self) -> Orientation:
