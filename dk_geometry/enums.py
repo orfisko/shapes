@@ -3,8 +3,8 @@ from __future__ import annotations
 from enum import Enum
 
 
-class Orientation(str, Enum):
-    """Indicates which absolute normals are different from 0"""
+class FaceNormal(str, Enum):
+    """Indicates which absolute normals of the face are different from 0"""
 
     L = "L"  # Left
     R = "R"  # Right
@@ -28,8 +28,8 @@ class Orientation(str, Enum):
     def _missing_(cls, value):
         return cls.OTHER
 
-    def __neg__(self) -> Orientation:
-        """Should return the opposite orientation. This should allow to identify the face parallel to the one
+    def __neg__(self) -> FaceNormal:
+        """Should return the opposite facenormal. This should allow to identify the face parallel to the one
         with orientation self"""
         opposites = [
             "R",
@@ -51,4 +51,4 @@ class Orientation(str, Enum):
             "OTHER",
         ]
 
-        return Orientation(opposites[list(Orientation).index(self)])
+        return FaceNormal(opposites[list(FaceNormal).index(self)])

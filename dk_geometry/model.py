@@ -6,7 +6,7 @@ from _decimal import Decimal
 from pydantic import confloat, ConfigDict, model_validator
 from pydantic.dataclasses import dataclass
 
-from dk_geometry.enums import Orientation
+from dk_geometry.enums import FaceNormal
 
 default_config = dict(
     slots=True,
@@ -41,10 +41,10 @@ class Face:
 
     @property
     def areaVector(self) -> float:
-        area = Vector3d(0,0,0)
+        area = Vector3d(0, 0, 0)
         for e in range(len(self.vertices)):
             edge = self.get_edge(e)
-            area += edge[0].crossProduct(edge[1])/2
+            area += edge[0].crossProduct(edge[1]) / 2
         return area
 
     @property
@@ -52,7 +52,7 @@ class Face:
         return self.areaVector.length
 
     @property
-    def orientation(self) -> Orientation:
+    def orientation(self) -> FaceNormal:
         return self.plane.orientation
 
     @property
@@ -86,22 +86,22 @@ class Face:
         """
         longest_edge = max(
             [self.get_edge(i) for i in range(len(self.vertices))],
-            key = lambda edge: (edge[1] - edge[0]).length)
+            key=lambda edge: (edge[1] - edge[0]).length,
+        )
         length_direction = (longest_edge[1] - longest_edge[0]).normalized
         width_direction = self.plane.normal.crossProduct(length_direction)
+
         def measure_size(vertices, direction):
             parameters = [v.dotProduct(direction) for v in vertices]
             return max(parameters) - min(parameters)
+
         return Face.LWDimensions(
-            length = measure_size(self.vertices, length_direction),
-            width = measure_size(self.vertices, width_direction),
+            length=measure_size(self.vertices, length_direction),
+            width=measure_size(self.vertices, width_direction),
         )
 
     def get_edge(self, index: int) -> tuple(Vector3d, Vector3d):
-        return (
-            self.vertices[index],
-            self.vertices[(index+1) % len(self.vertices)]
-        )
+        return (self.vertices[index], self.vertices[(index + 1) % len(self.vertices)])
 
 
 @dataclass(**default_config)
@@ -160,7 +160,7 @@ class Polyhedron:
                 volume += a.crossProduct(b).dotProduct(c) / 6
         return volume
 
-    def get_face_indices_by_orientation(self, orientation: Orientation) -> list[int]:
+    def get_face_indices_by_orientation(self, orientation: FaceNormal) -> list[int]:
         return [
             idx
             for idx, face in enumerate(self.faces)
@@ -245,7 +245,7 @@ class Plane3d:
     normal: Vector3d
 
     @property
-    def orientation(self) -> Orientation:
+    def orientation(self) -> FaceNormal:
         types = []
 
         if self.normal.x > 0:
@@ -261,7 +261,7 @@ class Plane3d:
         if self.normal.z < 0:
             types.append("BK")
 
-        return Orientation("_".join(types))
+        return FaceNormal("_".join(types))
 
 
 @dataclass(**default_config)
