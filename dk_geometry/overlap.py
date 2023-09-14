@@ -185,6 +185,13 @@ def get_overlapping_faces(
     # index:The index of the polyhedron in the passed list of polyhedrons
     # faces: the list of faces where the other polyhedron is touching the given polyhedron
     result: defaultdict[int, list[FaceOverlap]] = defaultdict(list)
+    for face_index, face in enumerate(faces):
+        for polyhedron_index, polyhedron in enumerate(polyhedra):
+            for adjacent_index, adjacent_face in enumerate(polyhedron.faces):
+                if do_faces_overlap(face, adjacent_face, 1, 1):
+                    result[face_index].append(
+                        FaceOverlap(polyhedron_index, adjacent_index)
+                    )
 
     return result
 

@@ -1,5 +1,28 @@
-from dk_geometry.overlap import do_faces_overlap, get_overlapping_faces
+from dk_geometry.overlap import do_faces_overlap, FaceOverlap, get_overlapping_faces
 from dk_geometry.model import Face, Polyhedron, Vector3d
+
+
+def create_cube(centre: Vector3d, size: float) -> Polyhedron:
+    v = [
+        centre + Vector3d(-1,-1,-1)*size/2,
+        centre + Vector3d( 1,-1,-1)*size/2,
+        centre + Vector3d(-1, 1,-1)*size/2,
+        centre + Vector3d( 1, 1,-1)*size/2,
+        centre + Vector3d(-1,-1, 1)*size/2,
+        centre + Vector3d( 1,-1, 1)*size/2,
+        centre + Vector3d(-1, 1, 1)*size/2,
+        centre + Vector3d( 1, 1, 1)*size/2
+    ]
+    return Polyhedron(
+        faces = [
+            Face(vertices = [v[0], v[1], v[3], v[2]]),#front
+            Face(vertices = [v[2], v[3], v[7], v[6]]),#top
+            Face(vertices = [v[6], v[7], v[5], v[4]]),#back
+            Face(vertices = [v[4], v[5], v[1], v[0]]),#bottom
+            Face(vertices = [v[1], v[5], v[7], v[3]]),#right
+            Face(vertices = [v[2], v[6], v[4], v[0]])#left
+        ]
+    )
 
 
 def test_that_identical_faces_overlap():
@@ -154,3 +177,23 @@ def test_that_non_parallel_faces_do_not_overlap():
         ]
     )
     assert not do_faces_overlap(face1, face2, 0.01, 0.01)
+
+
+def test_get_overlapping_faces():
+    test_cube = create_cube(Vector3d(0,0,0), 1000)
+    directly_on_top = create_cube(Vector3d(0,1000,0), 1000)
+    too_far = create_cube(Vector3d(0,0,2000), 1000)
+    under_partially_overlapping = create_cube(Vector3d(200,-1000,0), 1000)
+    touching_by_edge = create_cube(Vector3d(1000,1000,0), 1000)
+    overlaps = get_overlapping_faces(
+        test_cube.faces,
+        [
+            directly_on_top,
+            too_far,
+            under_partially_overlapping,
+            touching_by_edge
+        ]
+    )
+    assert list(overlaps.keys())==[1,3]
+    assert overlaps[1]==[FaceOverlap(poly_index=0, face_index=3)]
+    assert overlaps[3]==[FaceOverlap(poly_index=2, face_index=1)]
