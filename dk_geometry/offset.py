@@ -1,3 +1,4 @@
+import math
 from _decimal import Decimal
 from collections import defaultdict
 from copy import deepcopy
@@ -5,8 +6,6 @@ from typing import DefaultDict, List, Optional
 
 from dk_geometry.general import *
 from dk_geometry.model import Face, Polyhedron
-
-import math
 
 
 def are_faces_different(face1: Face, face2: Face, tolerance: float) -> bool:

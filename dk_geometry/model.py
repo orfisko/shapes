@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-from _decimal import Decimal
 
 from pydantic import confloat, ConfigDict, model_validator
 from pydantic.dataclasses import dataclass
@@ -40,7 +39,7 @@ class Face:
         )
 
     @property
-    def areaVector(self) -> float:
+    def areaVector(self) -> Vector3d:
         area = Vector3d(0, 0, 0)
         for e in range(len(self.vertices)):
             edge = self.get_edge(e)
@@ -52,8 +51,8 @@ class Face:
         return self.areaVector.length
 
     @property
-    def orientation(self) -> FaceNormal:
-        return self.plane.orientation
+    def faceNomal(self) -> FaceNormal:
+        return self.plane.faceNormal
 
     @property
     def min_x(self):
@@ -100,8 +99,8 @@ class Face:
             width=measure_size(self.vertices, width_direction),
         )
 
-    def get_edge(self, index: int) -> tuple(Vector3d, Vector3d):
-        return (self.vertices[index], self.vertices[(index + 1) % len(self.vertices)])
+    def get_edge(self, index: int) -> tuple[Vector3d, Vector3d]:
+        return self.vertices[index], self.vertices[(index + 1) % len(self.vertices)]
 
 
 @dataclass(**default_config)
@@ -162,9 +161,7 @@ class Polyhedron:
 
     def get_face_indices_by_orientation(self, orientation: FaceNormal) -> list[int]:
         return [
-            idx
-            for idx, face in enumerate(self.faces)
-            if face.orientation == orientation
+            idx for idx, face in enumerate(self.faces) if face.faceNomal == orientation
         ]
 
 
@@ -245,7 +242,7 @@ class Plane3d:
     normal: Vector3d
 
     @property
-    def orientation(self) -> FaceNormal:
+    def faceNormal(self) -> FaceNormal:
         types = []
 
         if self.normal.x > 0:
@@ -261,7 +258,7 @@ class Plane3d:
         if self.normal.z < 0:
             types.append("BK")
 
-        return FaceNormal("_".join(types))
+        return FaceNormal.from_stringlist(types)
 
 
 @dataclass(**default_config)

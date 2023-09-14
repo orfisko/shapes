@@ -28,6 +28,21 @@ class FaceNormal(str, Enum):
     def _missing_(cls, value):
         return cls.OTHER
 
+    @classmethod
+    def from_stringlist(cls, str_list: list[str]) -> FaceNormal:
+        if len(str_list) == 1:
+            return FaceNormal(str_list[0])
+        else:
+            str_list.sort()
+            face: FaceNormal
+            for face in list(cls):
+                face_str_list = face.split("_")
+                if len(face_str_list) > 1:
+                    face_str_list.sort()
+                    face_str = "".join(face_str_list)
+                    if face_str == "".join(str_list):
+                        return face
+
     def __neg__(self) -> FaceNormal:
         """Should return the opposite facenormal. This should allow to identify the face parallel to the one
         with orientation self"""
