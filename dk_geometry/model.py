@@ -54,7 +54,7 @@ class Face:
         return self.areaVector.length
 
     @property
-    def faceNomal(self) -> FaceNormal:
+    def faceNormal(self) -> FaceNormal:
         return self.plane.faceNormal
 
     @property
