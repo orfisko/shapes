@@ -10,7 +10,7 @@ def get_overlapping_faces(
     faces: list[Face], polyhedra: list[Polyhedron]
 ) -> dict[int, list[FaceOverlap]]:
     """
-    Function to find out which face of a polyhedrons touches one of the faces of a given polyhedron. Note that
+    Function to find out which face of a polyhedra touches one of the faces of a given polyhedron. Note that
     line touches should not be included.
     Args:
         faces: which faces to check against the sent in polyhedra
@@ -24,6 +24,18 @@ def get_overlapping_faces(
     result: defaultdict[int, list[FaceOverlap]] = defaultdict(list)
 
     return result
+
+
+def get_non_overlapping_faces(
+    faces: list[Face], polyhedra: list[Polyhedron]
+) -> list[int]:
+    """Returns all faces that are not touching the faces of ather polyehedra"""
+    overlapping_faces = get_overlapping_faces(faces=faces, polyhedra=polyhedra)
+    return [
+        face_index
+        for face_index in range(len(faces))
+        if face_index not in overlapping_faces
+    ]
 
 
 def prioritize_polyhedrons(
