@@ -1,21 +1,20 @@
 from collections import namedtuple, defaultdict
-from typing import Optional, Callable
+from typing import Callable
 
-from dk_geometry.model import Polyhedron
+from dk_geometry.model import Polyhedron, Face
 
 FaceOverlap = namedtuple("FaceOverlap", ["poly_index", "face_index"])
 
 
 def get_overlapping_faces(
-    polyhedron: Polyhedron, faces: Optional[list[int]], polyhedrons: list[Polyhedron]
+    faces: list[Face], polyhedra: list[Polyhedron]
 ) -> dict[int, list[FaceOverlap]]:
     """
     Function to find out which face of a polyhedrons touches one of the faces of a given polyhedron. Note that
     line touches should not be included.
     Args:
-        polyhedron: polyhedron to check
-        faces: optional parameter to specify which faces of the polyhedron to check
-        polyhedrons: the list of polyhedrons to check against
+        faces: which faces to check against the sent in polyhedra
+        polyhedra: the list of polyhedrons to check against
     Returns:
         a dictionary containing per face of the given polyhedron as key the list of faceoverlaps
     """
