@@ -31,6 +31,9 @@ class Face:
         length: float
         width: float
 
+        def __iter__(self):
+            return iter((self.length, self.width))
+
     @property
     def plane(self):
         return Plane3d(
