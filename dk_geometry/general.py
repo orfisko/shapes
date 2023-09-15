@@ -91,12 +91,12 @@ def create_cube(centre: Vector3d, size: float) -> Polyhedron:
     ]
     return Polyhedron(
         faces = [
-            Face(vertices = [v[0], v[1], v[3], v[2]]),#front
-            Face(vertices = [v[2], v[3], v[7], v[6]]),#top
-            Face(vertices = [v[6], v[7], v[5], v[4]]),#back
-            Face(vertices = [v[4], v[5], v[1], v[0]]),#bottom
-            Face(vertices = [v[1], v[5], v[7], v[3]]),#right
-            Face(vertices = [v[2], v[6], v[4], v[0]])#left
+            Face(vertices = [v[0], v[2], v[3], v[1]]),#front
+            Face(vertices = [v[2], v[6], v[7], v[3]]),#top
+            Face(vertices = [v[6], v[4], v[5], v[7]]),#back
+            Face(vertices = [v[4], v[0], v[1], v[5]]),#bottom
+            Face(vertices = [v[1], v[3], v[7], v[5]]),#right
+            Face(vertices = [v[2], v[0], v[4], v[6]])#left
         ]
     )
 
