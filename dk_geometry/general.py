@@ -78,6 +78,29 @@ def make_plate(face: Face, offset: float) -> Polyhedron:
     return make_polyhedron_between_faces(shifted_face.vertices, face.vertices)
 
 
+def create_cube(centre: Vector3d, size: float) -> Polyhedron:
+    v = [
+        centre + Vector3d(-1,-1,-1)*size/2,
+        centre + Vector3d( 1,-1,-1)*size/2,
+        centre + Vector3d(-1, 1,-1)*size/2,
+        centre + Vector3d( 1, 1,-1)*size/2,
+        centre + Vector3d(-1,-1, 1)*size/2,
+        centre + Vector3d( 1,-1, 1)*size/2,
+        centre + Vector3d(-1, 1, 1)*size/2,
+        centre + Vector3d( 1, 1, 1)*size/2
+    ]
+    return Polyhedron(
+        faces = [
+            Face(vertices = [v[0], v[1], v[3], v[2]]),#front
+            Face(vertices = [v[2], v[3], v[7], v[6]]),#top
+            Face(vertices = [v[6], v[7], v[5], v[4]]),#back
+            Face(vertices = [v[4], v[5], v[1], v[0]]),#bottom
+            Face(vertices = [v[1], v[5], v[7], v[3]]),#right
+            Face(vertices = [v[2], v[6], v[4], v[0]])#left
+        ]
+    )
+
+
 def cut_face_by_plane(
     face: Face,
     plane: Plane3d,
@@ -132,3 +155,57 @@ def cut_face_by_plane(
     vertices[0] = get_edge_splitting_vertex(vertices[0], vertices[1])
     vertices[-1] = get_edge_splitting_vertex(vertices[-2], vertices[-1])
     return Face(vertices=vertices)
+
+
+def find_hole_in_polyhedron(polyhedron: Polyhedron) -> list[Vector3d]:
+    """
+    Finds a hole in the polyhedron suurface or returns an empty list.
+    If the polyhedron has multiple holes, an arbitrary one will be returned.
+    """
+    edges={} #(id(start),id(finish))->(start,finish)
+    for face in polyhedron.faces:
+        for index in range(len(face.vertices)):
+            start = face.vertices[index]
+            finish = face.vertices[(index+1)%len(face.vertices)]
+            if (id(finish), id(start)) in edges:
+                del edges[(id(finish), id(start))]
+            else:
+                edges[(id(start), id(finish))] = (start, finish)
+    if len(edges)==0:
+        return []
+    connections = {}
+    for ids, vertices in edges.items():
+        connections[ids[0]] = vertices[1]
+    hole = [next(iter(connections.values()))]
+    while True:
+        next_vertex = connections[id(hole[-1])]
+        if next_vertex is hole[0]:
+            break
+        hole.append(next_vertex)
+    return hole[::-1]
+
+
+def cut_polyhedron_by_plane(polyhedron: Polyhedron, plane: Plane3d) -> Polyhedron:
+    """
+    Will leave only the part on the negative side of the plane.
+    Will fail if the polyhedron is cut in two non-connected places.
+    Will fail if one of the faces is cut in two places.
+    Will return a polyhedron without faces if it's completely in front of the plane.
+    Treats the polyhedron as a solid, so will close the hole made by the cut.
+    """
+    vertex_is_behind_cache = {}
+    edge_split_vertices_cache = {}
+    cut_faces = []
+    for face in polyhedron.faces:
+        cut_face = cut_face_by_plane(
+            face,
+            plane,
+            vertex_is_behind_cache,
+            edge_split_vertices_cache
+        )
+        if len(cut_face.vertices)>0:
+            cut_faces.append(cut_face)
+    hole = find_hole_in_polyhedron(Polyhedron(faces = cut_faces))
+    if len(hole)>0:
+        cut_faces.append(Face(vertices=hole))
+    return Polyhedron(faces = cut_faces)
