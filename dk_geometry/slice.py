@@ -3,6 +3,7 @@ from typing import List, Set
 
 from dk_geometry.general import cut_polyhedron_by_plane
 from dk_geometry.model import Plane3d, Polyhedron, SliceInterval, Slice, Vector3d
+from copy import deepcopy
 
 
 def apply_slice_interval(polyhedron: Polyhedron, slice: SliceInterval) -> Polyhedron:
@@ -46,4 +47,4 @@ def apply_slice_interval(polyhedron: Polyhedron, slice: SliceInterval) -> Polyhe
             result,
             Plane3d(origin=Vector3d(0,0,slice.z1), normal=Vector3d(0,0,1))
         )
-    return result
+    return deepcopy(result)
