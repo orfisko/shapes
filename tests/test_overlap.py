@@ -25,6 +25,10 @@ def create_cube(centre: Vector3d, size: float) -> Polyhedron:
     )
 
 
+def inverted_face(face: Face) -> Face:
+    return Face(vertices=face.vertices[::-1])
+
+
 def test_that_identical_faces_overlap():
     face = Face(
         vertices = [
@@ -34,7 +38,7 @@ def test_that_identical_faces_overlap():
             Vector3d(0,2,0)
         ]
     )
-    assert do_faces_overlap(face, face, 0.01, 0.01)
+    assert do_faces_overlap(face, inverted_face(face), 0.01, 0.01)
 
 
 def test_that_nested_faces_overlap():
@@ -54,7 +58,7 @@ def test_that_nested_faces_overlap():
             Vector3d(1,2,0)
         ]
     )
-    assert do_faces_overlap(big_face, small_face, 0.01, 0.01)
+    assert do_faces_overlap(big_face, inverted_face(small_face), 0.01, 0.01)
 
 
 def test_that_touching_faces_do_not_overlap():
@@ -74,7 +78,7 @@ def test_that_touching_faces_do_not_overlap():
             Vector3d(1,1,0)
         ]
     )
-    assert not do_faces_overlap(face1, face2, 0.01, 0.01)
+    assert not do_faces_overlap(face1, inverted_face(face2), 0.01, 0.01)
 
 
 def test_that_partially_overlapping_faces_overlap():
@@ -94,7 +98,7 @@ def test_that_partially_overlapping_faces_overlap():
             Vector3d(1,2,0)
         ]
     )
-    assert do_faces_overlap(face1, face2, 0.01, 0.01)
+    assert do_faces_overlap(face1, inverted_face(face2), 0.01, 0.01)
 
 
 def test_that_parallel_but_translated_faces_do_not_overlap():
@@ -114,7 +118,7 @@ def test_that_parallel_but_translated_faces_do_not_overlap():
             Vector3d(0,1,1)
         ]
     )
-    assert not do_faces_overlap(face1, face2, 0.01, 0.01)
+    assert not do_faces_overlap(face1, inverted_face(face2), 0.01, 0.01)
 
 
 def test_that_separate_faces_in_the_same_plane_do_not_overlap():
@@ -134,7 +138,7 @@ def test_that_separate_faces_in_the_same_plane_do_not_overlap():
             Vector3d(2,3,0)
         ]
     )
-    assert not do_faces_overlap(face1, face2, 0.01, 0.01)
+    assert not do_faces_overlap(face1, inverted_face(face2), 0.01, 0.01)
 
 
 def test_that_face_in_a_concave_angle_does_not_overlap():
@@ -156,7 +160,7 @@ def test_that_face_in_a_concave_angle_does_not_overlap():
             Vector3d(2,2,0)
         ]
     )
-    assert not do_faces_overlap(small_face, face_with_cavity, 0.01, 0.01)
+    assert not do_faces_overlap(small_face, inverted_face(face_with_cavity), 0.01, 0.01)
 
 
 def test_that_non_parallel_faces_do_not_overlap():
@@ -177,6 +181,18 @@ def test_that_non_parallel_faces_do_not_overlap():
         ]
     )
     assert not do_faces_overlap(face1, face2, 0.01, 0.01)
+
+
+def test_that_faces_with_same_normals_do_not_overlap():
+    face = Face(
+        vertices = [
+            Vector3d(0,0,0),
+            Vector3d(2,0,0),
+            Vector3d(2,2,0),
+            Vector3d(0,2,0)
+        ]
+    )
+    assert not do_faces_overlap(face, face, 0.01, 0.01)
 
 
 def test_get_overlapping_faces():

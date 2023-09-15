@@ -156,6 +156,8 @@ def do_faces_overlap(
             areas = smaller_areas
         return False
 
+    if face1.plane.normal.dotProduct(face2.plane.normal)>0:
+        return False
     if not same_plane(face1, face2, tolerance):
         return False
     normal = face1.plane.normal
