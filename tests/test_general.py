@@ -5,11 +5,11 @@ from dk_geometry.model import Face, Vector3d
 def test_orientation(polyhedron_cutout_sloped):
     poly = polyhedron_cutout_sloped()
     top_face = poly.faces[0]
-    assert poly.faces[0].faceNomal == FaceNormal.T
-    assert poly.faces[1].faceNomal == FaceNormal.R_T
-    assert poly.faces[2].faceNomal == FaceNormal.R
-    assert poly.faces[3].faceNomal == FaceNormal.B
-    assert poly.faces[4].faceNomal == FaceNormal.L
+    assert poly.faces[0].faceNormal == FaceNormal.T
+    assert poly.faces[1].faceNormal == FaceNormal.R_T
+    assert poly.faces[2].faceNormal == FaceNormal.R
+    assert poly.faces[3].faceNormal == FaceNormal.B
+    assert poly.faces[4].faceNormal == FaceNormal.L
 
 
 def test_surface(polyhedron_cutout_sloped):
