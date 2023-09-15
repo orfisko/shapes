@@ -43,6 +43,32 @@ class FaceNormal(str, Enum):
                     if face_str == "".join(str_list):
                         return face
 
+    def normal_in_facenormal(self, *args: FaceNormal) -> bool:
+        """
+        Function to allow checking which of the main 6 normals are at present in the normal instance.
+        Args:
+            *args: normals to check against.
+        Returns:
+            True if any of the normals is present in the facenormal, False otherwise
+        """
+        pure_normals = [
+            FaceNormal.L,
+            FaceNormal.R,
+            FaceNormal.T,
+            FaceNormal.B,
+            FaceNormal.F,
+            FaceNormal.BK,
+        ]
+        for normal in args:
+            assert normal in pure_normals, (
+                "This function only allows to check if a facenormal is exposed to one of the "
+                "6 major normal directions"
+            )
+        for iter_normal in self.name.split("_"):
+            if FaceNormal(iter_normal) in args:
+                return True
+        return False
+
     def __neg__(self) -> FaceNormal:
         """Should return the opposite facenormal. This should allow to identify the face parallel to the one
         with orientation self"""
