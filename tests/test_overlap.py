@@ -1,28 +1,6 @@
+from dk_geometry.general import create_cube
 from dk_geometry.overlap import do_faces_overlap, FaceOverlap, get_overlapping_faces
 from dk_geometry.model import Face, Polyhedron, Vector3d
-
-
-def create_cube(centre: Vector3d, size: float) -> Polyhedron:
-    v = [
-        centre + Vector3d(-1,-1,-1)*size/2,
-        centre + Vector3d( 1,-1,-1)*size/2,
-        centre + Vector3d(-1, 1,-1)*size/2,
-        centre + Vector3d( 1, 1,-1)*size/2,
-        centre + Vector3d(-1,-1, 1)*size/2,
-        centre + Vector3d( 1,-1, 1)*size/2,
-        centre + Vector3d(-1, 1, 1)*size/2,
-        centre + Vector3d( 1, 1, 1)*size/2
-    ]
-    return Polyhedron(
-        faces = [
-            Face(vertices = [v[0], v[1], v[3], v[2]]),#front
-            Face(vertices = [v[2], v[3], v[7], v[6]]),#top
-            Face(vertices = [v[6], v[7], v[5], v[4]]),#back
-            Face(vertices = [v[4], v[5], v[1], v[0]]),#bottom
-            Face(vertices = [v[1], v[5], v[7], v[3]]),#right
-            Face(vertices = [v[2], v[6], v[4], v[0]])#left
-        ]
-    )
 
 
 def inverted_face(face: Face) -> Face:
