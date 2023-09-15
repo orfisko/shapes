@@ -176,7 +176,7 @@ def get_overlapping_faces(
 ) -> dict[int, list[FaceOverlap]]:
     """
     Function to find out which face of a polyhedra touches one of the faces of a given polyhedron. Note that
-    line touches should not be included.
+    line are not included. Also faces need to have opposite normals to be touching.
     Args:
         faces: which faces to check against the sent in polyhedra
         polyhedra: the list of polyhedrons to check against
