@@ -148,10 +148,6 @@ class Polyhedron:
         return max([v.max_z for v in self.faces])
 
     @property
-    def boundingBox(self) -> Polyhedron:
-        """Insert wizardry here"""
-
-    @property
     def volume(self) -> float:
         volume = 0
         for face in self.faces:
@@ -162,9 +158,9 @@ class Polyhedron:
                 volume += a.crossProduct(b).dotProduct(c) / 6
         return volume
 
-    def get_face_indices_by_orientation(self, orientation: FaceNormal) -> list[int]:
+    def get_face_indices_by_facenormal(self, face_normal: FaceNormal) -> list[int]:
         return [
-            idx for idx, face in enumerate(self.faces) if face.faceNomal == orientation
+            idx for idx, face in enumerate(self.faces) if face.faceNormal == face_normal
         ]
 
 
