@@ -66,7 +66,7 @@ def do_faces_overlap(
             )
             if min_distance is None or distance<min_distance:
                 min_distance = distance
-        return distance
+        return min_distance
     def is_point_inside_polygon(point: Vector3d, polygon: [Vector3d]) -> bool:
         ray = Line3d(
             origin = point,
