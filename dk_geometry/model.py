@@ -206,6 +206,9 @@ class Vector3d:
     def __sub__(self, other):
         return Vector3d(x=self.x - other.x, y=self.y - other.y, z=self.z - other.z)
 
+    def __neg__(self):
+        return Vector3d(x=-self.x, y=-self.y, z=-self.z)
+
     def __mul__(self, other):
         return Vector3d(x=self.x * other, y=self.y * other, z=self.z * other)
 
