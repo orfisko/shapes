@@ -36,8 +36,7 @@ def test_that_gap_is_created():
                     left_door,
                     make_door(middle-overlap/2, 200, 0, right_height)
                 ],
-                required_gap,
-                20
+                required_gap
             )
             actual_gap = resolved[1].min_x - resolved[0].max_x
             assert math.fabs(actual_gap-required_gap)<0.01
@@ -55,7 +54,7 @@ def test_that_taller_doors_get_overlap():
         elif right_height>left_height+0.001:
             expected_border = middle-overlap/2 #everything to the right door
         right_door = make_door(middle-overlap/2, 200, 0, right_height)
-        resolved = resolve_door_overlaps([left_door, right_door], 0, 20)
+        resolved = resolve_door_overlaps([left_door, right_door], 0)
         actual_border = resolved[0].max_x
         assert math.fabs(actual_border-expected_border)<0.01
 
@@ -66,8 +65,7 @@ def test_that_vertical_overlaps_get_resolved():
             make_door(0, 100, 0, 105),
             make_door(0, 100, 95, 200)
         ],
-        0,
-        20
+        0
     )
     assert math.fabs(resolved[1].min_y - resolved[0].max_y)<0.01
 
@@ -79,7 +77,7 @@ def test_2by2_situation():
         make_door(0, 110, 95, 200),
         make_door(95, 200, 95, 200)
     ]
-    resolved = resolve_door_overlaps(doors, 0, 20)
+    resolved = resolve_door_overlaps(doors, 0)
     assert resolved[0].max_x<resolved[1].min_x+0.01
     assert resolved[2].max_x<resolved[3].min_x+0.01
     assert resolved[0].max_y<resolved[2].min_y+0.01
@@ -94,5 +92,5 @@ def test_doors_visual_inspection():
     ]
     for index, door in enumerate(doors):
         export_to_obj(door, "input."+str(index)+".obj")
-    for index, door in enumerate(resolve_door_overlaps(doors,2,20)):
+    for index, door in enumerate(resolve_door_overlaps(doors,2)):
         export_to_obj(door, "output."+str(index)+".obj")

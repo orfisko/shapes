@@ -93,8 +93,7 @@ def get_extreme_edge_index(face: Face, direction: Vector3d) -> int:
 
 def get_overlaps(
     door_faces: list[Face],
-    cross_direction: Vector3d,
-    min_overlap_length: float
+    cross_direction: Vector3d
 ) -> list[Overlap]:
     direction = cross_direction.crossProduct(Vector3d(0,0,1))
     ranges_along = [get_range(f, direction) for f in door_faces]
@@ -108,7 +107,9 @@ def get_overlaps(
                 continue
             range_along2 = ranges_along[index2]
             range_across2 = ranges_across[index2]
-            if range_along1.intersect(range_along2).length() < min_overlap_length:
+            intersection_along = range_along1.intersect(range_along2)
+            intersection_across = range_across1.intersect(range_across2)
+            if intersection_along.length()<intersection_across.length():
                 continue
             overlap_range = range_across1.intersect(range_across2)
             if overlap_range.length()<0:
@@ -244,8 +245,7 @@ def perform_cuts(
 
 def resolve_door_overlaps(
     door_shapes: list[Polyhedron],
-    gap_size: float,
-    min_overlap_length: float
+    gap_size: float
 ) -> list[Polyhedron]:
     """
     The function cuts the given doors to remove overlaps between them ensuring that:
@@ -268,7 +268,7 @@ def resolve_door_overlaps(
     """
     for overlap_cross_direction in [Vector3d(1,0,0), Vector3d(0,1,0)]:
         faces = [get_main_face(door) for door in door_shapes]
-        overlaps = get_overlaps(faces, overlap_cross_direction, min_overlap_length)
+        overlaps = get_overlaps(faces, overlap_cross_direction)
         cuts = select_cuts(faces, overlaps, overlap_cross_direction, gap_size)
         door_shapes = perform_cuts(
             door_shapes,
