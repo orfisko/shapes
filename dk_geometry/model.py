@@ -163,7 +163,7 @@ class Polyhedron:
             idx for idx, face in enumerate(self.faces) if face.faceNormal == face_normal
         }
 
-    def get_face_indices_by_facenormals(self, face_normals: FaceNormal) -> set[int]:
+    def get_face_indices_by_facenormals(self, face_normals: set[FaceNormal]) -> set[int]:
         return {
             idx
             for idx, face in enumerate(self.faces)
