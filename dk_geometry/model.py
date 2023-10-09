@@ -15,6 +15,22 @@ default_config = dict(
 )
 
 
+class IndexedFaceNormals(dict):
+    """Class to store face normals with their index as key"""
+
+    def __init__(self, *args, **kwargs):
+        self.key_type = int
+        self.value_type = FaceNormal
+        super().__init__(*args, **kwargs)
+
+    def __setitem__(self, key, value):
+        if not isinstance(key, self.key_type) or not isinstance(value, self.value_type):
+            raise TypeError(
+                f"Keys must be of type {self.key_type}, and values must be of type {self.value_type}"
+            )
+        super().__setitem__(key, value)
+
+
 @dataclass(**default_config)
 class Normal:
     x: confloat(ge=-1, le=1)
@@ -106,7 +122,7 @@ class Face:
         return self.vertices[index], self.vertices[(index + 1) % len(self.vertices)]
 
     def is_orthogonal(self, other: Face) -> bool:
-        return math.fabs(plane.normal.dotProduct(other.plane.normal))<0.001
+        return math.fabs(self.plane.normal.dotProduct(other.plane.normal)) < 0.001
 
 
 @dataclass(**default_config)
@@ -125,6 +141,12 @@ class Polyhedron:
                 for face in self.faces
             ]
         )
+
+    def __iter__(self):
+        return iter(self.faces)
+
+    def __len__(self):
+        return len(self.faces)
 
     @property
     def min_x(self):
@@ -161,17 +183,44 @@ class Polyhedron:
                 volume += a.crossProduct(b).dotProduct(c) / 6
         return volume
 
-    def get_face_indices_by_facenormal(self, face_normal: FaceNormal) -> set[int]:
-        return {
-            idx for idx, face in enumerate(self.faces) if face.faceNormal == face_normal
-        }
+    @property
+    def indexedFaceNormals(self) -> IndexedFaceNormals:
+        return IndexedFaceNormals(
+            {idx: face.faceNormal for idx, face in enumerate(self.faces)}
+        )
 
-    def get_face_indices_by_facenormals(self, face_normals: set[FaceNormal]) -> set[int]:
-        return {
-            idx
-            for idx, face in enumerate(self.faces)
-            if face.faceNormal in face_normals
-        }
+    def get_face_indices_by_facenormal(
+        self, *args: FaceNormal, strict=False
+    ) -> set[int]:
+        """
+        Get the indices of the faces with the given face normals
+        Args:
+            *args: FaceNormals to match
+            strict: if this flag is set to true, the passed facenormal needs to be strictly equal to the facenormal of
+            the face. If False, the passed FaceNormal needs to be 'in' the facenormal of the face.
+
+        Returns:
+            set of indices of the faces with the given face normals
+        """
+        if strict:
+            return {
+                idx for idx, face in enumerate(self.faces) if face.faceNormal in args
+            }
+        else:
+            return {
+                idx
+                for arg in args
+                for idx, face in enumerate(self.faces)
+                if arg in face.faceNormal
+            }
+
+    def get_faces_by_facenormal(self, *args: FaceNormal, strict=False) -> list[Face]:
+        if strict:
+            return [face for face in self.faces if face.faceNormal in args]
+        else:
+            return [
+                face for arg in args for face in self.faces if arg in face.faceNormal
+            ]
 
 
 @dataclass(**default_config)
@@ -186,7 +235,6 @@ class SliceInterval:
     @model_validator(mode="after")
     @classmethod
     def check_order(cls, slice):
-        # This might make the logic easier to implement? For me it is not a problem to have this enforced
         if all([slice.x0, slice.x1]) and slice.x0 > slice.x1:
             raise ValueError("x0 should be smaller than x1")
         if all([slice.y0, slice.y1]) and slice.y0 > slice.y1:

@@ -190,11 +190,15 @@ def find_hole_in_polyhedron(polyhedron: Polyhedron) -> list[Vector3d]:
 
 def cut_polyhedron_by_plane(polyhedron: Polyhedron, plane: Plane3d) -> Polyhedron:
     """
-    Will leave only the part on the negative side of the plane.
+    Will leave only the part on the side inverse to the normal of the plane.
     Will fail if the polyhedron is cut in two non-connected places.
     Will fail if one of the faces is cut in two places.
-    Will return a polyhedron without faces if it's completely in front of the plane.
-    Treats the polyhedron as a solid, so will close the hole made by the cut.
+    Args:
+        polyhedron: polyedron to cut
+        plane: plane to cut with
+    Returns:
+        Will return a polyhedron without faces if it's completely in front of the plane.
+        Treats the polyhedron as a solid, so will close the hole made by the cut.
     """
     vertex_is_behind_cache = {}
     edge_split_vertices_cache = {}

@@ -1,21 +1,18 @@
-from collections import namedtuple, defaultdict
-from typing import Optional, Callable, Tuple
-
-from dk_geometry.model import default_config, Face, Line3d, Plane3d, Polyhedron, Vector3d
-from dk_geometry.general import calculate_signed_distance_to_plane, cut_face_by_plane
-from pydantic import confloat, ConfigDict, model_validator
-from pydantic.dataclasses import dataclass
 import math
+from collections import namedtuple, defaultdict
+
+from dk_geometry.general import calculate_signed_distance_to_plane, cut_face_by_plane
+from dk_geometry.model import Face, Plane3d, Polyhedron
 
 
 def same_plane(face1: Face, face2: Face, tolerance) -> bool:
     plane1 = face1.plane
     for v in face2.vertices:
-        if math.fabs(calculate_signed_distance_to_plane(v, plane1))>tolerance:
+        if math.fabs(calculate_signed_distance_to_plane(v, plane1)) > tolerance:
             return False
     plane2 = face2.plane
     for v in face1.vertices:
-        if math.fabs(calculate_signed_distance_to_plane(v, plane2))>tolerance:
+        if math.fabs(calculate_signed_distance_to_plane(v, plane2)) > tolerance:
             return False
     return True
 
@@ -25,8 +22,8 @@ def intersect_convex_faces(face1: Face, face2: Face) -> Face:
     for edge_index in range(len(face2.vertices)):
         edge = face2.get_edge(edge_index)
         plane = Plane3d(
-            origin = edge[0],
-            normal = (edge[1]-edge[0]).crossProduct(face2_normal).normalized
+            origin=edge[0],
+            normal=(edge[1] - edge[0]).crossProduct(face2_normal).normalized,
         )
         face1 = cut_face_by_plane(face1, plane, {}, {})
     return face1
@@ -36,25 +33,25 @@ def split_face_into_convex_pieces(face: Face) -> list[Face]:
     inner_corner_indices = []
     face_normal = face.plane.normal
     for index in range(len(face.vertices)):
-        previous_edge = face.get_edge((index-1) % len(face.vertices))
-        previous_vector = (previous_edge[1] - previous_edge[0])
+        previous_edge = face.get_edge((index - 1) % len(face.vertices))
+        previous_vector = previous_edge[1] - previous_edge[0]
         next_edge = face.get_edge(index)
-        next_vector = (next_edge[1] - next_edge[0])
+        next_vector = next_edge[1] - next_edge[0]
         if previous_vector.crossProduct(next_vector).dotProduct(face_normal) < 0:
             inner_corner_indices.append(index)
-    if len(inner_corner_indices)==0:
+    if len(inner_corner_indices) == 0:
         return [face]
-    if len(inner_corner_indices)>1:
+    if len(inner_corner_indices) > 1:
         raise ValueError("a face has more than one inner corner")
     central_index = inner_corner_indices[0]
     pieces = []
-    for shift in range(1, len(face.vertices)-1):
+    for shift in range(1, len(face.vertices) - 1):
         pieces.append(
             Face(
                 vertices=[
                     face.vertices[central_index],
-                    face.vertices[(central_index+shift) % len(face.vertices)],
-                    face.vertices[(central_index+shift+1) % len(face.vertices)]
+                    face.vertices[(central_index + shift) % len(face.vertices)],
+                    face.vertices[(central_index + shift + 1) % len(face.vertices)],
                 ]
             )
         )
@@ -62,12 +59,9 @@ def split_face_into_convex_pieces(face: Face) -> list[Face]:
 
 
 def do_faces_overlap(
-    face1: Face,
-    face2: Face,
-    tolerance: float,
-    min_area: float
+    face1: Face, face2: Face, tolerance: float, min_area: float
 ) -> bool:
-    if face1.plane.normal.dotProduct(face2.plane.normal)>0:
+    if face1.plane.normal.dotProduct(face2.plane.normal) > 0:
         return False
     if not same_plane(face1, face2, tolerance):
         return False
@@ -75,7 +69,7 @@ def do_faces_overlap(
     for convex1 in split_face_into_convex_pieces(face1):
         for convex2 in split_face_into_convex_pieces(face2):
             area += intersect_convex_faces(face1, face2).surfaceArea
-    return area>=min_area
+    return area >= min_area
 
 
 FaceOverlap = namedtuple("FaceOverlap", ["poly_index", "face_index"])
