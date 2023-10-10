@@ -59,10 +59,15 @@ def split_face_into_convex_pieces(face: Face) -> list[Face]:
 
 
 def do_faces_overlap(
-    face1: Face, face2: Face, tolerance: float, min_area: float
+    face1: Face,
+    face2: Face,
+    tolerance: float,
+    min_area: float,
+    opposite_facenormals: bool = True,
 ) -> bool:
-    if face1.plane.normal.dotProduct(face2.plane.normal) > 0:
-        return False
+    if opposite_facenormals:
+        if face1.plane.normal.dotProduct(face2.plane.normal) > 0:
+            return False
     if not same_plane(face1, face2, tolerance):
         return False
     area = 0
@@ -76,7 +81,7 @@ FaceOverlap = namedtuple("FaceOverlap", ["poly_index", "face_index"])
 
 
 def get_overlapping_faces(
-    faces: list[Face], polyhedra: list[Polyhedron]
+    faces: list[Face], polyhedra: list[Polyhedron], opposite_facenormals: bool = True
 ) -> dict[int, list[FaceOverlap]]:
     """
     Function to find out which face of a polyhedra touches one of the faces of a given polyhedron. Note that
@@ -85,6 +90,7 @@ def get_overlapping_faces(
     Args:
         faces: which faces to check against the sent in polyhedra
         polyhedra: the list of polyhedrons to check against
+        opposite_facenormals: if true, only faces with opposite normals are considered touching
     Returns:
         a dictionary containing per face of the given polyhedron as key the list of faceoverlaps
     """
@@ -95,7 +101,7 @@ def get_overlapping_faces(
     for face_index, face in enumerate(faces):
         for polyhedron_index, polyhedron in enumerate(polyhedra):
             for adjacent_index, adjacent_face in enumerate(polyhedron.faces):
-                if do_faces_overlap(face, adjacent_face, 1, 1):
+                if do_faces_overlap(face, adjacent_face, 1, 1, opposite_facenormals):
                     result[face_index].append(
                         FaceOverlap(polyhedron_index, adjacent_index)
                     )
