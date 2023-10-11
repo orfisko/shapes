@@ -8,7 +8,7 @@ def test_simple_slicing():
     size = 10
     cube = create_cube(Vector3d(0, 0, 0), size)
     slice_interval = SliceInterval(
-        left_x=0, right_x=2, bottom_y=-1, front_z=-20, back_z=20
+        left_x=0, right_x=2, bottom_y=-1, front_z=20, back_z=-20
     )
     sliced = apply_slice_interval(cube, slice_interval)
     x = [v.x for f in sliced.faces for v in f.vertices]

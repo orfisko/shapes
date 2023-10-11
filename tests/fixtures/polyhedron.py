@@ -129,7 +129,7 @@ def polyhedron_cutout_slope_fixture(
     RIGHT_ANGLED = Face(vertices=[D, H, G, E])
     RIGHT_CUTOUT = Face(vertices=[P, O, K, J])
     TOP_CUTOUT = Face(vertices=[I, M, P, J])
-    FRONT_CUTOUT = Face(vertices=[M, N, O, P])
+    BACK_CUTOUT = Face(vertices=[M, N, O, P])
 
     return Polyhedron(
         faces=[
@@ -142,7 +142,7 @@ def polyhedron_cutout_slope_fixture(
             BACK,
             RIGHT_CUTOUT,
             TOP_CUTOUT,
-            FRONT_CUTOUT,
+            BACK_CUTOUT,
         ]
     )
 

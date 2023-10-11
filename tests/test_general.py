@@ -2,7 +2,7 @@ from dk_geometry.enums import FaceNormal
 from dk_geometry.model import Face, Vector3d
 
 
-def test_orientation(polyhedron_cutout_sloped):
+def test_facenormal(polyhedron_cutout_sloped):
     poly = polyhedron_cutout_sloped()
     top_face = poly.faces[0]
     assert poly.faces[0].faceNormal == FaceNormal.T
@@ -10,6 +10,11 @@ def test_orientation(polyhedron_cutout_sloped):
     assert poly.faces[2].faceNormal == FaceNormal.R
     assert poly.faces[3].faceNormal == FaceNormal.B
     assert poly.faces[4].faceNormal == FaceNormal.L
+    assert poly.faces[5].faceNormal == FaceNormal.F
+    assert poly.faces[6].faceNormal == FaceNormal.BK
+    assert poly.faces[7].faceNormal == FaceNormal.R
+    assert poly.faces[8].faceNormal == FaceNormal.B
+    assert poly.faces[9].faceNormal == FaceNormal.BK
 
 
 def test_surface(polyhedron_cutout_sloped):

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import math
 
-from pydantic import confloat, ConfigDict, model_validator
+from pydantic import confloat, ConfigDict
 from pydantic.dataclasses import dataclass
 
 from dk_geometry.enums import FaceNormal
@@ -297,19 +297,18 @@ class Plane3d:
     def faceNormal(self) -> FaceNormal:
         types = []
 
-        if self.normal.x > 0:
-            types.append("L")
         if self.normal.x < 0:
+            types.append("L")
+        if self.normal.x > 0:
             types.append("R")
-        if self.normal.y > 0:
-            types.append("B")
         if self.normal.y < 0:
+            types.append("B")
+        if self.normal.y > 0:
             types.append("T")
-        if self.normal.z > 0:
-            types.append("BK")
         if self.normal.z < 0:
+            types.append("BK")
+        if self.normal.z > 0:
             types.append("F")
-
 
         return FaceNormal.from_stringlist(types)
 
