@@ -1,8 +1,8 @@
 import math
-from collections import namedtuple, defaultdict
+from collections import defaultdict
 
 from dk_geometry.general import calculate_signed_distance_to_plane, cut_face_by_plane
-from dk_geometry.model import Face, Plane3d, Polyhedron
+from dk_geometry.model import Face, Plane3d, Polyhedron, FaceOverlap
 
 
 def same_plane(face1: Face, face2: Face, tolerance) -> bool:
@@ -64,20 +64,17 @@ def do_faces_overlap(
     tolerance: float,
     min_area: float,
     opposite_facenormals: bool = True,
-) -> bool:
+) -> tuple[bool, float]:
     if opposite_facenormals:
         if face1.plane.normal.dotProduct(face2.plane.normal) > 0:
-            return False
+            return False, 0
     if not same_plane(face1, face2, tolerance):
-        return False
+        return False, 0
     area = 0
     for convex1 in split_face_into_convex_pieces(face1):
         for convex2 in split_face_into_convex_pieces(face2):
             area += intersect_convex_faces(face1, face2).surfaceArea
-    return area >= min_area
-
-
-FaceOverlap = namedtuple("FaceOverlap", ["poly_index", "face_index"])
+    return area >= min_area, area
 
 
 def get_overlapping_faces(
@@ -101,9 +98,12 @@ def get_overlapping_faces(
     for face_index, face in enumerate(faces):
         for polyhedron_index, polyhedron in enumerate(polyhedra):
             for adjacent_index, adjacent_face in enumerate(polyhedron.faces):
-                if do_faces_overlap(face, adjacent_face, 1, 1, opposite_facenormals):
+                overlap, area = do_faces_overlap(
+                    face, adjacent_face, 1, 1, opposite_facenormals
+                )
+                if overlap:
                     result[face_index].append(
-                        FaceOverlap(polyhedron_index, adjacent_index)
+                        FaceOverlap(polyhedron_index, adjacent_index, area)
                     )
 
     return result

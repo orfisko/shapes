@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from collections import namedtuple
 
 from pydantic import confloat, ConfigDict
 from pydantic.dataclasses import dataclass
@@ -335,3 +336,10 @@ class Plane3d:
 class Line3d:
     origin: Vector3d
     direction: Vector3d
+
+
+@dataclass(**default_config)
+class FaceOverlap:
+    poly_index: int
+    face_index: int
+    area: float
