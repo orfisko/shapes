@@ -229,24 +229,12 @@ class Polyhedron:
 
 @dataclass(**default_config)
 class SliceInterval:
-    x0: float = None
-    x1: float = None
-    y0: float = None
-    y1: float = None
-    z0: float = None
-    z1: float = None
-
-    @model_validator(mode="after")
-    @classmethod
-    def check_order(cls, slice):
-        if all([slice.x0, slice.x1]) and slice.x0 > slice.x1:
-            raise ValueError("x0 should be smaller than x1")
-        if all([slice.y0, slice.y1]) and slice.y0 > slice.y1:
-            raise ValueError("y0 should be smaller than y1")
-        if all([slice.z0, slice.z1]) and slice.z0 > slice.z1:
-            raise ValueError("z0 should be smaller than z1")
-
-        return slice
+    left_x: float = None
+    right_x: float = None
+    bottom_y: float = None
+    top_y: float = None
+    front_z: float = None
+    back_z: float = None
 
 
 @dataclass
