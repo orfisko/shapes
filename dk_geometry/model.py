@@ -230,12 +230,12 @@ class Polyhedron:
 
 @dataclass(**default_config)
 class SliceInterval:
-    left_x: float = None
-    right_x: float = None
-    bottom_y: float = None
-    top_y: float = None
-    front_z: float = None
-    back_z: float = None
+    left_x: float = None # smaller
+    right_x: float = None # bigger
+    bottom_y: float = None # smaller
+    top_y: float = None # bigger
+    back_z: float = None # smaller
+    front_z: float = None # bigger
 
 
 @dataclass
