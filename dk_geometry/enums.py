@@ -73,12 +73,3 @@ class FaceNormal(str, Enum):
         ]
 
         return FaceNormal(opposites[list(FaceNormal).index(self)])
-
-
-class FaceLocation(str, Enum):
-    BOTTOM = "BOTTOM"
-    TOP = "TOP"
-    LEFT = "LEFT"
-    RIGHT = "RIGHT"
-    FRONT = "FRONT"
-    BACK = "BACK"

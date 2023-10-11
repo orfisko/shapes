@@ -51,7 +51,7 @@ class Face:
             return iter((self.length, self.width))
 
     @property
-    def plane(self):
+    def plane(self) -> Plane3d:
         return Plane3d(
             origin=self.vertices[0],
             normal=self.areaVector.normalized,
@@ -72,6 +72,10 @@ class Face:
     @property
     def faceNormal(self) -> FaceNormal:
         return self.plane.faceNormal
+
+    @property
+    def inversedFaceNormal(self) -> FaceNormal:
+        return self.plane.inversedFaceNormal
 
     @property
     def min_x(self):
@@ -311,11 +315,29 @@ class Plane3d:
             types.append("L")
         if self.normal.y < 0:
             types.append("B")
-        if self.normal.z > 0:
-            types.append("F")
         if self.normal.y > 0:
             types.append("T")
+        if self.normal.z > 0:
+            types.append("F")
         if self.normal.z < 0:
+            types.append("BK")
+
+        return FaceNormal.from_stringlist(types)
+
+    @property
+    def inversedFaceNormal(self) -> FaceNormal:
+        types = []
+        if self.normal.x < 0:
+            types.append("R")
+        if self.normal.x > 0:
+            types.append("L")
+        if self.normal.y < 0:
+            types.append("T")
+        if self.normal.y > 0:
+            types.append("B")
+        if self.normal.z < 0:
+            types.append("F")
+        if self.normal.z > 0:
             types.append("BK")
 
         return FaceNormal.from_stringlist(types)
