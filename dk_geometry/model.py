@@ -298,17 +298,17 @@ class Plane3d:
         types = []
 
         if self.normal.x < 0:
-            types.append("L")
+            types.append("L")  # left
         if self.normal.x > 0:
-            types.append("R")
+            types.append("R")  # right
         if self.normal.y < 0:
-            types.append("B")
+            types.append("B")  # bottom
         if self.normal.y > 0:
-            types.append("T")
+            types.append("T")  # top
         if self.normal.z < 0:
-            types.append("BK")
+            types.append("BK")  # Back
         if self.normal.z > 0:
-            types.append("F")
+            types.append("F")  # Front
 
         return FaceNormal.from_stringlist(types)
 

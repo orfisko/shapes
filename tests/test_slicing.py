@@ -1,7 +1,8 @@
-from dk_geometry.general import create_cube
-from dk_geometry.model import Face, Plane3d, Polyhedron, SliceInterval, Vector3d
-from dk_geometry.slice import apply_slice_interval
 import math
+
+from dk_geometry.general import create_cube
+from dk_geometry.model import SliceInterval, Vector3d
+from dk_geometry.slice import apply_slice_interval
 
 
 def test_simple_slicing():
