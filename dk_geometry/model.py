@@ -298,17 +298,18 @@ class Plane3d:
         types = []
 
         if self.normal.x > 0:
-            types.append("R")
-        if self.normal.x < 0:
             types.append("L")
-        if self.normal.y < 0:
-            types.append("B")
+        if self.normal.x < 0:
+            types.append("R")
         if self.normal.y > 0:
+            types.append("B")
+        if self.normal.y < 0:
             types.append("T")
         if self.normal.z > 0:
-            types.append("F")
-        if self.normal.z < 0:
             types.append("BK")
+        if self.normal.z < 0:
+            types.append("F")
+
 
         return FaceNormal.from_stringlist(types)
 
@@ -316,17 +317,17 @@ class Plane3d:
     def inversedFaceNormal(self) -> FaceNormal:
         types = []
         if self.normal.x < 0:
-            types.append("R")
-        if self.normal.x > 0:
             types.append("L")
+        if self.normal.x > 0:
+            types.append("R")
         if self.normal.y < 0:
-            types.append("T")
-        if self.normal.y > 0:
             types.append("B")
+        if self.normal.y > 0:
+            types.append("T")
         if self.normal.z < 0:
-            types.append("F")
-        if self.normal.z > 0:
             types.append("BK")
+        if self.normal.z > 0:
+            types.append("F")
 
         return FaceNormal.from_stringlist(types)
 
