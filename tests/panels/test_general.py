@@ -153,7 +153,7 @@ def test_that_prioritization_skips_faces_without_panels(polyhedron_cutout_sloped
 
 def test_check_facenormals():
     outer = create_cube(centre=Vector3d(50, 50, 50), size=float(100))
-    inner = generate_offset(poly=outer, offset_map={3: Decimal(20)})
+    inner = generate_offset(poly=outer, offset_map={3: Decimal(-20)})
 
     min_z_outer = outer.get_faces_by_facenormal(FaceNormal.F)[0].min_z
     max_z_outer = outer.get_faces_by_facenormal(FaceNormal.F)[0].max_z
@@ -169,3 +169,9 @@ def test_check_facenormals():
     max_z_panel = panel.get_faces_by_facenormal(FaceNormal.F)[0].max_z
     assert min_z_panel == min_z_outer
     assert max_z_panel == max_z_outer
+
+
+def test_get_index_by_facenormal():
+    cube = create_cube(centre=Vector3d(50, 50, 50), size=float(100))
+    idxs = cube.get_face_indices_by_facenormal(FaceNormal.B)
+    assert len(idxs) == 1

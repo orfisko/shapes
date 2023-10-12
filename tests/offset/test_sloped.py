@@ -33,6 +33,27 @@ def test_polyhedron_offset_exclude_front_back(polyhedron_cutout_sloped):
     assert distinct_back_z == {Decimal(-600)}, f"Expected 0, got {distinct_back_z}"
 
 
+def test_polyhedron_offset_single_face(polyhedron_cutout_sloped):
+    poly = polyhedron_cutout_sloped()
+
+    new_poly = generate_offset(
+        poly=poly,
+        offset=Decimal(18),
+        offset_map={3: Decimal(-20)},
+    )
+
+    assert new_poly.min_y == poly.min_y + 20
+    # # Collect distinct values in a set
+    # distinct_front_z = {vertex.z for vertex in poly.faces[5].vertices}
+    # # In case the front face is not offset, the z coordinate should remain unchanged
+    # assert distinct_front_z == {Decimal(0)}, f"Expected 0, got {distinct_front_z}"
+    #
+    # # Collect distinct values in a set
+    # distinct_back_z = {vertex.z for vertex in poly.faces[6].vertices}
+    # # In case the front face is not offset, the z coordinate should remain unchanged
+    # assert distinct_back_z == {Decimal(-600)}, f"Expected 0, got {distinct_back_z}"
+
+
 def test_that_the_offset_has_been_done(polyhedron_cutout_sloped):
     offset_distance = Decimal(10)
     input = polyhedron_cutout_sloped()

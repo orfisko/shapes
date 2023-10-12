@@ -3,7 +3,7 @@ from __future__ import annotations
 from enum import Enum
 
 
-class FaceNormal(str, Enum):
+class FaceNormal(Enum):
     """Indicates which absolute normals of the face are different from 0"""
 
     L = "L"  # Left
@@ -42,7 +42,7 @@ class FaceNormal(str, Enum):
             str_list.sort()
             face: FaceNormal
             for face in list(cls):
-                face_str_list = face.split("_")
+                face_str_list = face.name.split("_")
                 if len(face_str_list) > 1:
                     face_str_list.sort()
                     face_str = "".join(face_str_list)
