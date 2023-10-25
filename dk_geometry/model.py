@@ -2,14 +2,17 @@ from __future__ import annotations
 
 import math
 
-from pydantic import confloat, ConfigDict
+from pydantic import confloat, ConfigDict, BaseModel
 from pydantic.dataclasses import dataclass
 
 from dk_geometry.enums import FaceNormal
 
 default_config = dict(
     config=ConfigDict(
-        validate_assignment=True, arbitrary_types_allowed=True, frozen=True
+        validate_assignment=True,
+        arbitrary_types_allowed=True,
+        frozen=True,
+        extra="forbid",
     ),
 )
 
@@ -226,14 +229,14 @@ class Polyhedron:
             ]
 
 
-@dataclass(**default_config)
-class SliceInterval:
+class SliceInterval(BaseModel):
     left_x: float = None  # smaller
     right_x: float = None  # bigger
     bottom_y: float = None  # smaller
     top_y: float = None  # bigger
     back_z: float = None  # smaller
     front_z: float = None  # bigger
+    model_config: ConfigDict = default_config["config"]
 
 
 @dataclass
