@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-from collections import namedtuple
 
 from pydantic import confloat, ConfigDict
 from pydantic.dataclasses import dataclass
@@ -9,7 +8,6 @@ from pydantic.dataclasses import dataclass
 from dk_geometry.enums import FaceNormal
 
 default_config = dict(
-    slots=True,
     config=ConfigDict(
         validate_assignment=True, arbitrary_types_allowed=True, frozen=True
     ),
@@ -79,27 +77,27 @@ class Face:
         return self.plane.inversedFaceNormal
 
     @property
-    def min_x(self):
+    def min_x(self) -> float:
         return min([v.x for v in self.vertices])
 
     @property
-    def max_x(self):
+    def max_x(self) -> float:
         return max([v.x for v in self.vertices])
 
     @property
-    def min_y(self):
+    def min_y(self) -> float:
         return min([v.y for v in self.vertices])
 
     @property
-    def max_y(self):
+    def max_y(self) -> float:
         return max([v.y for v in self.vertices])
 
     @property
-    def min_z(self):
+    def min_z(self) -> float:
         return min([v.z for v in self.vertices])
 
     @property
-    def max_z(self):
+    def max_z(self) -> float:
         return max([v.z for v in self.vertices])
 
     @property
@@ -154,27 +152,27 @@ class Polyhedron:
         return len(self.faces)
 
     @property
-    def min_x(self):
+    def min_x(self) -> float:
         return min([v.min_x for v in self.faces])
 
     @property
-    def max_x(self):
+    def max_x(self) -> float:
         return max([v.max_x for v in self.faces])
 
     @property
-    def min_y(self):
+    def min_y(self) -> float:
         return min([v.min_y for v in self.faces])
 
     @property
-    def max_y(self):
+    def max_y(self) -> float:
         return max([v.max_y for v in self.faces])
 
     @property
-    def min_z(self):
+    def min_z(self) -> float:
         return min([v.min_z for v in self.faces])
 
     @property
-    def max_z(self):
+    def max_z(self) -> float:
         return max([v.max_z for v in self.faces])
 
     @property
@@ -230,12 +228,12 @@ class Polyhedron:
 
 @dataclass(**default_config)
 class SliceInterval:
-    left_x: float = None # smaller
-    right_x: float = None # bigger
-    bottom_y: float = None # smaller
-    top_y: float = None # bigger
-    back_z: float = None # smaller
-    front_z: float = None # bigger
+    left_x: float = None  # smaller
+    right_x: float = None  # bigger
+    bottom_y: float = None  # smaller
+    top_y: float = None  # bigger
+    back_z: float = None  # smaller
+    front_z: float = None  # bigger
 
 
 @dataclass
