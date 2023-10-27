@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Optional
+
 from pydantic import ConfigDict
 
 from dk_geometry.model import Vector3d, Plane3d, Line3d, Face, Polyhedron
@@ -104,8 +106,8 @@ def create_cube(centre: Vector3d, size: float) -> Polyhedron:
 def cut_face_by_plane(
     face: Face,
     plane: Plane3d,
-    vertex_is_behind_cache: dict[int, bool],
-    edge_split_vertices_cache: dict[(int, int), Vector3d],
+    vertex_is_behind_cache: Optional[dict[int, bool]] = None,
+    edge_split_vertices_cache: Optional[dict[(int, int), Vector3d]] = None,
 ) -> Face:
     """
     Returns the part of the given face which is behind (on the negative side) of
@@ -118,6 +120,10 @@ def cut_face_by_plane(
     of vertex connections within a polyhedron, not needed if only a geometry of a
     single cuut face is needed.
     """
+    if vertex_is_behind_cache is None:
+        vertex_is_behind_cache = {}
+    if edge_split_vertices_cache is None:
+        edge_split_vertices_cache = {}
 
     def is_vertex_behind(vertex):
         if id(vertex) not in vertex_is_behind_cache:

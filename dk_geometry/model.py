@@ -17,22 +17,6 @@ default_config = dict(
 )
 
 
-class IndexedFaceNormals(dict):
-    """Class to store face normals with their index as key"""
-
-    def __init__(self, *args, **kwargs):
-        self.key_type = int
-        self.value_type = FaceNormal
-        super().__init__(*args, **kwargs)
-
-    def __setitem__(self, key, value):
-        if not isinstance(key, self.key_type) or not isinstance(value, self.value_type):
-            raise TypeError(
-                f"Keys must be of type {self.key_type}, and values must be of type {self.value_type}"
-            )
-        super().__setitem__(key, value)
-
-
 @dataclass(**default_config)
 class Normal:
     x: confloat(ge=-1, le=1)
@@ -190,10 +174,8 @@ class Polyhedron:
         return volume
 
     @property
-    def indexedFaceNormals(self) -> IndexedFaceNormals:
-        return IndexedFaceNormals(
-            {idx: face.faceNormal for idx, face in enumerate(self.faces)}
-        )
+    def indexedFaceNormals(self) -> dict[int, FaceNormal]:
+        return {idx: face.faceNormal for idx, face in enumerate(self.faces)}
 
     def get_face_indices_by_facenormal(
         self, *args: FaceNormal, strict=False
@@ -236,7 +218,12 @@ class SliceInterval(BaseModel):
     top_y: float = None  # bigger
     back_z: float = None  # smaller
     front_z: float = None  # bigger
-    model_config: ConfigDict = default_config["config"]
+    model_config: ConfigDict = ConfigDict(
+        validate_assignment=True,
+        arbitrary_types_allowed=True,
+        frozen=True,
+        extra="forbid",
+    )
 
 
 @dataclass
