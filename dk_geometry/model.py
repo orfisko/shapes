@@ -217,7 +217,7 @@ class SliceInterval(BaseModel):
     min_y: float = None  # smaller
     max_y: float = None  # bigger
     min_z: float = None  # smaller
-    front_z: float = None  # bigger
+    max_z: float = None  # bigger
     model_config: ConfigDict = ConfigDict(
         validate_assignment=True,
         arbitrary_types_allowed=True,

@@ -40,9 +40,9 @@ def apply_slice_interval(polyhedron: Polyhedron, slice: SliceInterval) -> Polyhe
             result,
             Plane3d(origin=Vector3d(0, 0, slice.min_z), normal=Vector3d(0, 0, -1)),
         )
-    if slice.front_z is not None:
+    if slice.max_z is not None:
         result = cut_polyhedron_by_plane(
             result,
-            Plane3d(origin=Vector3d(0, 0, slice.front_z), normal=Vector3d(0, 0, 1)),
+            Plane3d(origin=Vector3d(0, 0, slice.max_z), normal=Vector3d(0, 0, 1)),
         )
     return deepcopy(result)
