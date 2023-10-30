@@ -15,30 +15,30 @@ def apply_slice_interval(polyhedron: Polyhedron, slice: SliceInterval) -> Polyhe
         a new polyhedron with the slice applied.
     """
     result = polyhedron
-    if slice.left_x is not None:
+    if slice.min_x is not None:
         result = cut_polyhedron_by_plane(
             result,
-            Plane3d(origin=Vector3d(slice.left_x, 0, 0), normal=Vector3d(-1, 0, 0)),
+            Plane3d(origin=Vector3d(slice.min_x, 0, 0), normal=Vector3d(-1, 0, 0)),
         )
-    if slice.right_x is not None:
+    if slice.max_x is not None:
         result = cut_polyhedron_by_plane(
             result,
-            Plane3d(origin=Vector3d(slice.right_x, 0, 0), normal=Vector3d(1, 0, 0)),
+            Plane3d(origin=Vector3d(slice.max_x, 0, 0), normal=Vector3d(1, 0, 0)),
         )
-    if slice.bottom_y is not None:
+    if slice.min_y is not None:
         result = cut_polyhedron_by_plane(
             result,
-            Plane3d(origin=Vector3d(0, slice.bottom_y, 0), normal=Vector3d(0, -1, 0)),
+            Plane3d(origin=Vector3d(0, slice.min_y, 0), normal=Vector3d(0, -1, 0)),
         )
-    if slice.top_y is not None:
+    if slice.max_y is not None:
         result = cut_polyhedron_by_plane(
             result,
-            Plane3d(origin=Vector3d(0, slice.top_y, 0), normal=Vector3d(0, 1, 0)),
+            Plane3d(origin=Vector3d(0, slice.max_y, 0), normal=Vector3d(0, 1, 0)),
         )
-    if slice.back_z is not None:
+    if slice.min_z is not None:
         result = cut_polyhedron_by_plane(
             result,
-            Plane3d(origin=Vector3d(0, 0, slice.back_z), normal=Vector3d(0, 0, -1)),
+            Plane3d(origin=Vector3d(0, 0, slice.min_z), normal=Vector3d(0, 0, -1)),
         )
     if slice.front_z is not None:
         result = cut_polyhedron_by_plane(

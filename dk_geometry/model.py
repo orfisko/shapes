@@ -212,11 +212,11 @@ class Polyhedron:
 
 
 class SliceInterval(BaseModel):
-    left_x: float = None  # smaller
-    right_x: float = None  # bigger
-    bottom_y: float = None  # smaller
-    top_y: float = None  # bigger
-    back_z: float = None  # smaller
+    min_x: float = None  # smaller
+    max_x: float = None  # bigger
+    min_y: float = None  # smaller
+    max_y: float = None  # bigger
+    min_z: float = None  # smaller
     front_z: float = None  # bigger
     model_config: ConfigDict = ConfigDict(
         validate_assignment=True,

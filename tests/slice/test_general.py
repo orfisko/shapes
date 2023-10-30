@@ -13,7 +13,7 @@ def test_change_rotation(polyhedron_cutout):
     poly = polyhedron_cutout()
 
     poly_slice = apply_slice_interval(
-        polyhedron=poly, slice=SliceInterval(left_x=Decimal(10), right_x=Decimal(20))
+        polyhedron=poly, slice=SliceInterval(min_x=Decimal(10), max_x=Decimal(20))
     )
 
     poly_slice_check = polyhedron_cutout(
