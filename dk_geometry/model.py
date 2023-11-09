@@ -239,6 +239,12 @@ class Vector3d:
     y: float
     z: float
 
+    def __post_init__(self):
+        # Round the float attributes to a certain number of decimal places
+        self.x = round(self.x, 5)
+        self.y = round(self.y, 5)
+        self.z = round(self.z, 5)
+
     def __add__(self, other):
         return Vector3d(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
 
