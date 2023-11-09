@@ -34,3 +34,23 @@ def test_face_lwdimensions():
     dimensions = face.lw_dimensions
     assert dimensions.width == 2
     assert dimensions.length == 5
+
+
+def test_face_equality():
+    face_1 = Face(
+        vertices=[
+            Vector3d(0, 1, 0),
+            Vector3d(2, 0, 0),
+            Vector3d(2, 5, 0),
+            Vector3d(0, 4, 0),
+        ]
+    )
+    face_2 = Face(
+        vertices=[
+            Vector3d(0, 4, 0),
+            Vector3d(0, 1, 0),
+            Vector3d(2, 0, 0),
+            Vector3d(2, 5, 0),
+        ]
+    )
+    assert face_1 == face_2

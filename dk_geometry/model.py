@@ -28,6 +28,14 @@ class Normal:
 class Face:
     vertices: list[Vector3d]
 
+    def __eq__(self, other):
+        sorted_vertices = sorted(self.vertices, key=lambda v: (v.x, v.y, v.z))
+        sorted_other_vertices = sorted(other.vertices, key=lambda v: (v.x, v.y, v.z))
+        return (
+            sorted_vertices == sorted_other_vertices
+            and self.faceNormal == other.faceNormal
+        )
+
     @dataclass(**default_config)
     class LWDimensions:
         length: float
