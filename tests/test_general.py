@@ -1,5 +1,6 @@
 from dk_geometry.enums import FaceNormal
-from dk_geometry.model import Face, Vector3d
+from dk_geometry.general import find_neighbour_faces
+from dk_geometry.model import Face, Polyhedron, Vector3d
 
 
 def test_facenormal(polyhedron_cutout_sloped):
@@ -54,3 +55,40 @@ def test_face_equality():
         ]
     )
     assert face_1 == face_2
+
+def test_neighbour_faces():
+    reference_face = Face(
+        vertices=[
+            Vector3d(0, 0, 0),
+            Vector3d(1, 0, 0),
+            Vector3d(1, 1, 0),
+            Vector3d(0, 1, 0),
+        ]
+    )
+    assert len(find_neighbour_faces(Polyhedron(faces=[reference_face]),0))==0
+    neighbour_face = Face(
+        vertices=[
+            reference_face.vertices[1],
+            reference_face.vertices[0],
+            Vector3d(0, 0, 1),
+            Vector3d(1, 0, 1),
+        ]
+    )
+    two_face_polyhedron = Polyhedron(faces=[reference_face,neighbour_face])
+    assert find_neighbour_faces(two_face_polyhedron, 0)==[1]
+    disjoint_face = Face(
+        vertices=[
+            Vector3d(0,0,1),
+            Vector3d(1,0,1),
+            Vector3d(1,1,1),
+            Vector3d(0,1,1),
+        ]
+    )
+    three_face_polyhedron = Polyhedron(
+        faces=[
+            reference_face,
+            neighbour_face,
+            disjoint_face,
+        ]
+    )
+    assert find_neighbour_faces(three_face_polyhedron, 0)==[1]
