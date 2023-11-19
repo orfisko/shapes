@@ -92,3 +92,31 @@ def test_neighbour_faces():
         ]
     )
     assert find_neighbour_faces(three_face_polyhedron, 0)==[1]
+
+def test_is_sharp_edge():
+    reference_face = Face(
+        vertices=[
+            Vector3d(0, 0, 0),
+            Vector3d(1, 0, 0),
+            Vector3d(1, 1, 0),
+            Vector3d(0, 1, 0),
+        ]
+    )
+    sharp_face = Face(
+        vertices=[
+            reference_face.vertices[1],
+            reference_face.vertices[0],
+            Vector3d(0, 1, 1),
+            Vector3d(1, 1, 1),
+        ]
+    )
+    assert reference_face.is_sharp_edge(sharp_face)
+    obtuse_face = Face(
+        vertices=[
+            reference_face.vertices[1],
+            reference_face.vertices[0],
+            Vector3d(0, -1, 1),
+            Vector3d(1, -1, 1),
+        ]
+    )
+    assert not reference_face.is_sharp_edge(obtuse_face)

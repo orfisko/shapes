@@ -122,6 +122,9 @@ class Face:
     def is_orthogonal(self, other: Face) -> bool:
         return math.fabs(self.plane.normal.dotProduct(other.plane.normal)) < 0.001
 
+    def is_sharp_edge(self, adjacent_face: Face) -> bool:
+        return self.plane.normal.dotProduct(adjacent_face.plane.normal)<0
+
 
 @dataclass(**default_config)
 class Polyhedron:
