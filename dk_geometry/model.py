@@ -5,7 +5,7 @@ import math
 from pydantic import confloat, ConfigDict, BaseModel
 from pydantic.dataclasses import dataclass
 
-from dk_geometry.enums import FaceNormal
+from dk_geometry.enums import EdgeSharpness, FaceNormal
 
 default_config = dict(
     config=ConfigDict(
@@ -119,11 +119,14 @@ class Face:
     def get_edge(self, index: int) -> tuple[Vector3d, Vector3d]:
         return self.vertices[index], self.vertices[(index + 1) % len(self.vertices)]
 
-    def is_orthogonal(self, other: Face) -> bool:
-        return math.fabs(self.plane.normal.dotProduct(other.plane.normal)) < 0.001
-
-    def is_sharp_edge(self, adjacent_face: Face) -> bool:
-        return self.plane.normal.dotProduct(adjacent_face.plane.normal)<0
+    def get_edge_sharpness(self, other: Face) -> EdgeSharpness:
+        cos = self.plane.normal.normalized.dotProduct(other.plane.normal.normalized)
+        threshold = math.cos(89*math.pi/180)
+        if cos<-threshold:
+            return EdgeSharpness.Sharp
+        if cos>threshold:
+            return EdgeSharpness.Obtuse
+        return EdgeSharpness.Orthogonal
 
 
 @dataclass(**default_config)

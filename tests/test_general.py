@@ -1,4 +1,4 @@
-from dk_geometry.enums import FaceNormal
+from dk_geometry.enums import EdgeSharpness, FaceNormal
 from dk_geometry.general import find_neighbour_faces
 from dk_geometry.model import Face, Polyhedron, Vector3d
 
@@ -93,7 +93,7 @@ def test_neighbour_faces():
     )
     assert find_neighbour_faces(three_face_polyhedron, 0)==[1]
 
-def test_is_sharp_edge():
+def test_edge_sharpness():
     reference_face = Face(
         vertices=[
             Vector3d(0, 0, 0),
@@ -102,6 +102,15 @@ def test_is_sharp_edge():
             Vector3d(0, 1, 0),
         ]
     )
+    orthogonal_face = Face(
+        vertices=[
+            reference_face.vertices[1],
+            reference_face.vertices[0],
+            Vector3d(0, 0, 1),
+            Vector3d(1, 0, 1),
+        ]
+    )
+    assert reference_face.get_edge_sharpness(orthogonal_face)==EdgeSharpness.Orthogonal
     sharp_face = Face(
         vertices=[
             reference_face.vertices[1],
@@ -110,7 +119,7 @@ def test_is_sharp_edge():
             Vector3d(1, 1, 1),
         ]
     )
-    assert reference_face.is_sharp_edge(sharp_face)
+    assert reference_face.get_edge_sharpness(sharp_face)==EdgeSharpness.Sharp
     obtuse_face = Face(
         vertices=[
             reference_face.vertices[1],
@@ -119,4 +128,4 @@ def test_is_sharp_edge():
             Vector3d(1, -1, 1),
         ]
     )
-    assert not reference_face.is_sharp_edge(obtuse_face)
+    assert reference_face.get_edge_sharpness(obtuse_face)==EdgeSharpness.Obtuse

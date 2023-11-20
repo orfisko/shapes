@@ -73,3 +73,8 @@ class FaceNormal(Enum):
         ]
 
         return FaceNormal(opposites[list(FaceNormal).index(self)])
+
+class EdgeSharpness(Enum):
+    Sharp = "Sharp"
+    Orthogonal = "Orthogonal"
+    Obtuse = "Obtuse"
