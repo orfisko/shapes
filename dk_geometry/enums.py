@@ -24,30 +24,31 @@ class FaceNormal(Enum):
     R_B = "R_B"  # Right bottom
     OTHER = "OTHER"
 
-    def __iter__(self):
-        return iter([FaceNormal(normal) for normal in self.name.split("_")])
-
-    def __len__(self):
-        return len(self.name.split("_"))
-
     @classmethod
     def _missing_(cls, value):
         return cls.OTHER
+
+    def __ge__(self, other):
+        return self.value >= other.value
+
+    def __le__(self, other):
+        return self.value <= other.value
 
     @classmethod
     def from_stringlist(cls, str_list: list[str]) -> FaceNormal:
         if len(str_list) == 1:
             return FaceNormal(str_list[0])
         else:
-            str_list.sort()
-            face: FaceNormal
-            for face in list(cls):
-                face_str_list = face.name.split("_")
-                if len(face_str_list) > 1:
-                    face_str_list.sort()
-                    face_str = "".join(face_str_list)
-                    if face_str == "".join(str_list):
-                        return face
+            str_set = set(str_list)
+            for idx, face in enumerate(list(cls)):
+                iter_face_set: set[FaceNormal] = {
+                    face_n.name for face_n in face.split()
+                }
+                if iter_face_set == str_set:
+                    return list(cls)[idx]
+
+    def split(self) -> list[FaceNormal]:
+        return [FaceNormal(split_name) for split_name in self.name.split("_")]
 
     def __neg__(self) -> FaceNormal:
         """Should return the opposite facenormal. This should allow to identify the face parallel to the one
@@ -74,7 +75,8 @@ class FaceNormal(Enum):
 
         return FaceNormal(opposites[list(FaceNormal).index(self)])
 
-class EdgeSharpness(Enum):
-    Sharp = "Sharp"
-    Orthogonal = "Orthogonal"
-    Obtuse = "Obtuse"
+
+class AngleType(Enum):
+    SHARP = "SHARP"
+    ORTHOGONAL = "ORTHOGONAL"
+    OBTUSE = "OBTUSE"

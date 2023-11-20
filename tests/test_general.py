@@ -1,5 +1,5 @@
-from dk_geometry.enums import EdgeSharpness, FaceNormal
-from dk_geometry.general import find_neighbour_faces
+from dk_geometry.enums import AngleType, FaceNormal
+from dk_geometry.general import get_adjacent_faces
 from dk_geometry.model import Face, Polyhedron, Vector3d
 
 
@@ -56,6 +56,7 @@ def test_face_equality():
     )
     assert face_1 == face_2
 
+
 def test_neighbour_faces():
     reference_face = Face(
         vertices=[
@@ -65,7 +66,7 @@ def test_neighbour_faces():
             Vector3d(0, 1, 0),
         ]
     )
-    assert len(find_neighbour_faces(Polyhedron(faces=[reference_face]),0))==0
+    assert len(get_adjacent_faces(Polyhedron(faces=[reference_face]), 0)) == 0
     neighbour_face = Face(
         vertices=[
             reference_face.vertices[1],
@@ -74,14 +75,14 @@ def test_neighbour_faces():
             Vector3d(1, 0, 1),
         ]
     )
-    two_face_polyhedron = Polyhedron(faces=[reference_face,neighbour_face])
-    assert find_neighbour_faces(two_face_polyhedron, 0)==[1]
+    two_face_polyhedron = Polyhedron(faces=[reference_face, neighbour_face])
+    assert get_adjacent_faces(two_face_polyhedron, 0) == [1]
     disjoint_face = Face(
         vertices=[
-            Vector3d(0,0,1),
-            Vector3d(1,0,1),
-            Vector3d(1,1,1),
-            Vector3d(0,1,1),
+            Vector3d(0, 0, 1),
+            Vector3d(1, 0, 1),
+            Vector3d(1, 1, 1),
+            Vector3d(0, 1, 1),
         ]
     )
     three_face_polyhedron = Polyhedron(
@@ -91,7 +92,20 @@ def test_neighbour_faces():
             disjoint_face,
         ]
     )
-    assert find_neighbour_faces(three_face_polyhedron, 0)==[1]
+    assert get_adjacent_faces(three_face_polyhedron, 0) == [1]
+
+
+def test_normals():
+    face = Face(
+        vertices=[
+            Vector3d(0, 0, 0),
+            Vector3d(1, 0, 0),
+            Vector3d(1, 1, 0),
+            Vector3d(0, 1, 0),
+        ]
+    )
+    print(face.plane.normal)
+
 
 def test_edge_sharpness():
     reference_face = Face(
@@ -110,7 +124,7 @@ def test_edge_sharpness():
             Vector3d(1, 0, 1),
         ]
     )
-    assert reference_face.get_edge_sharpness(orthogonal_face)==EdgeSharpness.Orthogonal
+    assert reference_face.get_angle_type(orthogonal_face) == AngleType.ORTHOGONAL
     sharp_face = Face(
         vertices=[
             reference_face.vertices[1],
@@ -119,7 +133,7 @@ def test_edge_sharpness():
             Vector3d(1, 1, 1),
         ]
     )
-    assert reference_face.get_edge_sharpness(sharp_face)==EdgeSharpness.Sharp
+    assert reference_face.get_angle_type(sharp_face) == AngleType.SHARP
     obtuse_face = Face(
         vertices=[
             reference_face.vertices[1],
@@ -128,4 +142,4 @@ def test_edge_sharpness():
             Vector3d(1, -1, 1),
         ]
     )
-    assert reference_face.get_edge_sharpness(obtuse_face)==EdgeSharpness.Obtuse
+    assert reference_face.get_angle_type(obtuse_face) == AngleType.OBTUSE

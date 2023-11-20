@@ -220,24 +220,20 @@ def cut_polyhedron_by_plane(polyhedron: Polyhedron, plane: Plane3d) -> Polyhedro
         cut_faces.append(Face(vertices=hole))
     return Polyhedron(faces=cut_faces)
 
-def find_neighbour_faces(
-    polyhedron: Polyhedron,
-    reference_face_index: int
-)->list[int]:
-    edge_to_face_index={}
+
+def get_adjacent_faces(polyhedron: Polyhedron, reference_face_index: int) -> list[int]:
+    edge_to_face_index = {}
     for face_index, face in enumerate(polyhedron.faces):
         for edge_index in range(len(face.vertices)):
             edge = face.get_edge(edge_index)
             key = (id(edge[0]), id(edge[1]))
-            edge_to_face_index[key]=face_index
-            print(key,":",face_index)
+            edge_to_face_index[key] = face_index
     reference_face = polyhedron.faces[reference_face_index]
-    neighbours=[]
+    neighbours = []
     for edge_index in range(len(reference_face.vertices)):
         edge = reference_face.get_edge(edge_index)
         inverted_edge = (edge[1], edge[0])
         key = (id(inverted_edge[0]), id(inverted_edge[1]))
         if key in edge_to_face_index:
-            print(edge_to_face_index.get(key))
             neighbours.append(edge_to_face_index.get(key))
     return neighbours

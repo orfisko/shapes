@@ -5,7 +5,7 @@ import math
 from pydantic import confloat, ConfigDict, BaseModel
 from pydantic.dataclasses import dataclass
 
-from dk_geometry.enums import EdgeSharpness, FaceNormal
+from dk_geometry.enums import AngleType, FaceNormal
 
 default_config = dict(
     config=ConfigDict(
@@ -119,14 +119,14 @@ class Face:
     def get_edge(self, index: int) -> tuple[Vector3d, Vector3d]:
         return self.vertices[index], self.vertices[(index + 1) % len(self.vertices)]
 
-    def get_edge_sharpness(self, other: Face) -> EdgeSharpness:
+    def get_angle_type(self, other: Face) -> AngleType:
         cos = self.plane.normal.normalized.dotProduct(other.plane.normal.normalized)
-        threshold = math.cos(89*math.pi/180)
-        if cos<-threshold:
-            return EdgeSharpness.Sharp
-        if cos>threshold:
-            return EdgeSharpness.Obtuse
-        return EdgeSharpness.Orthogonal
+        threshold = math.cos(89 * math.pi / 180)
+        if cos < -threshold:
+            return AngleType.SHARP
+        if cos > threshold:
+            return AngleType.OBTUSE
+        return AngleType.ORTHOGONAL
 
 
 @dataclass(**default_config)
@@ -213,7 +213,7 @@ class Polyhedron:
                 idx
                 for arg in args
                 for idx, face in enumerate(self.faces)
-                if arg in face.faceNormal
+                if arg in face.faceNormal.split()
             }
 
     def get_faces_by_facenormal(self, *args: FaceNormal, strict=False) -> list[Face]:
@@ -221,7 +221,10 @@ class Polyhedron:
             return [face for face in self.faces if face.faceNormal in args]
         else:
             return [
-                face for arg in args for face in self.faces if arg in face.faceNormal
+                face
+                for arg in args
+                for face in self.faces
+                if arg in face.faceNormal.split()
             ]
 
 
@@ -234,8 +237,6 @@ class SliceInterval(BaseModel):
     max_z: float = None  # bigger
     model_config: ConfigDict = ConfigDict(
         validate_assignment=True,
-        arbitrary_types_allowed=True,
-        frozen=True,
         extra="forbid",
     )
 
