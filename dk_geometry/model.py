@@ -192,12 +192,12 @@ class Polyhedron:
         return {idx: face.faceNormal for idx, face in enumerate(self.faces)}
 
     def get_face_indices_by_facenormal(
-        self, *args: FaceNormal, strict=False
+        self, face_normal: FaceNormal, strict=False
     ) -> set[int]:
         """
         Get the indices of the faces with the given face normals
         Args:
-            *args: FaceNormals to match
+            face_normal: FaceNormal to match
             strict: if this flag is set to true, the passed facenormal needs to be strictly equal to the facenormal of
             the face. If False, the passed FaceNormal needs to be 'in' the facenormal of the face.
 
@@ -206,26 +206,28 @@ class Polyhedron:
         """
         if strict:
             return {
-                idx for idx, face in enumerate(self.faces) if face.faceNormal in args
-            }
-        else:
-            return {
                 idx
-                for arg in args
                 for idx, face in enumerate(self.faces)
-                if arg in face.faceNormal.split()
+                if face.faceNormal == face_normal
             }
-
-    def get_faces_by_facenormal(self, *args: FaceNormal, strict=False) -> list[Face]:
-        if strict:
-            return [face for face in self.faces if face.faceNormal in args]
         else:
-            return [
-                face
-                for arg in args
-                for face in self.faces
-                if arg in face.faceNormal.split()
-            ]
+            idxs = set()
+            for idx, face in enumerate(self.faces):
+                if len(
+                    set(face_normal.split()).intersection(set(face.faceNormal.split()))
+                ):
+                    idxs.add(idx)
+            return idxs
+
+    def get_faces_by_facenormal(
+        self, face_normal: FaceNormal, strict=False
+    ) -> list[Face]:
+        return [
+            self.faces[idx]
+            for idx in self.get_face_indices_by_facenormal(
+                face_normal=face_normal, strict=strict
+            )
+        ]
 
 
 class SliceInterval(BaseModel):
@@ -274,6 +276,16 @@ class Vector3d:
 
     def __truediv__(self, other):
         return self * (1 / other)
+
+    def __eq__(self, other):
+        return (
+            round(self.x, 2) == round(other.x, 2)
+            and round(self.y, 2) == round(other.y, 2)
+            and round(self.z, 2) == round(other.z, 2)
+        )
+
+    def __hash__(self):
+        return hash((self.x, self.y, self.z))
 
     def dotProduct(self, other):
         return self.x * other.x + self.y * other.y + self.z * other.z
