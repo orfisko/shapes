@@ -67,7 +67,12 @@ def select_inner_vertex_position(
             outer_polyhedron.faces[face_indices[c]],
         ):
             invertor = -1
-        if priorities[c] * invertor > priorities[0] * invertor:
+        if priorities[0]==1000:
+            if invertor==-1:
+                surface = outer_polyhedron
+            else:
+                surface = inner_polyhedron
+        elif priorities[c] * invertor > priorities[0] * invertor:
             surface = outer_polyhedron
         planes.append(surface.faces[face_indices[c]].plane)
     return compute_three_planes_intersection(planes[0], planes[1], planes[2])
@@ -91,7 +96,12 @@ def select_outer_vertex_position(
             outer_polyhedron.faces[face_indices[c]],
         ):
             invertor = -1
-        if priorities[c] * invertor < priorities[0] * invertor:
+        if priorities[0]==1000:
+            if invertor==-1:
+                surface = outer_polyhedron
+            else:
+                surface = inner_polyhedron
+        elif priorities[c] * invertor < priorities[0] * invertor:
             surface = inner_polyhedron
         planes.append(surface.faces[face_indices[c]].plane)
     return compute_three_planes_intersection(planes[0], planes[1], planes[2])
@@ -178,6 +188,7 @@ def generate_delta_polyhedra(
         outer_polyhedron:
         inner_polyhedron:
         prioritizer: priotization function to decide which panel takes precedence over the other.
+            priority 1000 means that the face won't be cut no matter what priorities the other faces have
     Returns:
          Dictionary[face_index, panel], only for faces with some offset
     """
