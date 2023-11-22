@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from decimal import Decimal
 
 from pydantic import confloat, ConfigDict, BaseModel
 from pydantic.dataclasses import dataclass
@@ -50,6 +51,24 @@ class Face:
             origin=self.vertices[0],
             normal=self.areaVector.normalized,
         )
+
+    @property
+    def triangles(self) -> list[list[Vector3d]]:
+        triangles = []
+        coord_idxs = list(range(len(self.vertices)))
+        while len(coord_idxs) > 3:
+            for coord_idx in coord_idxs:
+                prev_idx = coord_idx - 1
+                next_idx = coord_idx + 1
+                triangles.append(
+                    [
+                        self.vertices[prev_idx],
+                        self.vertices[coord_idx],
+                        self.vertices[next_idx],
+                    ]
+                )
+                coord_idxs.remove(coord_idx)
+        return triangles
 
     @property
     def areaVector(self) -> Vector3d:
@@ -296,6 +315,11 @@ class Vector3d:
             self.z * other.x - self.x * other.z,
             self.x * other.y - self.y * other.x,
         )
+
+    def as_tuple(self) -> tuple[Decimal, Decimal, Decimal]:
+        # Scales the coordinates and return a tuple of decimals
+        SCALE_FACTOR = 1000
+        return Decimal(round(self.x,1)/SCALE_FACTOR), Decimal(round(self.y,1)/SCALE_FACTOR), Decimal(round(self.z,1)/SCALE_FACTOR)
 
     @property
     def squaredLength(self):
