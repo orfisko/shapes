@@ -19,6 +19,131 @@ default_config = dict(
 
 
 @dataclass(**default_config)
+class Vector3d:
+    x: float
+    y: float
+    z: float
+
+    def __post_init__(self):
+        # Round the float attributes to a certain number of decimal places
+        self.x = round(self.x, 5)
+        self.y = round(self.y, 5)
+        self.z = round(self.z, 5)
+
+    def __add__(self, other):
+        return Vector3d(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
+
+    def __sub__(self, other):
+        return Vector3d(x=self.x - other.x, y=self.y - other.y, z=self.z - other.z)
+
+    def __neg__(self):
+        return Vector3d(x=-self.x, y=-self.y, z=-self.z)
+
+    def __mul__(self, other):
+        return Vector3d(x=self.x * other, y=self.y * other, z=self.z * other)
+
+    def __truediv__(self, other):
+        return self * (1 / other)
+
+    def __eq__(self, other):
+        return (
+            round(self.x, 2) == round(other.x, 2)
+            and round(self.y, 2) == round(other.y, 2)
+            and round(self.z, 2) == round(other.z, 2)
+        )
+
+    def __hash__(self):
+        return hash((self.x, self.y, self.z))
+
+    def dotProduct(self, other):
+        return self.x * other.x + self.y * other.y + self.z * other.z
+
+    def crossProduct(self, other):
+        return Vector3d(
+            self.y * other.z - self.z * other.y,
+            self.z * other.x - self.x * other.z,
+            self.x * other.y - self.y * other.x,
+        )
+
+    def as_tuple(self) -> tuple[Decimal, Decimal, Decimal]:
+        # Scales the coordinates and return a tuple of decimals
+        SCALE_FACTOR = 1000
+        return (
+            Decimal(round(self.x, 1) / SCALE_FACTOR),
+            Decimal(round(self.y, 1) / SCALE_FACTOR),
+            Decimal(round(self.z, 1) / SCALE_FACTOR),
+        )
+
+    @property
+    def squaredLength(self):
+        return self.dotProduct(self)
+
+    @property
+    def length(self):
+        return math.sqrt(self.squaredLength)
+
+    @property
+    def normalized(self):
+        return self / self.length
+
+
+@dataclass(**default_config)
+class Plane3d:
+    origin: Vector3d
+    normal: Vector3d
+
+    @property
+    def faceNormal(self) -> FaceNormal:
+        types = []
+
+        if round(self.normal.x, 3) < 0:
+            types.append("L")  # left
+        if round(self.normal.x, 3) > 0:
+            types.append("R")  # right
+        if round(self.normal.y, 3) < 0:
+            types.append("B")  # bottom
+        if round(self.normal.y, 3) > 0:
+            types.append("T")  # top
+        if round(self.normal.z, 3) < 0:
+            types.append("BK")  # Back
+        if round(self.normal.z, 3) > 0:
+            types.append("F")  # Front
+
+        return FaceNormal.from_stringlist(types)
+
+    @property
+    def inversedFaceNormal(self) -> FaceNormal:
+        types = []
+        if round(self.normal.x, 3) < 0:
+            types.append("L")
+        if round(self.normal.x, 3) > 0:
+            types.append("R")
+        if round(self.normal.y, 3) < 0:
+            types.append("B")
+        if round(self.normal.y, 3) > 0:
+            types.append("T")
+        if round(self.normal.z, 3) < 0:
+            types.append("BK")
+        if round(self.normal.z, 3) > 0:
+            types.append("F")
+
+        return FaceNormal.from_stringlist(types)
+
+
+@dataclass(**default_config)
+class Line3d:
+    origin: Vector3d
+    direction: Vector3d
+
+
+@dataclass(**default_config)
+class FaceOverlap:
+    poly_index: int
+    face_index: int
+    area: float
+
+
+@dataclass(**default_config)
 class Normal:
     x: confloat(ge=-1, le=1)
     y: confloat(ge=-1, le=1)
@@ -267,124 +392,3 @@ class Slice:
     x: float = None
     y: float = None
     z: float = None
-
-
-@dataclass(**default_config)
-class Vector3d:
-    x: float
-    y: float
-    z: float
-
-    def __post_init__(self):
-        # Round the float attributes to a certain number of decimal places
-        self.x = round(self.x, 5)
-        self.y = round(self.y, 5)
-        self.z = round(self.z, 5)
-
-    def __add__(self, other):
-        return Vector3d(x=self.x + other.x, y=self.y + other.y, z=self.z + other.z)
-
-    def __sub__(self, other):
-        return Vector3d(x=self.x - other.x, y=self.y - other.y, z=self.z - other.z)
-
-    def __neg__(self):
-        return Vector3d(x=-self.x, y=-self.y, z=-self.z)
-
-    def __mul__(self, other):
-        return Vector3d(x=self.x * other, y=self.y * other, z=self.z * other)
-
-    def __truediv__(self, other):
-        return self * (1 / other)
-
-    def __eq__(self, other):
-        return (
-            round(self.x, 2) == round(other.x, 2)
-            and round(self.y, 2) == round(other.y, 2)
-            and round(self.z, 2) == round(other.z, 2)
-        )
-
-    def __hash__(self):
-        return hash((self.x, self.y, self.z))
-
-    def dotProduct(self, other):
-        return self.x * other.x + self.y * other.y + self.z * other.z
-
-    def crossProduct(self, other):
-        return Vector3d(
-            self.y * other.z - self.z * other.y,
-            self.z * other.x - self.x * other.z,
-            self.x * other.y - self.y * other.x,
-        )
-
-    def as_tuple(self) -> tuple[Decimal, Decimal, Decimal]:
-        # Scales the coordinates and return a tuple of decimals
-        SCALE_FACTOR = 1000
-        return Decimal(round(self.x,1)/SCALE_FACTOR), Decimal(round(self.y,1)/SCALE_FACTOR), Decimal(round(self.z,1)/SCALE_FACTOR)
-
-    @property
-    def squaredLength(self):
-        return self.dotProduct(self)
-
-    @property
-    def length(self):
-        return math.sqrt(self.squaredLength)
-
-    @property
-    def normalized(self):
-        return self / self.length
-
-
-@dataclass(**default_config)
-class Plane3d:
-    origin: Vector3d
-    normal: Vector3d
-
-    @property
-    def faceNormal(self) -> FaceNormal:
-        types = []
-
-        if round(self.normal.x, 3) < 0:
-            types.append("L")  # left
-        if round(self.normal.x, 3) > 0:
-            types.append("R")  # right
-        if round(self.normal.y, 3) < 0:
-            types.append("B")  # bottom
-        if round(self.normal.y, 3) > 0:
-            types.append("T")  # top
-        if round(self.normal.z, 3) < 0:
-            types.append("BK")  # Back
-        if round(self.normal.z, 3) > 0:
-            types.append("F")  # Front
-
-        return FaceNormal.from_stringlist(types)
-
-    @property
-    def inversedFaceNormal(self) -> FaceNormal:
-        types = []
-        if round(self.normal.x, 3) < 0:
-            types.append("L")
-        if round(self.normal.x, 3) > 0:
-            types.append("R")
-        if round(self.normal.y, 3) < 0:
-            types.append("B")
-        if round(self.normal.y, 3) > 0:
-            types.append("T")
-        if round(self.normal.z, 3) < 0:
-            types.append("BK")
-        if round(self.normal.z, 3) > 0:
-            types.append("F")
-
-        return FaceNormal.from_stringlist(types)
-
-
-@dataclass(**default_config)
-class Line3d:
-    origin: Vector3d
-    direction: Vector3d
-
-
-@dataclass(**default_config)
-class FaceOverlap:
-    poly_index: int
-    face_index: int
-    area: float
