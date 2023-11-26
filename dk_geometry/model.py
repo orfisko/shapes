@@ -53,7 +53,7 @@ class Vector3d:
         )
 
     def __hash__(self):
-        return hash((self.x, self.y, self.z))
+        return hash((round(self.x,2), round(self.y,2), round(self.z,2)))
 
     def dotProduct(self, other):
         return self.x * other.x + self.y * other.y + self.z * other.z
@@ -335,9 +335,7 @@ class Polyhedron:
     def indexedFaceNormals(self) -> dict[int, FaceNormal]:
         return {idx: face.faceNormal for idx, face in enumerate(self.faces)}
 
-    def get_face_indices_by_facenormal(
-        self, *args, strict=False
-    ) -> set[int]:
+    def get_face_indices_by_facenormal(self, *args, strict=False) -> set[int]:
         """
         Get the indices of the faces with the given face normals
         Args:
@@ -352,28 +350,20 @@ class Polyhedron:
             assert isinstance(arg, FaceNormal)
         if strict:
             return {
-                idx
-                for idx, face in enumerate(self.faces)
-                if face.faceNormal in args
+                idx for idx, face in enumerate(self.faces) if face.faceNormal in args
             }
         else:
             idxs = set()
             args_normals = {iter_normal for arg in args for iter_normal in arg.split()}
             for idx, face in enumerate(self.faces):
-                if len(
-                    set(args_normals).intersection(set(face.faceNormal.split()))
-                ):
+                if len(set(args_normals).intersection(set(face.faceNormal.split()))):
                     idxs.add(idx)
             return idxs
 
-    def get_faces_by_facenormal(
-        self, *args, strict=False
-    ) -> list[Face]:
+    def get_faces_by_facenormal(self, *args, strict=False) -> list[Face]:
         return [
             self.faces[idx]
-            for idx in self.get_face_indices_by_facenormal(
-                *args, strict=strict
-            )
+            for idx in self.get_face_indices_by_facenormal(*args, strict=strict)
         ]
 
 
