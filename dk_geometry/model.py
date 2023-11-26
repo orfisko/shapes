@@ -336,7 +336,7 @@ class Polyhedron:
         return {idx: face.faceNormal for idx, face in enumerate(self.faces)}
 
     def get_face_indices_by_facenormal(
-        self, face_normal: FaceNormal, strict=False
+        self, *args, strict=False
     ) -> set[int]:
         """
         Get the indices of the faces with the given face normals
@@ -348,28 +348,31 @@ class Polyhedron:
         Returns:
             set of indices of the faces with the given face normals
         """
+        for arg in args:
+            assert isinstance(arg, FaceNormal)
         if strict:
             return {
                 idx
                 for idx, face in enumerate(self.faces)
-                if face.faceNormal == face_normal
+                if face.faceNormal in args
             }
         else:
             idxs = set()
+            args_normals = {iter_normal for arg in args for iter_normal in arg.split()}
             for idx, face in enumerate(self.faces):
                 if len(
-                    set(face_normal.split()).intersection(set(face.faceNormal.split()))
+                    set(args_normals).intersection(set(face.faceNormal.split()))
                 ):
                     idxs.add(idx)
             return idxs
 
     def get_faces_by_facenormal(
-        self, face_normal: FaceNormal, strict=False
+        self, *args, strict=False
     ) -> list[Face]:
         return [
             self.faces[idx]
             for idx in self.get_face_indices_by_facenormal(
-                face_normal=face_normal, strict=strict
+                *args, strict=strict
             )
         ]
 
