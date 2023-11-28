@@ -179,20 +179,47 @@ class Face:
 
     @property
     def triangles(self) -> list[list[Vector3d]]:
+        def are_points_on_the_same_side_of_line(point1:Vector3d, point2:Vector3d, line:Line3d):
+            normal1=(point1-line.origin).crossProduct(line.direction)
+            normal2=(point2-line.origin).crossProduct(line.direction)
+            return normal1.dotProduct(normal2)>0
+        def is_point_in_triangle(point:Vector3d, triangle:list[Vector3d], tolerance):
+            for edge_index in range(3):
+                line = Line3d(
+                    triangle[edge_index],
+                    triangle[(edge_index+1)%3]-triangle[edge_index])
+                third_point = triangle[(edge_index+2)%3]
+                if not are_points_on_the_same_side_of_line(point, third_point, line):
+                    if (point-line.origin).crossProduct(line.direction).length>tolerance*line.direction.length:
+                        return False
+            return True
+        face_normal = self.plane.normal
+        contour = self.vertices[:]
         triangles = []
-        coord_idxs = list(range(len(self.vertices)))
-        while len(coord_idxs) > 3:
-            for coord_idx in coord_idxs:
-                prev_idx = coord_idx - 1
-                next_idx = coord_idx + 1
-                triangles.append(
-                    [
-                        self.vertices[prev_idx],
-                        self.vertices[coord_idx],
-                        self.vertices[next_idx],
-                    ]
-                )
-                coord_idxs.remove(coord_idx)
+        while len(contour)>3:
+            for corner_index in range(len(contour)):
+                previous_index = (corner_index-1)%len(contour)
+                next_index = (corner_index+1)%len(contour)
+                triangle = [
+                    contour[previous_index],
+                    contour[corner_index],
+                    contour[next_index]
+                ]
+                if Face(vertices=triangle).areaVector.dotProduct(face_normal)<0:
+                    continue
+                can_be_cut = True
+                for another_index in range(len(contour)):
+                    if another_index in [corner_index, previous_index, next_index]:
+                        continue
+                    if is_point_in_triangle(contour[another_index], triangle, 0.001):
+                        can_be_cut = False
+                        break
+                if not can_be_cut:
+                    continue
+                triangles.append(triangle)
+                contour.pop(corner_index)
+                break
+        triangles.append(contour)
         return triangles
 
     @property
