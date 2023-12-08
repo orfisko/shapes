@@ -269,24 +269,28 @@ class Face:
     @property
     def lw_dimensions(self) -> Face.LWDimensions:
         """
-        Assuming the face has long and narrow shape, returns its length and width.
+        Returns the bounding rectangle for the face.
+        The first direction is selected as a horizontal one and
+        at the same parallel to the face. If the face is horizontal,
+        X-axis direction is taken.
+        The second direction is selected to be orthogonal to the first
+        one and parallel to the face.
         """
-        longest_edge = max(
-            [self.get_edge(i) for i in range(len(self.vertices))],
-            key=lambda edge: (edge[1] - edge[0]).length,
-        )
-        length_direction = (longest_edge[1] - longest_edge[0]).normalized
-        width_direction = self.plane.normal.crossProduct(length_direction)
+        
+        direction1=Vector3d(1,0,0)
+        if self.plane.faceNormal not in [FaceNormal.T,FaceNormal.B]:
+            direction1=self.plane.normal.crossProduct(Vector3d(0,1,0)).normalized
+        direction2=direction1.crossProduct(self.plane.normal).normalized
 
         def measure_size(vertices, direction):
             parameters = [v.dotProduct(direction) for v in vertices]
             return max(parameters) - min(parameters)
 
         return Face.LWDimensions(
-            direction1=length_direction,
-            size1=measure_size(self.vertices, length_direction),
-            direction2=width_direction,
-            size2=measure_size(self.vertices, width_direction),
+            direction1=direction1,
+            size1=measure_size(self.vertices, direction1),
+            direction2=direction2,
+            size2=measure_size(self.vertices, direction2),
         )
 
     def get_edge(self, index: int) -> tuple[Vector3d, Vector3d]:
