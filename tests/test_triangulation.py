@@ -68,4 +68,3 @@ def test_same_area():
         area = Face(vertices=triangle).surfaceArea
         triangles_area += area
     assert math.fabs(triangles_area - face.surfaceArea)<0.001
-    assert False
