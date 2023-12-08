@@ -155,11 +155,13 @@ class Face:
 
     @dataclass(**default_config)
     class LWDimensions:
-        length: float
-        width: float
+        direction1: Vector3d
+        size1: float
+        direction2: Vector3d
+        size2: float
 
         def __iter__(self):
-            return iter((self.length, self.width))
+            return iter((self.size1, self.size2))
 
     @property
     def plane(self) -> Plane3d:
@@ -281,8 +283,10 @@ class Face:
             return max(parameters) - min(parameters)
 
         return Face.LWDimensions(
-            length=measure_size(self.vertices, length_direction),
-            width=measure_size(self.vertices, width_direction),
+            direction1=length_direction,
+            size1=measure_size(self.vertices, length_direction),
+            direction2=width_direction,
+            size2=measure_size(self.vertices, width_direction),
         )
 
     def get_edge(self, index: int) -> tuple[Vector3d, Vector3d]:

@@ -33,8 +33,8 @@ def test_face_lwdimensions():
         ]
     )
     dimensions = face.lw_dimensions
-    assert dimensions.width == 2
-    assert dimensions.length == 5
+    assert dimensions.size2 == 2
+    assert dimensions.size1 == 5
 
 
 def test_face_equality():
