@@ -2,7 +2,7 @@ import math
 from _decimal import Decimal
 from collections import defaultdict
 from copy import deepcopy
-from typing import DefaultDict, List, Optional
+from typing import DefaultDict, List
 
 from dk_geometry.general import *
 from dk_geometry.model import Face, Polyhedron
@@ -67,8 +67,8 @@ def select_inner_vertex_position(
             outer_polyhedron.faces[face_indices[c]],
         ):
             invertor = -1
-        if priorities[0]==1000:
-            if invertor==-1:
+        if priorities[0] == 1000:
+            if invertor == -1:
                 surface = outer_polyhedron
             else:
                 surface = inner_polyhedron
@@ -96,8 +96,8 @@ def select_outer_vertex_position(
             outer_polyhedron.faces[face_indices[c]],
         ):
             invertor = -1
-        if priorities[0]==1000:
-            if invertor==-1:
+        if priorities[0] == 1000:
+            if invertor == -1:
                 surface = outer_polyhedron
             else:
                 surface = inner_polyhedron
