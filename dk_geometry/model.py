@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import math
-from decimal import Decimal
 
 from pydantic import confloat, ConfigDict, BaseModel
 from pydantic.dataclasses import dataclass
@@ -270,17 +269,15 @@ class Face:
     def lw_dimensions(self) -> Face.LWDimensions:
         """
         Returns the bounding rectangle for the face.
-        The first direction is selected as a horizontal one and
-        at the same parallel to the face. If the face is horizontal,
-        X-axis direction is taken.
         The second direction is selected to be orthogonal to the first
         one and parallel to the face.
         """
-        
-        direction1=Vector3d(1,0,0)
-        if self.plane.faceNormal not in [FaceNormal.T,FaceNormal.B]:
-            direction1=self.plane.normal.crossProduct(Vector3d(0,1,0)).normalized
-        direction2=direction1.crossProduct(self.plane.normal).normalized
+
+        if self.plane.faceNormal in [FaceNormal.L, FaceNormal.R]:
+            direction1 = Vector3d(0, 0, 1)
+        else:
+            direction1 = self.plane.normal.crossProduct(Vector3d(1, 0, 0)).normalized
+        direction2 = direction1.crossProduct(self.plane.normal).normalized
 
         def measure_size(vertices, direction):
             parameters = [v.dotProduct(direction) for v in vertices]
