@@ -302,6 +302,10 @@ class Face:
             return AngleType.OBTUSE
         return AngleType.ORTHOGONAL
 
+    def dump_boundary_values(self) -> dict[str, float]:
+        fields = ["max_x", "min_x", "max_y", "min_y", "max_z", "min_z"]
+        return {field: getattr(self, field) for field in fields}
+
 
 @dataclass(**default_config)
 class Polyhedron:
@@ -396,6 +400,9 @@ class Polyhedron:
             for idx in self.get_face_indices_by_facenormal(*args, strict=strict)
         ]
 
+    def dump_boundary_values(self) -> dict[str, float]:
+        fields = ["max_x", "min_x", "max_y", "min_y", "max_z", "min_z"]
+        return {field: getattr(self, field) for field in fields}
 
 class SliceInterval(BaseModel):
     min_x: float = None  # smaller
