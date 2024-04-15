@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import math
+from typing import Self, Union
 
 from pydantic import confloat, ConfigDict, BaseModel
 from pydantic.dataclasses import dataclass
@@ -38,8 +39,13 @@ class Vector3d:
     def __neg__(self):
         return Vector3d(x=-self.x, y=-self.y, z=-self.z)
 
-    def __mul__(self, other):
-        return Vector3d(x=self.x * other, y=self.y * other, z=self.z * other)
+    def __mul__(self, other: Union[float, Self]):
+        if isinstance(other, self.__class__):
+            return Vector3d(x=self.x * other.x, y=self.y * other.y, z=self.z * other.z)
+        elif isinstance(other, (int, float)):
+            return Vector3d(x=self.x * other, y=self.y * other, z=self.z * other)
+        else:
+            raise NotImplementedError
 
     def __truediv__(self, other):
         return self * (1 / other)
@@ -403,6 +409,35 @@ class Polyhedron:
     def dump_boundary_values(self) -> dict[str, float]:
         fields = ["max_x", "min_x", "max_y", "min_y", "max_z", "min_z"]
         return {field: getattr(self, field) for field in fields}
+
+    @classmethod
+    def cube(cls, origin: Vector3d, width: float, height: float, depth: float) -> Self:
+        # Origin is the left front bottom point
+        v = [
+            origin + v * Vector3d(width, height, depth)
+            for v in [
+                Vector3d(0, 0, 0),  # origin
+                Vector3d(1, 0, 0),  # right, bottom, front
+                Vector3d(1, 1, 0),  # right, top, front
+                Vector3d(0, 1, 0),  # left, top, front
+                Vector3d(0, 0, -1),  # left, bottom, back
+                Vector3d(1, 0, -1),  # right, bottom, back
+                Vector3d(1, 1, -1),  # right, top, back
+                Vector3d(0, 1, -1),  # left, top, back
+            ]
+        ]
+
+        return Polyhedron(
+            faces=[
+                Face(vertices=[v[0], v[1], v[2], v[3]]),  # front
+                Face(vertices=[v[3], v[2], v[6], v[7]]),  # top
+                Face(vertices=[v[7], v[6], v[5], v[4]]),  # back
+                Face(vertices=[v[0], v[4], v[5], v[1]]),  # bottom
+                Face(vertices=[v[2], v[1], v[5], v[6]]),  # right
+                Face(vertices=[v[0], v[3], v[7], v[4]]),  # left
+            ]
+        )
+
 
 class SliceInterval(BaseModel):
     min_x: float = None  # smaller
