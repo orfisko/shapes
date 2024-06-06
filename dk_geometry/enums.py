@@ -53,27 +53,20 @@ class FaceNormal(Enum):
     def __neg__(self) -> FaceNormal:
         """Should return the opposite facenormal. This should allow to identify the face parallel to the one
         with orientation self"""
-        opposites = [
-            "R",
-            "L",
-            "B",
-            "T",
-            "BK",
-            "F",
-            "L_F",
-            "L_BK",
-            "R_F",
-            "R_BK",
-            "T_F",
-            "T_BK",
-            "L_B",
-            "L_T",
-            "R_B",
-            "R_T",
-            "OTHER",
-        ]
-
-        return FaceNormal(opposites[list(FaceNormal).index(self)])
+        opposite_map = {
+            "L": "R",
+            "R": "L",
+            "B": "T",
+            "T": "B",
+            "BK": "F",
+            "F": "BK",
+            "OTHER": "OTHER",
+        }
+        return FaceNormal(
+            "_".join(
+                [opposite_map[face_normal] for face_normal in self.name.split("_")]
+            )
+        )
 
 
 class AngleType(Enum):
