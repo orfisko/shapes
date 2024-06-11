@@ -1,5 +1,3 @@
-from _decimal import Decimal
-
 import pytest
 
 from dk_geometry.offset import generate_offset
@@ -7,7 +5,7 @@ from dk_geometry.offset import generate_offset
 
 def test_that_topology_is_the_same(polyhedron_cutout_sloped):
     input = polyhedron_cutout_sloped()
-    output = generate_offset(poly=input, offset=Decimal(10))
+    output = generate_offset(poly=input, offset=10)
     assert len(output.faces) == len(
         input.faces
     ), f"Expected {len(input.faces)} faces, got {len(output.faces)}"
@@ -47,7 +45,7 @@ def test_that_the_input_has_not_been_changed(polyhedron_cutout_sloped):
         [[vertex.x, vertex.y, vertex.z] for vertex in face.vertices]
         for face in input.faces
     ]
-    output = generate_offset(poly=input, offset=Decimal(10))
+    output = generate_offset(poly=input, offset=10)
     after = [
         [[vertex.x, vertex.y, vertex.z] for vertex in face.vertices]
         for face in input.faces
@@ -57,7 +55,7 @@ def test_that_the_input_has_not_been_changed(polyhedron_cutout_sloped):
 
 def test_that_input_and_output_do_not_reference_same_objects(polyhedron_cutout_sloped):
     input = polyhedron_cutout_sloped()
-    output = generate_offset(poly=input, offset=Decimal(10))
+    output = generate_offset(poly=input, offset=10)
     for face1 in input.faces:
         for face2 in output.faces:
             assert face1 is not face2, "The output shares a face object with the input"
@@ -71,4 +69,4 @@ def test_that_input_and_output_do_not_reference_same_objects(polyhedron_cutout_s
 def test_error_when_the_cut_covers_whole_faces(polyhedron_cutout_sloped):
     input = polyhedron_cutout_sloped()
     with pytest.raises(ValueError):
-        generate_offset(poly=input, offset_map={1: Decimal(-600)})
+        generate_offset(poly=input, offset_map={1: -600})

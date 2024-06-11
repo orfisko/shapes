@@ -1,24 +1,15 @@
 from __future__ import annotations
 
 import math
+from dataclasses import dataclass
 from typing import Self, Union
 
-from pydantic import confloat, ConfigDict, BaseModel
-from pydantic.dataclasses import dataclass
+from pydantic import BaseModel, ConfigDict
 
 from dk_geometry.enums import AngleType, FaceNormal
 
-default_config = dict(
-    config=ConfigDict(
-        validate_assignment=True,
-        arbitrary_types_allowed=True,
-        frozen=True,
-        extra="forbid",
-    ),
-)
 
-
-@dataclass(**default_config)
+@dataclass
 class Vector3d:
     x: float
     y: float
@@ -83,7 +74,7 @@ class Vector3d:
         return self / self.length
 
 
-@dataclass(**default_config)
+@dataclass
 class Plane3d:
     origin: Vector3d
     normal: Vector3d
@@ -126,27 +117,27 @@ class Plane3d:
         return FaceNormal.from_stringlist(types)
 
 
-@dataclass(**default_config)
+@dataclass
 class Line3d:
     origin: Vector3d
     direction: Vector3d
 
 
-@dataclass(**default_config)
+@dataclass
 class FaceOverlap:
     poly_index: int
     face_index: int
     area: float
 
 
-@dataclass(**default_config)
+@dataclass
 class Normal:
-    x: confloat(ge=-1, le=1)
-    y: confloat(ge=-1, le=1)
-    z: confloat(ge=-1, le=1)
+    x: float
+    y: float
+    z: float
 
 
-@dataclass(**default_config)
+@dataclass
 class Face:
     vertices: list[Vector3d]
 
@@ -158,7 +149,7 @@ class Face:
             and self.faceNormal == other.faceNormal
         )
 
-    @dataclass(**default_config)
+    @dataclass
     class LWDimensions:
         direction1: Vector3d
         size1: float
@@ -313,7 +304,7 @@ class Face:
         return {field: getattr(self, field) for field in fields}
 
 
-@dataclass(**default_config)
+@dataclass
 class Polyhedron:
     faces: list[Face]
 

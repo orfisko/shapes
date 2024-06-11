@@ -109,8 +109,8 @@ def select_outer_vertex_position(
 
 def generate_offset(
     poly: Polyhedron,
-    offset: Optional[Decimal] = None,
-    offset_map: Optional[dict[int, Decimal]] = None,
+    offset: Optional[float] = None,
+    offset_map: Optional[dict[int, float]] = None,
 ) -> Polyhedron:
     """
     Generates a new polyhedron with the offset applied to the vertices. The offset is applied to all faces unless
@@ -131,7 +131,7 @@ def generate_offset(
     if offset_map is None:
         offset_map = dict()
     if offset is None:
-        offset = Decimal(0)
+        offset = 0
     # Fill the offset_map with the offset if it is not supplied.
     offset_map.update(
         {
@@ -167,9 +167,9 @@ def generate_offset(
         new_position = compute_three_planes_intersection(
             planes[0], planes[1], planes[2]
         )
-        vertex.x = Decimal(round(new_position.x, 1))
-        vertex.y = Decimal(round(new_position.y, 1))
-        vertex.z = Decimal(round(new_position.z, 1))
+        vertex.x = round(new_position.x, 1)
+        vertex.y = round(new_position.y, 1)
+        vertex.z = round(new_position.z, 1)
     for index in range(len(poly.faces)):
         original_normal = poly.faces[index].plane.normal
         offset_normal = offset_poly.faces[index].plane.normal

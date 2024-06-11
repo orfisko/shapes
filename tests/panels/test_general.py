@@ -61,7 +61,7 @@ def prioritize(
 @pytest.mark.skip(reason="only for visual inspection")
 def test_panel_generation(polyhedron_cutout_sloped):
     outer = polyhedron_cutout_sloped()
-    inner = generate_offset(poly=outer, offset=Decimal(-10))
+    inner = generate_offset(poly=outer, offset=-10)
 
     def local_prioritize(face_indices):
         return prioritize(outer, face_indices, [7, 8, 9])
@@ -75,9 +75,7 @@ def test_panel_generation(polyhedron_cutout_sloped):
 
 def test_panel_generation_offsetmap(polyhedron_cutout_sloped):
     outer = polyhedron_cutout_sloped()
-    inner = generate_offset(
-        poly=outer, offset_map={0: Decimal(-50), 1: Decimal(-20), 2: Decimal(-25)}
-    )
+    inner = generate_offset(poly=outer, offset_map={0: -50, 1: -20, 2: -25})
 
     def local_prioritize(face_indices):
         return prioritize(outer, face_indices, [7, 8, 9])
@@ -89,7 +87,7 @@ def test_panel_generation_offsetmap(polyhedron_cutout_sloped):
 
 def test_cut_check_for_concave_corners(polyhedron_cutout_sloped):
     outer = polyhedron_cutout_sloped()
-    inner = generate_offset(poly=outer, offset=Decimal(-10))
+    inner = generate_offset(poly=outer, offset=-10)
 
     def local_prioritize(face_indices):
         return prioritize(outer, face_indices, [])
@@ -106,7 +104,7 @@ def test_cut_check_for_concave_corners(polyhedron_cutout_sloped):
 
 def test_that_panels_are_between_inner_and_outer(polyhedron_cutout_sloped):
     outer = polyhedron_cutout_sloped()
-    inner = generate_offset(poly=outer, offset=Decimal(-10))
+    inner = generate_offset(poly=outer, offset=-10)
 
     def local_prioritize(face_indices):
         return prioritize(outer, face_indices, [7, 8, 9])
@@ -127,7 +125,7 @@ def test_that_panels_are_between_inner_and_outer(polyhedron_cutout_sloped):
 
 def test_that_prioritization_for_one_face_is_not_asked(polyhedron_cutout_sloped):
     outer = polyhedron_cutout_sloped()
-    inner = generate_offset(poly=outer, offset_map={0: Decimal(-50)})
+    inner = generate_offset(poly=outer, offset_map={0: -50})
 
     def local_prioritize(face_indices):
         assert (
@@ -140,7 +138,7 @@ def test_that_prioritization_for_one_face_is_not_asked(polyhedron_cutout_sloped)
 
 def test_that_prioritization_skips_faces_without_panels(polyhedron_cutout_sloped):
     outer = polyhedron_cutout_sloped()
-    inner = generate_offset(poly=outer, offset_map={0: Decimal(-50), 1: Decimal(-50)})
+    inner = generate_offset(poly=outer, offset_map={0: -50, 1: -50})
 
     def local_prioritize(face_indices):
         assert (
@@ -153,7 +151,7 @@ def test_that_prioritization_skips_faces_without_panels(polyhedron_cutout_sloped
 
 def test_check_facenormals():
     outer = create_cube(centre=Vector3d(50, 50, 50), size=float(100))
-    inner = generate_offset(poly=outer, offset_map={3: Decimal(-20)})
+    inner = generate_offset(poly=outer, offset_map={3: -20})
 
     min_z_outer = outer.get_faces_by_facenormal(FaceNormal.F)[0].min_z
     max_z_outer = outer.get_faces_by_facenormal(FaceNormal.F)[0].max_z
