@@ -15,6 +15,6 @@ for root, dirs, files in os.walk(compile_dir):
 setup(
     name="dk_geometry",
     version="0.0.1",
-    packages=find_namespace_packages(include=["dk_geometry"]),
+    packages=find_namespace_packages(include=["dk_geometry"], where="."),
     package_data={"dk_geometry": pyc_files},
 )
