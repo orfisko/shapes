@@ -6,3 +6,4 @@
 /build/lib/
 /dk_geometry.egg-info/
 *.whl
+*.pyc
