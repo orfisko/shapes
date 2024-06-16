@@ -22,54 +22,70 @@ def test_simple_slicing():
 
 
 def test_sharp_corner_polyhedron():
+    top_vertices=[
+        Vector3d(x=491.0, y=1941.8, z=-580.0),
+        Vector3d(x=491.0, y=1941.8, z=0.0)
+    ]
+    middle_vertices=[
+        Vector3d(x=18.0, y=995.8, z=-580.0),
+        Vector3d(x=18.0, y=995.8, z=0.0)
+    ]
+    front_vertices=[
+        Vector3d(x=18.0, y=536.0, z=-580.0),
+        Vector3d(x=18.0, y=536.0, z=0.0)
+    ]
+    back_vertices=[
+        Vector3d(x=491.0, y=536.0, z=-580.0),
+        Vector3d(x=491.0, y=536.0, z=0.0)
+    ]
     polyhedron = Polyhedron(
         faces=[
             Face(
                 vertices=[
-                    Vector3d(x=491.0, y=1941.8, z=-580.0),
-                    Vector3d(x=18.0, y=995.8, z=-580.0),
-                    Vector3d(x=18.0, y=995.8, z=0.0),
-                    Vector3d(x=491.0, y=1941.8, z=0.0),
+                    top_vertices[0],
+                    middle_vertices[0],
+                    middle_vertices[1],
+                    top_vertices[1],
                 ]
             ),
             Face(
                 vertices=[
-                    Vector3d(x=491.0, y=536.0, z=-580.0),
-                    Vector3d(x=18.0, y=536.0, z=-580.0),
-                    Vector3d(x=18.0, y=995.8, z=-580.0),
-                    Vector3d(x=491.0, y=1941.8, z=-580.0),
+                    back_vertices[0],
+                    front_vertices[0],
+                    middle_vertices[0],
+                    top_vertices[0],
                 ]
             ),
             Face(
                 vertices=[
-                    Vector3d(x=491.0, y=1941.8, z=0.0),
-                    Vector3d(x=18.0, y=995.8, z=0.0),
-                    Vector3d(x=18.0, y=536.0, z=0.0),
-                    Vector3d(x=491.0, y=536.0, z=0.0),
+                    top_vertices[1],
+                    middle_vertices[1],
+                    front_vertices[1],
+                    back_vertices[1],
                 ]
             ),
             Face(
                 vertices=[
-                    Vector3d(x=491.0, y=536.0, z=0.0),
-                    Vector3d(x=18.0, y=536.0, z=0.0),
-                    Vector3d(x=18.0, y=536.0, z=-580.0),
-                    Vector3d(x=491.0, y=536.0, z=-580.0),
+                    back_vertices[1],
+                    front_vertices[1],
+                    front_vertices[0],
+                    back_vertices[0],
                 ]
             ),
             Face(
                 vertices=[
-                    Vector3d(x=18.0, y=995.8, z=-580.0),
-                    Vector3d(x=18.0, y=536.0, z=-580.0),
-                    Vector3d(x=18.0, y=536.0, z=0.0),
-                    Vector3d(x=18.0, y=995.8, z=0.0),
+                    middle_vertices[0],
+                    front_vertices[0],
+                    front_vertices[1],
+                    middle_vertices[1],
                 ]
             ),
             Face(
                 vertices=[
-                    Vector3d(x=491.0, y=1941.8, z=0.0),
-                    Vector3d(x=491.0, y=536.0, z=0.0),
-                    Vector3d(x=491.0, y=536.0, z=-580.0),
-                    Vector3d(x=491.0, y=1941.8, z=-580.0),
+                    top_vertices[1],
+                    back_vertices[1],
+                    back_vertices[0],
+                    top_vertices[0],
                 ]
             ),
         ]
