@@ -128,7 +128,7 @@ class Face:
         sorted_other_vertices = sorted(other.vertices, key=lambda v: (v.x, v.y, v.z))
         return (
             sorted_vertices == sorted_other_vertices
-            and self.faceNormal == other.faceNormal
+            and self.plane.normal == other.plane.normal
         )
 
     @dataclass
