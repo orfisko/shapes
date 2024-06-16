@@ -98,24 +98,6 @@ class Plane3d:
 
         return FaceNormal.from_stringlist(types)
 
-    @property
-    def inversedFaceNormal(self) -> FaceNormal:
-        types = []
-        if round(self.normal.x, 3) < 0:
-            types.append("L")
-        if round(self.normal.x, 3) > 0:
-            types.append("R")
-        if round(self.normal.y, 3) < 0:
-            types.append("B")
-        if round(self.normal.y, 3) > 0:
-            types.append("T")
-        if round(self.normal.z, 3) < 0:
-            types.append("BK")
-        if round(self.normal.z, 3) > 0:
-            types.append("F")
-
-        return FaceNormal.from_stringlist(types)
-
 
 @dataclass
 class Line3d:
@@ -233,10 +215,6 @@ class Face:
     @property
     def faceNormal(self) -> FaceNormal:
         return self.plane.faceNormal
-
-    @property
-    def inversedFaceNormal(self) -> FaceNormal:
-        return self.plane.inversedFaceNormal
 
     @property
     def min_x(self) -> float:
