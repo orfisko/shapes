@@ -1,5 +1,5 @@
+# Copyright: 2024 BV De Kastenman
 import math
-from _decimal import Decimal
 from collections import defaultdict
 from copy import deepcopy
 from typing import DefaultDict, List

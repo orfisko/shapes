@@ -1,3 +1,6 @@
+# Copyright: 2024 BV De Kastenman
+
+
 def export_to_obj(polyhedron, path):
     with open(path, "w") as file:
         file = open(path, "a")

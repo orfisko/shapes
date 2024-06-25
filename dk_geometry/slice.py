@@ -1,3 +1,4 @@
+# Copyright: 2024 BV De Kastenman
 from copy import deepcopy
 
 from dk_geometry.general import cut_polyhedron_by_plane

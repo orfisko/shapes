@@ -1,3 +1,4 @@
+# Copyright: 2024 BV De Kastenman
 import math
 from collections import defaultdict
 

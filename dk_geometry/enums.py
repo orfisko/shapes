@@ -1,3 +1,4 @@
+# Copyright: 2024 BV De Kastenman
 from __future__ import annotations
 
 from enum import Enum

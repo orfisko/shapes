@@ -1,3 +1,4 @@
+# Copyright: 2024 BV De Kastenman
 from collections import defaultdict
 from enum import Enum
 

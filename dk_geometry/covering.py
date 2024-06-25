@@ -1,3 +1,5 @@
+# Copyright: 2024 BV De Kastenman
+
 from dk_geometry.general import calculate_signed_distance_to_plane, cut_face_by_plane
 from dk_geometry.model import Face, Plane3d, Vector3d
 from pydantic.dataclasses import dataclass
