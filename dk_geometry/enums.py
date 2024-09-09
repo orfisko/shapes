@@ -3,6 +3,8 @@ from __future__ import annotations
 
 from enum import Enum
 
+from dk_common.model.enums import Language
+
 
 class FaceNormal(Enum):
     """Indicates which absolute normals of the face are different from 0"""
@@ -68,6 +70,21 @@ class FaceNormal(Enum):
                 [opposite_map[face_normal] for face_normal in self.name.split("_")]
             )
         )
+
+    def in_language(self, language: Language = Language.DUTCH):
+        nl_lang_dict = {
+            "L": "LINKS",  # Left
+            "R": "RECTHS",  # Right
+            "T": "BOVEN",  # Top
+            "B": "ONDER",  # Bottom
+            "F": "VOORAAN",  # Front
+            "BK": "ACHTERAAN",  # Back
+            "OTHER": "",
+        }
+        if language == Language.DUTCH:
+            return " ".join([nl_lang_dict[part] for part in self.split()])
+        else:
+            raise NotImplementedError(f"Language {language.name} not implemented")
 
 
 class AngleType(Enum):
