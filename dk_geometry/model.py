@@ -261,7 +261,7 @@ class Face:
             count = 0
             for edge_index in range(0, len(face.vertices)):
                 if (
-                    get_edge_direction(face.get_edge(edge_index)).dotProduct(direction)
+                    abs(get_edge_direction(face.get_edge(edge_index)).dotProduct(direction))
                     > 0.999
                 ):
                     count += 1
