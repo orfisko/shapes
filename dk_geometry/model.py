@@ -255,19 +255,24 @@ class Face:
             direction1 = self.plane.normal.crossProduct(Vector3d(1, 0, 0)).normalized
 
         def get_edge_direction(edge):
-            return (edge[1]-edge[0]).normalized
+            return (edge[1] - edge[0]).normalized
+
         def count_parallel_edges(face, direction):
             count = 0
-            for edge_index in range(0,len(face.vertices)):
-                if get_edge_direction(face.get_edge(edge_index)).dotProduct(direction)>0.999:
-                    count+=1
+            for edge_index in range(0, len(face.vertices)):
+                if (
+                    get_edge_direction(face.get_edge(edge_index)).dotProduct(direction)
+                    > 0.999
+                ):
+                    count += 1
             return count
-        if count_parallel_edges(self,direction1)<1:
+
+        if count_parallel_edges(self, direction1) < 1:
             best_count = 0
-            for edge_index in range(0,len(self.vertices)):
+            for edge_index in range(0, len(self.vertices)):
                 candidate = get_edge_direction(self.get_edge(edge_index))
-                count = count_parallel_edges(self,candidate)
-                if count>best_count:
+                count = count_parallel_edges(self, candidate)
+                if count > best_count:
                     best_count = count
                     direction1 = candidate
 

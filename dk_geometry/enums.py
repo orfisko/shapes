@@ -2,8 +2,7 @@
 from __future__ import annotations
 
 from enum import Enum
-
-from dk_common.model.enums import Language
+from typing import Union
 
 
 class FaceNormal(Enum):
@@ -71,7 +70,10 @@ class FaceNormal(Enum):
             )
         )
 
-    def in_language(self, language: Language = Language.DUTCH):
+    def in_language(self, language: Union[str, Enum] = "DUTCH"):
+        if isinstance(language, Enum):
+            language = language.name
+
         nl_lang_dict = {
             "L": "LINKS",  # Left
             "R": "RECTHS",  # Right
@@ -81,7 +83,7 @@ class FaceNormal(Enum):
             "BK": "ACHTERAAN",  # Back
             "OTHER": "",
         }
-        if language == Language.DUTCH:
+        if language == "DUTCH":
             return " ".join([nl_lang_dict[part] for part in self.split()])
         else:
             raise NotImplementedError(f"Language {language.name} not implemented")
