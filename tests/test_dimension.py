@@ -57,3 +57,56 @@ def test_dimension_angled_panel():
         ]
     )
     assert round(polyhedron.faces[1].lw_dimensions.size2, 0) == 260
+
+
+def test_angled_backpanel():
+    backpanel = [
+        Face(
+            vertices=[
+                Vector3d(x=18.0, y=2482.0, z=-588.0),
+                Vector3d(x=18.0, y=2482.0, z=-580.0),
+                Vector3d(x=286.3, y=2482.0, z=-580.0),
+                Vector3d(x=286.3, y=2482.0, z=-588.0),
+            ]
+        ),
+        Face(
+            vertices=[
+                Vector3d(x=286.3, y=2482.0, z=-588.0),
+                Vector3d(x=286.3, y=2482.0, z=-580.0),
+                Vector3d(x=976.29983, y=18.0, z=-580.0),
+                Vector3d(x=976.29983, y=18.0, z=-588.0),
+            ]
+        ),
+        Face(
+            vertices=[
+                Vector3d(x=976.29983, y=18.0, z=-588.0),
+                Vector3d(x=976.29983, y=18.0, z=-580.0),
+                Vector3d(x=18.0, y=18.0, z=-580.0),
+                Vector3d(x=18.0, y=18.0, z=-588.0),
+            ]
+        ),
+        Face(
+            vertices=[
+                Vector3d(x=18.0, y=18.0, z=-588.0),
+                Vector3d(x=18.0, y=18.0, z=-580.0),
+                Vector3d(x=18.0, y=2482.0, z=-580.0),
+                Vector3d(x=18.0, y=2482.0, z=-588.0),
+            ]
+        ),
+        Face(
+            vertices=[
+                Vector3d(x=18.0, y=18.0, z=-580.0),
+                Vector3d(x=976.29983, y=18.0, z=-580.0),
+                Vector3d(x=286.3, y=2482.0, z=-580.0),
+                Vector3d(x=18.0, y=2482.0, z=-580.0),
+            ]
+        ),
+        Face(
+            vertices=[
+                Vector3d(x=286.3, y=2482.0, z=-588.0),
+                Vector3d(x=976.29983, y=18.0, z=-588.0),
+                Vector3d(x=18.0, y=18.0, z=-588.0),
+                Vector3d(x=18.0, y=2482.0, z=-588.0),
+            ]
+        ),
+    ]
