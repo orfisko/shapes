@@ -56,5 +56,8 @@ def test_dimension_angled_panel():
             ),
         ]
     )
+    print(polyhedron.faces[1])
+    print(polyhedron.faces[1].lw_dimensions)
+    assert False
     # face with index 1 and 5 should be 1930 long and 260 wide
     pass
