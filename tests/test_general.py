@@ -47,8 +47,8 @@ def test_face_lwdimensions_for_horizontal():
         ]
     )
     dimensions = face.lw_dimensions
-    assert dimensions.direction1.crossProduct(Vector3d(0, 0, 1)).length < 0.001
-    assert dimensions.direction2.crossProduct(Vector3d(1, 0, 0)).length < 0.001
+    assert dimensions.direction1.crossProduct(Vector3d(1, 0, 0)).length < 0.001
+    assert dimensions.direction2.crossProduct(Vector3d(0, 0, 1)).length < 0.001
 
 
 def test_face_lwdimensions_for_vertical():
@@ -61,8 +61,8 @@ def test_face_lwdimensions_for_vertical():
         ]
     )
     dimensions = face.lw_dimensions
-    assert dimensions.direction1.crossProduct(Vector3d(0, 0, 1)).length < 0.001
-    assert dimensions.direction2.crossProduct(Vector3d(0, 1, 0)).length < 0.001
+    assert dimensions.direction1.crossProduct(Vector3d(0, 1, 0)).length < 0.001
+    assert dimensions.direction2.crossProduct(Vector3d(0, 0, 1)).length < 0.001
 
 
 def test_face_lwdimensions_for_tilted():
@@ -75,8 +75,8 @@ def test_face_lwdimensions_for_tilted():
         ]
     )
     dimensions = face.lw_dimensions
-    assert dimensions.direction1.crossProduct(Vector3d(0, 0, 1)).length < 0.001
-    assert dimensions.direction2.crossProduct(Vector3d(-1, 1, 0)).length < 0.001
+    assert dimensions.direction1.crossProduct(Vector3d(-1, 1, 0)).length < 0.001
+    assert dimensions.direction2.crossProduct(Vector3d(0, 0, 1)).length < 0.001
 
 
 def test_face_equality():
