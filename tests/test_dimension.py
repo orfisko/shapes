@@ -58,6 +58,7 @@ def test_dimension_angled_panel():
             ),
         ]
     )
+    assert round(polyhedron.faces[1].lw_dimensions.size1, 0) == 2653
     assert round(polyhedron.faces[1].lw_dimensions.size2, 0) == 260
 
 
