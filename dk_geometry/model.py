@@ -249,34 +249,51 @@ class Face:
         one and parallel to the face.
         """
 
-        if self.plane.faceNormal in [FaceNormal.L, FaceNormal.R]:
-            direction1 = Vector3d(0, 0, 1)
-        else:
-            direction1 = self.plane.normal.crossProduct(Vector3d(1, 0, 0)).normalized
-
         def get_edge_direction(edge):
             return (edge[1] - edge[0]).normalized
-
-        def count_parallel_edges(face, direction):
+        def measure_parallel_edges(face, direction):
             count = 0
             for edge_index in range(0, len(face.vertices)):
-                if (
-                    abs(get_edge_direction(face.get_edge(edge_index)).dotProduct(direction))
-                    > 0.999
-                ):
+                edge_direction =get_edge_direction(face.get_edge(edge_index))
+                sin = edge_direction.crossProduct(direction).length
+                if sin<0.01:
                     count += 1
             return count
-
-        if count_parallel_edges(self, direction1) < 1:
-            best_count = 0
-            for edge_index in range(0, len(self.vertices)):
-                candidate = get_edge_direction(self.get_edge(edge_index))
-                count = count_parallel_edges(self, candidate)
-                if count > best_count:
-                    best_count = count
-                    direction1 = candidate
-
+        def measure_orthogonal_edges(face, direction):
+            count = 0
+            for edge_index in range(0, len(face.vertices)):
+                edge_direction = get_edge_direction(face.get_edge(edge_index))
+                cos = abs(edge_direction.dotProduct(direction))
+                if cos<0.01:
+                    count += 1
+            return count
+        direction1 = Vector3d(1,0,0)
+        best_length = 0
+        for edge_index in range(0, len(self.vertices)):
+            candidate = get_edge_direction(self.get_edge(edge_index))
+            length = (
+                measure_parallel_edges(self, candidate)
+                +measure_orthogonal_edges(self, candidate)
+            )
+            if length > best_length:
+                best_length = length
+                direction1 = candidate
         direction2 = direction1.crossProduct(self.plane.normal).normalized
+        if self.plane.normal.crossProduct(Vector3d(0,1,0)).length<0.01:# ~horizontal plane
+            # make the first direction to be the closest one to the X axis
+            if abs(direction1.x)<abs(direction2.x):
+                direction1, direction2 = direction1, direction2
+        elif abs(direction1.y)<0.01:# direction1 is ~horizontal
+            direction1, direction2 = direction2, direction1
+        elif abs(direction2.y)<0.01:# direction2 is ~horizontal
+            pass # is already good
+        else:# rotated face
+            # make the first direction the one with the biggest parallel edges length sum
+            parallel = measure_parallel_edges(self, direction1)
+            orthogonal = measure_parallel_edges(self, direction1)
+            print(parallel,"/",orthogonal)
+            if orthogonal>parallel:
+                direction1, direction2 = direction2, direction1
 
         def measure_size(vertices, direction):
             parameters = [v.dotProduct(direction) for v in vertices]
