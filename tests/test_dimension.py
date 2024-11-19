@@ -1,3 +1,5 @@
+import math
+
 from dk_geometry.model import Face, Vector3d
 
 from model import Polyhedron
@@ -110,3 +112,5 @@ def test_angled_backpanel():
             ]
         ),
     ]
+    assert backpanel[4].lw_dimensions.size1 == 2464
+    assert math.floor(backpanel[5].lw_dimensions.size2) == 958
