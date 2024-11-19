@@ -115,3 +115,16 @@ def test_angled_backpanel():
     ]
     assert backpanel[4].lw_dimensions.size1 == 2464
     assert math.floor(backpanel[5].lw_dimensions.size2) == 958
+
+
+def test_horizontal_face():
+    face = Face(
+        vertices=[
+            Vector3d(x=0.0, y=2500.0, z=-600.0),
+            Vector3d(x=0.0, y=2500.0, z=0.0),
+            Vector3d(x=1000.0, y=2500.0, z=0.0),
+            Vector3d(x=1000.0, y=2500.0, z=-600.0),
+        ]
+    )
+    assert face.lw_dimensions.size1 == 1000
+    assert face.lw_dimensions.size2 == 600
