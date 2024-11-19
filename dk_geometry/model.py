@@ -286,7 +286,7 @@ class Face:
         ):  # ~horizontal plane
             # make the first direction to be the closest one to the X axis
             if abs(direction1.x) < abs(direction2.x):
-                direction1, direction2 = direction1, direction2
+                direction1, direction2 = direction2, direction1
         elif abs(direction1.y) < 0.01:  # direction1 is ~horizontal
             direction1, direction2 = direction2, direction1
         elif abs(direction2.y) < 0.01:  # direction2 is ~horizontal
