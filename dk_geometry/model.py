@@ -84,17 +84,17 @@ class Plane3d:
     def faceNormal(self) -> FaceNormal:
         types = []
 
-        if round(self.normal.x, 3) < 0:
+        if self.normal.x < -0.001:
             types.append("L")  # left
-        if round(self.normal.x, 3) > 0:
+        if self.normal.x > 0.001:
             types.append("R")  # right
-        if round(self.normal.y, 3) < 0:
+        if self.normal.y < -0.001:
             types.append("B")  # bottom
-        if round(self.normal.y, 3) > 0:
+        if self.normal.y > 0.001:
             types.append("T")  # top
-        if round(self.normal.z, 3) < 0:
+        if self.normal.z < -0.001:
             types.append("BK")  # Back
-        if round(self.normal.z, 3) > 0:
+        if self.normal.z > 0.001:
             types.append("F")  # Front
 
         return FaceNormal.from_stringlist(types)
